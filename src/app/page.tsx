@@ -3,6 +3,7 @@
 import { UserInputForm } from '@/components/forms/UserInputForm';
 import { ResultsSection } from '@/components/results/ResultsSection';
 import ArticlesSection from '@/components/articles/ArticlesSection';
+import { FAQ } from '@/components/FAQ';
 
 export default function Home() {
   return (
@@ -248,68 +249,7 @@ export default function Home() {
         <ArticlesSection />
 
         {/* FAQ Section */}
-        <section className="py-20 bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h3 className="text-3xl font-bold text-gray-900 mb-4">
-                Veelgestelde Vragen
-              </h3>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Alles wat je moet weten over energievergelijking met zonnepanelen
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="space-y-6">
-                <div className="bg-gray-50 rounded-xl p-6">
-                  <h4 className="font-semibold text-gray-900 mb-3">Hoe werkt de salderingsberekening?</h4>
-                  <p className="text-gray-600 text-sm">
-                    Wij berekenen je saldering volgens de Nederlandse wetgeving. Je krijgt alleen energiebelasting terug 
-                    over de energie die je teruglevert, niet over de kale energieprijs.
-                  </p>
-                </div>
-                <div className="bg-gray-50 rounded-xl p-6">
-                  <h4 className="font-semibold text-gray-900 mb-3">Wat zijn dynamische contracten?</h4>
-                  <p className="text-gray-600 text-sm">
-                    Dynamische contracten volgen de spotmarktprijzen per uur. Je betaalt de werkelijke marktprijs 
-                    en kunt profiteren van goedkope nachttarieven en weekendprijzen.
-                  </p>
-                </div>
-                <div className="bg-gray-50 rounded-xl p-6">
-                  <h4 className="font-semibold text-gray-900 mb-3">Is de vergelijking echt gratis?</h4>
-                  <p className="text-gray-600 text-sm">
-                    Ja, onze vergelijking is volledig gratis. Wij verdienen geen commissies en er zijn geen 
-                    verborgen kosten. Je betaalt alleen voor het energiecontract dat je kiest.
-                  </p>
-                </div>
-              </div>
-              
-              <div className="space-y-6">
-                <div className="bg-gray-50 rounded-xl p-6">
-                  <h4 className="font-semibold text-gray-900 mb-3">Hoeveel kan ik besparen?</h4>
-                  <p className="text-gray-600 text-sm">
-                    Zonnepanelen eigenaren besparen gemiddeld €400-€800 per jaar met het juiste contract. 
-                    Dit hangt af van je verbruik, opwekking en het gekozen contract.
-                  </p>
-                </div>
-                <div className="bg-gray-50 rounded-xl p-6">
-                  <h4 className="font-semibold text-gray-900 mb-3">Wat als ik een warmtepomp heb?</h4>
-                  <p className="text-gray-600 text-sm">
-                    Wij houden rekening met warmtepomp verbruik in onze berekeningen. Dit kan je jaarlijkse 
-                    verbruik aanzienlijk verhogen en beïnvloedt welke contracten het voordeligst zijn.
-                  </p>
-                </div>
-                <div className="bg-gray-50 rounded-xl p-6">
-                  <h4 className="font-semibold text-gray-900 mb-3">Hoe snel krijg ik mijn resultaten?</h4>
-                  <p className="text-gray-600 text-sm">
-                    Na het invullen van je gegevens krijg je direct je persoonlijke vergelijking. 
-                    Het invullen duurt slechts 2 minuten en je krijgt direct alle contracten te zien.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        <FAQ />
       </main>
 
       {/* Footer */}

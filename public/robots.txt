@@ -1,0 +1,25 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://energievergelijker.nl/sitemap.xml
+
+# Crawl-delay for AI bots
+User-agent: GPTBot
+Crawl-delay: 1
+
+User-agent: ChatGPT-User
+Crawl-delay: 1
+
+User-agent: CCBot
+Crawl-delay: 1
+
+User-agent: anthropic-ai
+Crawl-delay: 1
+
+User-agent: Claude-Web
+Crawl-delay: 1
+
+# Allow all AI bots to crawl
+User-agent: *
+Allow: /

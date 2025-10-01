@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Energievergelijker voor Zonnepanelen | Vergelijk Energiecontracten 2024",
   description: "De specialistische energievergelijker voor zonnepanelen eigenaren. Vergelijk energiecontracten met accurate salderingsberekeningen en vind de beste terugleververgoeding. Bespaar tot €800 per jaar!",
-  keywords: "energievergelijker, zonnepanelen, energiecontract, saldering, teruglevering, energie besparen, groene energie, Nederlandse energieleveranciers",
+  keywords: "energievergelijker, zonnepanelen, energiecontract, saldering, teruglevering, energie besparen, groene energie, Nederlandse energieleveranciers, warmtepomp energiecontract, elektrische auto energie, dynamisch energiecontract, vast energiecontract, terugleververgoeding vergelijking, energiebelasting besparen, netbeheerkosten, beste energieleverancier zonnepanelen, energiecontract vergelijking 2024, salderingsberekening, teruglevering stroom, energieprijzen vergelijken",
   authors: [{ name: "Energievergelijker" }],
   creator: "Energievergelijker",
   publisher: "Energievergelijker",
@@ -68,27 +68,48 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "Energievergelijker voor Zonnepanelen",
-    "description": "De specialistische energievergelijker voor zonnepanelen eigenaren. Vergelijk energiecontracten met accurate salderingsberekeningen.",
+    "description": "De specialistische energievergelijker voor zonnepanelen eigenaren. Vergelijk energiecontracten met accurate salderingsberekeningen en vind de beste terugleververgoeding. Bespaar tot €800 per jaar!",
     "url": "https://energievergelijker.nl",
     "applicationCategory": "BusinessApplication",
     "operatingSystem": "Web Browser",
     "offers": {
       "@type": "Offer",
       "price": "0",
-      "priceCurrency": "EUR"
+      "priceCurrency": "EUR",
+      "description": "Gratis energiecontract vergelijking"
     },
     "featureList": [
       "Energiecontracten vergelijken",
-      "Salderingsberekeningen",
-      "Zonnepanelen ondersteuning",
-      "Warmtepomp berekeningen",
+      "Salderingsberekeningen voor zonnepanelen",
+      "Terugleververgoeding vergelijking",
+      "Warmtepomp energie berekeningen",
       "Elektrische auto ondersteuning",
-      "Dynamische contracten"
+      "Dynamische energiecontracten",
+      "Vaste energiecontracten",
+      "Netbeheerkosten berekening",
+      "Energiebelasting berekening",
+      "BTW berekening energie"
     ],
+    "keywords": "energievergelijker, zonnepanelen, energiecontract, saldering, teruglevering, energie besparen, groene energie, Nederlandse energieleveranciers, warmtepomp, elektrische auto, dynamisch contract, vast contract",
     "provider": {
       "@type": "Organization",
       "name": "Energievergelijker",
-      "url": "https://energievergelijker.nl"
+      "url": "https://energievergelijker.nl",
+      "description": "Specialist in energiecontract vergelijking voor zonnepanelen eigenaren"
+    },
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://energievergelijker.nl/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    },
+    "audience": {
+      "@type": "Audience",
+      "audienceType": "Zonnepanelen eigenaren, Warmtepomp eigenaren, Elektrische auto eigenaren"
+    },
+    "serviceType": "Energiecontract vergelijking",
+    "areaServed": {
+      "@type": "Country",
+      "name": "Nederland"
     }
   };
 
