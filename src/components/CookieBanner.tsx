@@ -100,11 +100,8 @@ export function CookieBanner() {
                   Je kunt je voorkeuren aanpassen of alles accepteren.
                 </p>
                 <div className="mt-3 text-xs text-gray-500">
-                  <a href="/privacy" className="text-blue-600 hover:underline mr-4">
+                  <a href="/privacy" className="text-blue-600 hover:underline">
                     Privacybeleid
-                  </a>
-                  <a href="/cookies" className="text-blue-600 hover:underline">
-                    Cookiebeleid
                   </a>
                 </div>
               </div>

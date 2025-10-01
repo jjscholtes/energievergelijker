@@ -48,9 +48,18 @@ export default function PrivacyPage() {
               <p className="text-gray-700 mb-4">
                 Beste Energiecontract is een specialistische energievergelijker die zich richt op het vinden van de beste energiecontracten voor huishoudens met zonnepanelen, warmtepompen en elektrische auto's.
               </p>
-              <p className="text-gray-700">
+              <p className="text-gray-700 mb-4">
                 Wij respecteren uw privacy en zijn verplicht om uw persoonlijke gegevens te beschermen volgens de Algemene Verordening Gegevensbescherming (AVG/GDPR).
               </p>
+              <div className="bg-blue-50 rounded-lg p-6">
+                <h3 className="font-semibold text-gray-900 mb-3">Onze privacy belofte:</h3>
+                <ul className="space-y-2 text-gray-700 text-sm">
+                  <li>• Wij verkopen uw gegevens <strong>nooit</strong> aan derden</li>
+                  <li>• Wij gebruiken uw gegevens alleen voor energievergelijking</li>
+                  <li>• U kunt uw gegevens altijd verwijderen</li>
+                  <li>• Wij zijn transparant over wat we verzamelen</li>
+                </ul>
+              </div>
             </section>
 
             <section className="mb-12">
@@ -145,6 +154,30 @@ export default function PrivacyPage() {
                 <div className="bg-gray-50 rounded-lg p-4">
                   <h3 className="font-semibold text-gray-900 mb-2">Beperking</h3>
                   <p className="text-gray-700 text-sm">Beperk de verwerking van uw gegevens</p>
+                </div>
+              </div>
+            </section>
+
+            <section className="mb-12">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Hoe werkt onze vergelijker?</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div className="bg-green-50 rounded-lg p-6">
+                  <h3 className="font-semibold text-gray-900 mb-4">Wat gebeurt er met uw gegevens?</h3>
+                  <ul className="space-y-2 text-gray-700 text-sm">
+                    <li>• Uw verbruik wordt gebruikt voor kostenberekening</li>
+                    <li>• Postcode wordt gebruikt voor netbeheerder bepaling</li>
+                    <li>• Zonnepanelen info voor salderingsberekening</li>
+                    <li>• Gegevens worden niet opgeslagen na vergelijking</li>
+                  </ul>
+                </div>
+                <div className="bg-blue-50 rounded-lg p-6">
+                  <h3 className="font-semibold text-gray-900 mb-4">Wat gebeurt er NIET?</h3>
+                  <ul className="space-y-2 text-gray-700 text-sm">
+                    <li>• Geen verkoop aan energieleveranciers</li>
+                    <li>• Geen spam emails</li>
+                    <li>• Geen tracking buiten onze website</li>
+                    <li>• Geen opslag van persoonlijke gegevens</li>
+                  </ul>
                 </div>
               </div>
             </section>
