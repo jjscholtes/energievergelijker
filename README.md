@@ -150,6 +150,9 @@ Deze applicatie is volledig geoptimaliseerd voor AI-zoekmachines:
 - ✅ **Organization Schema** voor autoriteit
 - ✅ **BreadcrumbList Schema** voor navigatie
 - ✅ **Structured Data** voor betere AI begrip
+- ✅ **Service Schema** voor energievergelijking diensten
+- ✅ **Review Schema** voor social proof
+- ✅ **Product Schema** voor energiecontracten
 
 ### Environment Variables
 
