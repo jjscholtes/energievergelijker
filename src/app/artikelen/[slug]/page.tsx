@@ -17,7 +17,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: ArticlePageProps) {
-  const article = getArticleById(params.slug);
+  const resolvedParams = await params;
+  const article = getArticleById(resolvedParams.slug);
   
   if (!article) {
     return {
@@ -40,8 +41,9 @@ export async function generateMetadata({ params }: ArticlePageProps) {
   };
 }
 
-export default function ArticlePage({ params }: ArticlePageProps) {
-  const article = getArticleById(params.slug);
+export default async function ArticlePage({ params }: ArticlePageProps) {
+  const resolvedParams = await params;
+  const article = getArticleById(resolvedParams.slug);
 
   if (!article) {
     notFound();

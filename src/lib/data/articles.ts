@@ -5,7 +5,7 @@ export const articles: Article[] = [
     id: 'terugleververgoeding-trends-2025',
     title: 'Samenvatting terugleververgoeding & trends (2025)',
     summary: 'De markt voor terugleververgoedingen verschuift van hoge, variabele vergoedingen naar lage vaste vergoedingen plus terugleverkosten. Dit dwingt zonnepaneelbezitters hun eigen opgewekte stroom in hoge mate zelf te benutten.',
-    imageUrl: 'https://images.unsplash.com/photo-1509391366360-2e959b9eaf0b?w=800&h=400&fit=crop&crop=center',
+    imageUrl: 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=800&h=400&fit=crop&crop=center',
     content: `
 ## Hoogte van de vergoeding
 
