@@ -153,6 +153,8 @@ Deze applicatie is volledig geoptimaliseerd voor AI-zoekmachines:
 - ✅ **Service Schema** voor energievergelijking diensten
 - ✅ **Review Schema** voor social proof
 - ✅ **Product Schema** voor energiecontracten
+- ✅ **Vercel Analytics** voor gebruikersgedrag tracking
+- ✅ **Speed Insights** voor performance monitoring
 
 ### Environment Variables
 
