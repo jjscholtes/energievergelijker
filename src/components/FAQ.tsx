@@ -61,9 +61,29 @@ export function FAQ() {
     );
   };
 
+  // FAQPage Schema voor AI indexing
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqData.map(item => ({
+      "@type": "Question",
+      "name": item.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": item.answer
+      }
+    }))
+  };
+
   return (
-    <section className="py-20 bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <div className="container mx-auto px-4">
+    <>
+      {/* FAQ Schema voor AI */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <section className="py-20 bg-gradient-to-br from-blue-50 via-white to-purple-50">
+        <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-full text-sm font-bold mb-6 shadow-lg">
             <span>❓</span>
@@ -140,5 +160,6 @@ export function FAQ() {
         </div>
       </div>
     </section>
+    </>
   );
 }

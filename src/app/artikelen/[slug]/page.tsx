@@ -47,6 +47,65 @@ export default function ArticlePage({ params }: ArticlePageProps) {
     notFound();
   }
 
+  // BreadcrumbList Schema voor AI indexing
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://besteenergiecontract.nl"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Artikelen",
+        "item": "https://besteenergiecontract.nl/#artikelen"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": article.title,
+        "item": `https://besteenergiecontract.nl/artikelen/${article.id}`
+      }
+    ]
+  };
+
+  // Article Schema voor AI indexing
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": article.title,
+    "description": article.summary,
+    "image": article.imageUrl,
+    "author": {
+      "@type": "Organization",
+      "name": "Beste Energiecontract",
+      "url": "https://besteenergiecontract.nl"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Beste Energiecontract",
+      "url": "https://besteenergiecontract.nl",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://besteenergiecontract.nl/logo.png"
+      }
+    },
+    "datePublished": article.publishedAt,
+    "dateModified": article.publishedAt,
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `https://besteenergiecontract.nl/artikelen/${article.id}`
+    },
+    "keywords": article.tags.join(", "),
+    "articleSection": article.category,
+    "wordCount": article.content.split(' ').length,
+    "inLanguage": "nl-NL"
+  };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('nl-NL', {
       year: 'numeric',
@@ -110,7 +169,18 @@ export default function ArticlePage({ params }: ArticlePageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+    <>
+      {/* Breadcrumb Schema voor AI */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      {/* Article Schema voor AI */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
       {/* Header */}
       <div className="bg-white/90 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -270,5 +340,6 @@ export default function ArticlePage({ params }: ArticlePageProps) {
         </section>
       </article>
     </div>
+    </>
   );
 }

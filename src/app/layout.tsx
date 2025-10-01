@@ -113,12 +113,48 @@ export default function RootLayout({
     }
   };
 
+  // Organization Schema voor AI indexing
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Beste Energiecontract",
+    "url": "https://besteenergiecontract.nl",
+    "logo": "https://besteenergiecontract.nl/logo.png",
+    "description": "De specialistische energievergelijker voor zonnepanelen eigenaren. Vergelijk energiecontracten met accurate salderingsberekeningen.",
+    "foundingDate": "2024",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "NL"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "customer service",
+      "availableLanguage": "Dutch"
+    },
+    "sameAs": [
+      "https://besteenergiecontract.nl"
+    ],
+    "knowsAbout": [
+      "Energiecontracten vergelijken",
+      "Zonnepanelen saldering",
+      "Terugleververgoeding",
+      "Warmtepomp energieverbruik",
+      "Elektrische auto energie",
+      "Dynamische energiecontracten",
+      "Vaste energiecontracten"
+    ]
+  };
+
   return (
     <html lang="nl">
       <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
         />
       </head>
       <body

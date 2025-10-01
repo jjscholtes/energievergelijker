@@ -4,6 +4,7 @@ import { UserInputForm } from '@/components/forms/UserInputForm';
 import { ResultsSection } from '@/components/results/ResultsSection';
 import ArticlesSection from '@/components/articles/ArticlesSection';
 import { FAQ } from '@/components/FAQ';
+import { HowToGuide } from '@/components/HowToGuide';
 
 export default function Home() {
   return (
@@ -247,6 +248,9 @@ export default function Home() {
 
         {/* Articles Section */}
         <ArticlesSection />
+
+        {/* HowTo Guide Section */}
+        <HowToGuide />
 
         {/* FAQ Section */}
         <FAQ />
