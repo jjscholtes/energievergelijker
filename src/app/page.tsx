@@ -156,7 +156,7 @@ export default function Home() {
                   <div className="text-center mb-8">
                     <div className="inline-flex items-center gap-3 bg-gradient-to-r from-green-600 to-blue-600 text-white px-6 py-3 rounded-full text-sm font-bold mb-6 shadow-lg">
                       <span>🏆</span>
-                      <span>10.000+ Tevreden Gebruikers</span>
+                      <span>Gratis Vergelijking</span>
                     </div>
                     <h3 className="text-2xl font-bold text-gray-900 mb-4">Bespaar tot €800 per jaar</h3>
                     <p className="text-gray-600 mb-6">Met het juiste energiecontract voor jouw situatie</p>
@@ -164,8 +164,8 @@ export default function Home() {
                   
                   <div className="space-y-6">
                     <div className="text-center p-6 bg-gradient-to-r from-green-50 to-green-100 rounded-xl border border-green-200">
-                      <div className="text-4xl font-bold text-green-600 mb-2">€2M+</div>
-                      <p className="text-green-800 font-semibold">Bespaard door onze gebruikers</p>
+                      <div className="text-4xl font-bold text-green-600 mb-2">€800</div>
+                      <p className="text-green-800 font-semibold">Maximale besparing mogelijk</p>
                     </div>
                     <div className="text-center p-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl border border-blue-200">
                       <div className="text-4xl font-bold text-blue-600 mb-2">100%</div>
@@ -338,9 +338,9 @@ export default function Home() {
                 </div>
               </div>
               <div className="text-sm text-gray-400 space-y-1">
-                <p>✓ 10.000+ tevreden gebruikers</p>
-                <p>✓ €2M+ bespaard door onze gebruikers</p>
+                <p>✓ Gratis vergelijking</p>
                 <p>✓ Altijd de nieuwste tarieven</p>
+                <p>✓ Geen verborgen kosten</p>
               </div>
             </div>
             
