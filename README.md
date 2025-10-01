@@ -141,6 +141,16 @@ git push origin main
 - Vercel detecteert automatisch Next.js
 - Deploy!
 
+## 🤖 AI/LLM Optimalisatie
+
+Deze applicatie is volledig geoptimaliseerd voor AI-zoekmachines:
+- ✅ **FAQPage Schema** voor ChatGPT/Perplexity indexing
+- ✅ **HowTo Schema** voor stappenplannen
+- ✅ **Article Schema** voor alle artikelen
+- ✅ **Organization Schema** voor autoriteit
+- ✅ **BreadcrumbList Schema** voor navigatie
+- ✅ **Structured Data** voor betere AI begrip
+
 ### Environment Variables
 
 Voor productie, stel deze environment variables in:
