@@ -67,16 +67,6 @@ export default function PrivacyPage() {
                 <Database className="w-6 h-6 text-green-600" />
                 Welke gegevens verzamelen wij?
               </h2>
-              <div className="bg-gray-50 rounded-lg p-6 mb-6">
-                <h3 className="font-semibold text-gray-900 mb-4">Gegevens die u vrijwillig verstrekt:</h3>
-                <ul className="space-y-2 text-gray-700">
-                  <li>• <strong>Energieverbruik:</strong> Jaarlijks stroom- en gasverbruik</li>
-                  <li>• <strong>Zonnepanelen informatie:</strong> Opbrengst en capaciteit</li>
-                  <li>• <strong>Warmtepomp/Elektrische auto:</strong> Verbruiksgegevens</li>
-                  <li>• <strong>Contactgegevens:</strong> Email voor resultaten (optioneel)</li>
-                  <li>• <strong>Locatie:</strong> Postcode voor netbeheerder bepaling</li>
-                </ul>
-              </div>
               <div className="bg-blue-50 rounded-lg p-6">
                 <h3 className="font-semibold text-gray-900 mb-4">Automatisch verzamelde gegevens:</h3>
                 <ul className="space-y-2 text-gray-700">
