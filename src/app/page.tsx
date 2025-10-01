@@ -17,7 +17,7 @@ export default function Home() {
                 <span className="text-white font-bold text-2xl">⚡</span>
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Energievergelijker</h1>
+                <h1 className="text-2xl font-bold text-gray-900">Beste Energiecontract</h1>
                 <p className="text-gray-600 text-sm font-medium">De specialist voor energiecontracten met zonnepanelen</p>
               </div>
             </div>

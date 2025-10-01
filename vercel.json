@@ -9,7 +9,7 @@
           "value": "http"
         }
       ],
-      "destination": "https://energievergelijker.vercel.app/:path*",
+      "destination": "https://besteenergiecontract.vercel.app/:path*",
       "permanent": true
     }
   ],

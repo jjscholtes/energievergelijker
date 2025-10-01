@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://energievergelijker.nl/sitemap.xml
+Sitemap: https://besteenergiecontract.nl/sitemap.xml
 
 # Crawl-delay for AI bots
 User-agent: GPTBot

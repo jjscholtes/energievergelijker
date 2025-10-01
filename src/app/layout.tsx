@@ -25,15 +25,15 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://energievergelijker.nl'),
+  metadataBase: new URL('https://besteenergiecontract.nl'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     title: "Energievergelijker voor Zonnepanelen | Vergelijk Energiecontracten 2024",
     description: "De specialistische energievergelijker voor zonnepanelen eigenaren. Vergelijk energiecontracten met accurate salderingsberekeningen.",
-    url: 'https://energievergelijker.nl',
-    siteName: 'Energievergelijker',
+    url: 'https://besteenergiecontract.nl',
+    siteName: 'Beste Energiecontract',
     locale: 'nl_NL',
     type: 'website',
   },
@@ -69,7 +69,7 @@ export default function RootLayout({
     "@type": "WebApplication",
     "name": "Energievergelijker voor Zonnepanelen",
     "description": "De specialistische energievergelijker voor zonnepanelen eigenaren. Vergelijk energiecontracten met accurate salderingsberekeningen en vind de beste terugleververgoeding. Bespaar tot €800 per jaar!",
-    "url": "https://energievergelijker.nl",
+    "url": "https://besteenergiecontract.nl",
     "applicationCategory": "BusinessApplication",
     "operatingSystem": "Web Browser",
     "offers": {
@@ -93,13 +93,13 @@ export default function RootLayout({
     "keywords": "energievergelijker, zonnepanelen, energiecontract, saldering, teruglevering, energie besparen, groene energie, Nederlandse energieleveranciers, warmtepomp, elektrische auto, dynamisch contract, vast contract",
     "provider": {
       "@type": "Organization",
-      "name": "Energievergelijker",
-      "url": "https://energievergelijker.nl",
+      "name": "Beste Energiecontract",
+      "url": "https://besteenergiecontract.nl",
       "description": "Specialist in energiecontract vergelijking voor zonnepanelen eigenaren"
     },
     "potentialAction": {
       "@type": "SearchAction",
-      "target": "https://energievergelijker.nl/?q={search_term_string}",
+      "target": "https://besteenergiecontract.nl/?q={search_term_string}",
       "query-input": "required name=search_term_string"
     },
     "audience": {
