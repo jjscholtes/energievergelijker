@@ -187,7 +187,7 @@ export function CostBreakdown({ result }: CostBreakdownProps) {
                 <span className="text-green-600">-€{pvOpbrengsten.terugleververgoedingBedrag.toFixed(2)}</span>
               </div>
               <div className="text-xs text-gray-500 ml-4">
-                Teruggeleverde kWh × terugleververgoeding = {(pvOpbrengsten.nettoTerugleveringKwh + pvOpbrengsten.gesaldeerdKwh).toFixed(0)} kWh × €{result.contract.type === 'dynamisch' ? `${result.contract.tarieven?.terugleververgoeding.toFixed(4) || '0.0000'} (gemiddelde spotprijs)` : '0.01'}
+                Teruggeleverde kWh × terugleververgoeding = {(pvOpbrengsten.nettoTerugleveringKwh + pvOpbrengsten.gesaldeerdKwh).toFixed(0)} kWh × €{result.contract.tarieven?.terugleververgoeding.toFixed(4) || '0.0000'}
               </div>
               
               {result.contract.type === 'vast' && (

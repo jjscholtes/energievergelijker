@@ -697,10 +697,10 @@ export default function ToolPage() {
                               id="opslagAfname"
                               type="number"
                               step="0.001"
-                              value={getInputValue('opslagAfname', currentContract.tarieven?.stroomKalePrijsPiek || (currentContract.type === 'dynamisch' ? 0.023 : 0.10))}
+                              value={getInputValue('opslagAfname', currentContract.opslagPerKwh || (currentContract.type === 'dynamisch' ? 0.023 : 0.10))}
                               onChange={(e) => handleContractInputChange('opslagAfname', e.target.value, (value) => setCurrentContract(prev => ({
                                 ...prev,
-                                tarieven: { ...prev.tarieven!, stroomKalePrijsPiek: value }
+                                opslagPerKwh: value
                               })))}
                               className="h-12"
                               placeholder={currentContract.type === 'dynamisch' ? "Bijv. 0.023" : "Bijv. 0.100"}
@@ -716,10 +716,10 @@ export default function ToolPage() {
                               id="opslagInvoeding"
                               type="number"
                               step="0.001"
-                              value={getInputValue('opslagInvoeding', currentContract.tarieven?.stroomKalePrijsDal || (currentContract.type === 'dynamisch' ? 0.023 : 0.10))}
+                              value={getInputValue('opslagInvoeding', currentContract.opslagInvoeding || (currentContract.type === 'dynamisch' ? 0.023 : 0.10))}
                               onChange={(e) => handleContractInputChange('opslagInvoeding', e.target.value, (value) => setCurrentContract(prev => ({
                                 ...prev,
-                                tarieven: { ...prev.tarieven!, stroomKalePrijsDal: value }
+                                opslagInvoeding: value
                               })))}
                               className="h-12"
                               placeholder={currentContract.type === 'dynamisch' ? "Bijv. 0.023" : "Bijv. 0.100"}

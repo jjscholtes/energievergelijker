@@ -416,7 +416,7 @@ export function ResultsSection() {
                         <span className="text-gray-600">Dynamisch:</span>
                         <span className="font-medium ml-2 text-green-600">€{cheapestDynamic.pvOpbrengsten.totaleOpbrengst.toFixed(0)}</span>
                         <div className="text-xs text-gray-500 space-y-1">
-                          <div>Terugleververgoeding: €{cheapestDynamic.pvOpbrengsten.terugleververgoedingBedrag.toFixed(0)} (€{(cheapestDynamic.contract.tarieven?.terugleververgoeding || 0).toFixed(3)}/kWh spotprijs)</div>
+                          <div>Terugleververgoeding: €{cheapestDynamic.pvOpbrengsten.terugleververgoedingBedrag.toFixed(0)} (€{(cheapestDynamic.contract.tarieven?.terugleververgoeding || 0).toFixed(3)}/kWh)</div>
                           <div>Terugleverkosten: €0/jaar (geen kosten)</div>
                           <div>Saldering: €{cheapestDynamic.pvOpbrengsten.salderingsBesparing.toFixed(0)}/jaar</div>
                         </div>
