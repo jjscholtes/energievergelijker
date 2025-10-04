@@ -64,7 +64,9 @@ export const berekenEnergiekosten = (
       userProfile.percentageZelfverbruik,
       contract.tarieven.stroomKalePrijs || contract.tarieven.stroomKalePrijsPiek || 0.25,
       contract.tarieven.terugleververgoeding,
-      contract.type as 'vast' | 'dynamisch'
+      contract.type as 'vast' | 'dynamisch',
+      1.0, // salderingsPercentage
+      contract.tarieven.vasteTerugleverkosten || 0 // Ingevulde terugleverkosten
     );
 
     // Trek PV opbrengsten af van totale kosten

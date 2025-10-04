@@ -99,7 +99,9 @@ export const berekenDynamischeEnergiekosten = async (
         userProfile.percentageZelfverbruik,
         gemiddeldeSpotPrijs, // Gebruik gemiddelde spotprijs
         gemiddeldeSpotPrijs, // Voor dynamische contracten is terugleververgoeding = spotprijs
-        'dynamisch' // Dynamische contracten gebruiken spotprijs
+        'dynamisch', // Dynamische contracten gebruiken spotprijs
+        1.0, // salderingsPercentage
+        0 // Dynamische contracten hebben geen terugleverkosten
       );
 
       // Trek PV opbrengsten af van totale kosten
