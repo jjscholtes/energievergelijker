@@ -3,13 +3,14 @@
 import React, { useState, useEffect } from 'react';
 import { TrendingUp, TrendingDown, Clock, Sun, Moon, Zap, BarChart3, Info, ArrowLeft, Calendar, DollarSign } from 'lucide-react';
 import Link from 'next/link';
-import { getMonthlyData, getHourlyDataForMonth, getDailyDataForMonth, MonthlyStats } from '@/lib/data/monthlyPriceData';
+import { getMonthlyData, getHourlyDataForMonth, getDailyDataForMonth, getWeightedAverage, getAvailableMonths, MonthlyStats } from '@/lib/data/monthlyPriceData';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 
 export function DynamicPricingPage() {
   const [selectedYear, setSelectedYear] = useState(2024);
   const [selectedMonth, setSelectedMonth] = useState(1);
   const [monthlyData, setMonthlyData] = useState<{ [month: number]: MonthlyStats }>({});
+  const [weightedAverage, setWeightedAverage] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   const years = [
@@ -40,10 +41,14 @@ export function DynamicPricingPage() {
       setMonthlyData(data);
       
       // Set first available month as default
-      const availableMonths = Object.keys(data).map(Number).sort((a, b) => a - b);
+      const availableMonths = getAvailableMonths(selectedYear);
       if (availableMonths.length > 0 && !data[selectedMonth]) {
         setSelectedMonth(availableMonths[0]);
       }
+      
+      // Calculate weighted average for all available months
+      const weightedAvg = getWeightedAverage(selectedYear, availableMonths);
+      setWeightedAverage(weightedAvg);
     } catch (error) {
       console.error('Error loading monthly data:', error);
     }
@@ -171,6 +176,111 @@ export function DynamicPricingPage() {
             </div>
           </div>
         </div>
+
+        {/* Weighted Average Section */}
+        {weightedAverage && (
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl shadow-lg p-8 mb-8 text-white">
+            <div className="text-center mb-6">
+              <div className="inline-flex items-center gap-3 bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-full text-sm font-bold mb-4 shadow-lg">
+                <DollarSign className="w-5 h-5" />
+                <span>Gewogen Gemiddelde</span>
+              </div>
+              <h2 className="text-3xl font-bold mb-4">
+                Gemiddelde Prijs {selectedYear}
+              </h2>
+              <p className="text-blue-100 text-lg">
+                Gebaseerd op {weightedAverage.totalDataPoints.toLocaleString()} datapunten
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
+                <h3 className="text-lg font-semibold mb-2">Gemiddelde Prijs</h3>
+                <p className="text-4xl font-bold mb-2">
+                  €{weightedAverage.weightedAverage.toFixed(3)}/kWh
+                </p>
+                <p className="text-sm text-blue-100">
+                  Exclusief energiebelasting
+                </p>
+                <p className="text-sm text-blue-200 mt-1">
+                  Totaal: €{(weightedAverage.weightedAverage + 0.1316).toFixed(3)}/kWh
+                </p>
+              </div>
+
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
+                <h3 className="text-lg font-semibold mb-2">Laagste Prijs</h3>
+                <p className="text-4xl font-bold mb-2">
+                  €{weightedAverage.minPrice.toFixed(3)}/kWh
+                </p>
+                <p className="text-sm text-blue-100">
+                  Exclusief energiebelasting
+                </p>
+                <p className="text-sm text-blue-200 mt-1">
+                  Totaal: €{(weightedAverage.minPrice + 0.1316).toFixed(3)}/kWh
+                </p>
+              </div>
+
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
+                <h3 className="text-lg font-semibold mb-2">Hoogste Prijs</h3>
+                <p className="text-4xl font-bold mb-2">
+                  €{weightedAverage.maxPrice.toFixed(3)}/kWh
+                </p>
+                <p className="text-sm text-blue-100">
+                  Exclusief energiebelasting
+                </p>
+                <p className="text-sm text-blue-200 mt-1">
+                  Totaal: €{(weightedAverage.maxPrice + 0.1316).toFixed(3)}/kWh
+                </p>
+              </div>
+            </div>
+
+            {/* Seasonal Breakdown */}
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+              <h3 className="text-xl font-bold mb-4 text-center">Seizoenspatronen</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {weightedAverage.seasonalBreakdown.map((season, index) => (
+                  <div key={index} className="bg-white/5 rounded-lg p-4 text-center">
+                    <h4 className="font-semibold text-lg mb-2">{season.season}</h4>
+                    <p className="text-2xl font-bold mb-1">
+                      €{season.average.toFixed(3)}/kWh
+                    </p>
+                    <p className="text-sm text-blue-200">
+                      {season.months.length} maand{season.months.length !== 1 ? 'en' : ''}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Explanation */}
+            <div className="mt-6 bg-white/5 rounded-xl p-6">
+              <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                <Info className="w-5 h-5" />
+                Wat betekent dit voor jou?
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <h4 className="font-semibold mb-2">💡 Planning</h4>
+                  <ul className="space-y-1 text-blue-100">
+                    <li>• Gemiddelde prijs: €{weightedAverage.weightedAverage.toFixed(3)}/kWh</li>
+                    <li>• Plan grootverbruikers buiten piekuren</li>
+                    <li>• Zomer is meestal goedkoper dan winter</li>
+                    <li>• Weekend prijzen zijn vaak lager</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-semibold mb-2">📊 Vergelijking</h4>
+                  <ul className="space-y-1 text-blue-100">
+                    <li>• Vergelijk met vaste contracten</li>
+                    <li>• Houd rekening met seizoensvariatie</li>
+                    <li>• Overweeg hybride contracten</li>
+                    <li>• Monitor prijzen via apps</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {currentMonthData ? (
           <>

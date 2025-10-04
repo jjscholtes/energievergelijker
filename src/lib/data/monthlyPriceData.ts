@@ -956,3 +956,87 @@ export function getDailyDataForMonth(year: number, month: number): { dayOfWeek: 
     price: monthStats.dailyAverages[parseInt(dayOfWeek)]
   })).sort((a, b) => a.dayOfWeek - b.dayOfWeek);
 }
+
+// Calculate weighted average over a longer period
+export function getWeightedAverage(year: number, months: number[]): {
+  weightedAverage: number;
+  totalDataPoints: number;
+  period: string;
+  minPrice: number;
+  maxPrice: number;
+  seasonalBreakdown: { season: string; average: number; months: number[] }[];
+} {
+  const data = getMonthlyData(year);
+  const seasonalBreakdown: { season: string; average: number; months: number[] }[] = [];
+  
+  let totalWeightedSum = 0;
+  let totalDataPoints = 0;
+  let minPrice = Infinity;
+  let maxPrice = -Infinity;
+  
+  // Group months by season
+  const seasons = {
+    winter: { months: [12, 1, 2], name: 'Winter' },
+    spring: { months: [3, 4, 5], name: 'Lente' },
+    summer: { months: [6, 7, 8], name: 'Zomer' },
+    autumn: { months: [9, 10, 11], name: 'Herfst' }
+  };
+  
+  Object.keys(seasons).forEach(seasonKey => {
+    const season = seasons[seasonKey as keyof typeof seasons];
+    const seasonMonths = months.filter(month => season.months.includes(month));
+    
+    if (seasonMonths.length > 0) {
+      let seasonSum = 0;
+      let seasonDataPoints = 0;
+      let seasonMin = Infinity;
+      let seasonMax = -Infinity;
+      
+      seasonMonths.forEach(month => {
+        const monthStats = data[month];
+        if (monthStats) {
+          // Weight by number of data points (more data = more reliable)
+          const weight = monthStats.dataPoints;
+          seasonSum += monthStats.average * weight;
+          seasonDataPoints += weight;
+          seasonMin = Math.min(seasonMin, monthStats.minimum);
+          seasonMax = Math.max(seasonMax, monthStats.maximum);
+        }
+      });
+      
+      if (seasonDataPoints > 0) {
+        const seasonAverage = seasonSum / seasonDataPoints;
+        seasonalBreakdown.push({
+          season: season.name,
+          average: Math.round(seasonAverage * 1000) / 1000,
+          months: seasonMonths
+        });
+        
+        totalWeightedSum += seasonSum;
+        totalDataPoints += seasonDataPoints;
+        minPrice = Math.min(minPrice, seasonMin);
+        maxPrice = Math.max(maxPrice, seasonMax);
+      }
+    }
+  });
+  
+  const weightedAverage = totalDataPoints > 0 ? totalWeightedSum / totalDataPoints : 0;
+  const monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 
+                     'juli', 'augustus', 'september', 'oktober', 'november', 'december'];
+  const period = months.map(m => monthNames[m - 1]).join(', ');
+  
+  return {
+    weightedAverage: Math.round(weightedAverage * 1000) / 1000,
+    totalDataPoints,
+    period,
+    minPrice: minPrice === Infinity ? 0 : Math.round(minPrice * 1000) / 1000,
+    maxPrice: maxPrice === -Infinity ? 0 : Math.round(maxPrice * 1000) / 1000,
+    seasonalBreakdown
+  };
+}
+
+// Get all available months for a year
+export function getAvailableMonths(year: number): number[] {
+  const data = getMonthlyData(year);
+  return Object.keys(data).map(Number).sort((a, b) => a - b);
+}
