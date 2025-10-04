@@ -15,6 +15,7 @@ import { berekenDynamischeEnergiekosten } from '@/lib/calculations/dynamicEnergy
 import { generateRealisticCSVData } from '@/lib/data/sampleDynamicData';
 import { getAlleNetbeheerders } from '@/lib/data/netbeheerders';
 import { CostBreakdown } from '@/components/results/CostBreakdown';
+import { DetailedComparison } from '@/components/tool/DetailedComparison';
 
 export default function ToolPage() {
   const [contracts, setContracts] = useState<ContractData[]>([]);
@@ -1176,6 +1177,11 @@ export default function ToolPage() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Detailed Comparison */}
+            {(results.length > 0 || dynamicResults.length > 0) && (
+              <DetailedComparison results={results} dynamicResults={dynamicResults} />
+            )}
           </div>
         </div>
       </main>
