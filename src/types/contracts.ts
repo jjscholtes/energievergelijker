@@ -1,6 +1,6 @@
 export interface ContractData {
   leverancier: string;
-  productNaam: string;
+  productNaam?: string; // Optioneel gemaakt
   type: "vast" | "variabel" | "dynamisch";
   looptijdMaanden: number;
   

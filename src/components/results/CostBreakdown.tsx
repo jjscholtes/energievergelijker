@@ -15,7 +15,7 @@ export function CostBreakdown({ result }: CostBreakdownProps) {
       <CardHeader>
         <CardTitle className="text-xl">Gedetailleerde Kostenopbouw</CardTitle>
         <p className="text-sm text-muted-foreground">
-          Overzicht van alle kostencomponenten voor {result.contract.leverancier} - {result.contract.productNaam}
+          Overzicht van alle kostencomponenten voor {result.contract.leverancier}
         </p>
       </CardHeader>
       
@@ -33,13 +33,16 @@ export function CostBreakdown({ result }: CostBreakdownProps) {
             </div>
             <div className="text-xs text-gray-500 ml-4">
               {result.contract.type === 'dynamisch' ? (
-                `Verbruik × kale prijs = ${result.userProfile?.jaarverbruikStroom || 0} kWh × €${result.contract.tarieven?.stroomKalePrijs?.toFixed(4) || '0.0000'} (gemiddelde spotprijs)`
+                <div>Verbruik × spotprijs = {result.userProfile?.jaarverbruikStroom || 0} kWh × €{result.contract.tarieven?.stroomKalePrijs?.toFixed(4) || '0.0000'} (gemiddelde spotprijs)</div>
               ) : (
                 // Voor vaste contracten: toon piek/dal tarieven als beschikbaar
                 result.contract.tarieven?.stroomKalePrijsPiek && result.contract.tarieven?.stroomKalePrijsDal ? (
-                  `Verbruik × kale prijs = ${result.userProfile?.jaarverbruikStroomPiek || 0} kWh × €${result.contract.tarieven.stroomKalePrijsPiek.toFixed(4)} (normaal) + ${result.userProfile?.jaarverbruikStroomDal || 0} kWh × €${result.contract.tarieven.stroomKalePrijsDal.toFixed(4)} (dal)`
+                  <div className="space-y-1">
+                    <div>Normaal: {result.userProfile?.jaarverbruikStroomPiek || 0} kWh × €{result.contract.tarieven.stroomKalePrijsPiek.toFixed(4)} = €{((result.userProfile?.jaarverbruikStroomPiek || 0) * result.contract.tarieven.stroomKalePrijsPiek).toFixed(2)}</div>
+                    <div>Dal: {result.userProfile?.jaarverbruikStroomDal || 0} kWh × €{result.contract.tarieven.stroomKalePrijsDal.toFixed(4)} = €{((result.userProfile?.jaarverbruikStroomDal || 0) * result.contract.tarieven.stroomKalePrijsDal).toFixed(2)}</div>
+                  </div>
                 ) : (
-                  `Verbruik × kale prijs = ${result.userProfile?.jaarverbruikStroom || 0} kWh × €${result.contract.tarieven?.stroomKalePrijs?.toFixed(4) || '0.0000'}`
+                  <div>Verbruik × kale prijs = {result.userProfile?.jaarverbruikStroom || 0} kWh × €{result.contract.tarieven?.stroomKalePrijs?.toFixed(4) || '0.0000'}</div>
                 )
               )}
             </div>

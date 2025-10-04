@@ -1,6 +1,6 @@
 export interface DynamicContractData {
   leverancier: string;
-  productNaam: string;
+  productNaam?: string; // Optioneel gemaakt
   type: "dynamisch";
   looptijdMaanden: number;
   vasteLeveringskosten: number;

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -53,14 +54,14 @@ export default function ToolPage() {
   });
 
   const handleAddContract = () => {
-    if (!currentContract.leverancier || !currentContract.productNaam) {
-      alert('Vul leverancier en productnaam in');
+    if (!currentContract.leverancier) {
+      alert('Vul leverancier in');
       return;
     }
 
     const newContract: ContractData = {
       leverancier: currentContract.leverancier,
-      productNaam: currentContract.productNaam,
+      productNaam: currentContract.productNaam || `${currentContract.type.charAt(0).toUpperCase() + currentContract.type.slice(1)} Contract`,
       type: currentContract.type as 'vast' | 'dynamisch',
       looptijdMaanden: currentContract.looptijdMaanden || 12,
       vasteLeveringskosten: currentContract.vasteLeveringskosten || 0,
@@ -68,7 +69,9 @@ export default function ToolPage() {
       duurzaamheidsScore: currentContract.duurzaamheidsScore || 5,
       klanttevredenheid: currentContract.klanttevredenheid || 5,
       tarieven: {
-        stroomKalePrijs: currentContract.tarieven?.stroomKalePrijs || 0.25,
+        stroomKalePrijs: currentContract.tarieven?.stroomKalePrijs,
+        stroomKalePrijsPiek: currentContract.tarieven?.stroomKalePrijsPiek,
+        stroomKalePrijsDal: currentContract.tarieven?.stroomKalePrijsDal,
         gasKalePrijs: currentContract.tarieven?.gasKalePrijs || 1.20,
         terugleververgoeding: currentContract.tarieven?.terugleververgoeding || 0.01,
         vasteTerugleverkosten: currentContract.tarieven?.vasteTerugleverkosten || 0
@@ -290,12 +293,12 @@ export default function ToolPage() {
               </div>
             </div>
             <nav className="hidden md:flex items-center space-x-6">
-              <a 
+              <Link 
                 href="/"
                 className="text-gray-700 hover:text-blue-600 font-medium transition-colors px-4 py-2 rounded-lg hover:bg-blue-50"
               >
                 Terug naar Vergelijker
-              </a>
+              </Link>
             </nav>
           </div>
         </div>
@@ -578,18 +581,6 @@ export default function ToolPage() {
                         />
                       </div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="productNaam" className="text-sm font-medium text-gray-700">
-                          Product Naam *
-                        </Label>
-                        <Input
-                          id="productNaam"
-                          placeholder="Bijv. Groene Stroom & Gas"
-                          value={currentContract.productNaam || ''}
-                          onChange={(e) => setCurrentContract(prev => ({ ...prev, productNaam: e.target.value }))}
-                          className="h-12"
-                        />
-                      </div>
 
                       <div className="space-y-2">
                         <Label htmlFor="type" className="text-sm font-medium text-gray-700">
@@ -740,13 +731,13 @@ export default function ToolPage() {
                             id="stroomKalePrijsPiek"
                             type="number"
                             step="0.001"
-                            value={getInputValue('stroomKalePrijsPiek', currentContract.tarieven?.stroomKalePrijsPiek || 0.28)}
+                            value={getInputValue('stroomKalePrijsPiek', currentContract.tarieven?.stroomKalePrijsPiek || 0.10)}
                             onChange={(e) => handleInputChange('stroomKalePrijsPiek', e.target.value, (value) => setCurrentContract(prev => ({
                               ...prev,
                               tarieven: { ...prev.tarieven!, stroomKalePrijsPiek: value }
                             })))}
                             className="h-12"
-                            placeholder="Bijv. 0.280"
+                            placeholder="Bijv. 0.100"
                           />
                         </div>
 
@@ -758,13 +749,13 @@ export default function ToolPage() {
                             id="stroomKalePrijsDal"
                             type="number"
                             step="0.001"
-                            value={getInputValue('stroomKalePrijsDal', currentContract.tarieven?.stroomKalePrijsDal || 0.22)}
+                            value={getInputValue('stroomKalePrijsDal', currentContract.tarieven?.stroomKalePrijsDal || 0.10)}
                             onChange={(e) => handleInputChange('stroomKalePrijsDal', e.target.value, (value) => setCurrentContract(prev => ({
                               ...prev,
                               tarieven: { ...prev.tarieven!, stroomKalePrijsDal: value }
                             })))}
                             className="h-12"
-                            placeholder="Bijv. 0.220"
+                            placeholder="Bijv. 0.100"
                           />
                         </div>
 
@@ -932,7 +923,7 @@ export default function ToolPage() {
                           <div className="flex justify-between items-start">
                             <div className="flex-1">
                               <h4 className="font-semibold text-gray-900">{contract.leverancier}</h4>
-                              <p className="text-sm text-gray-600">{contract.productNaam}</p>
+                              <p className="text-sm text-gray-600">{contract.productNaam || 'Dynamisch Contract'}</p>
                               <div className="text-xs text-gray-500 mt-1">
                                 <div>Stroom: €{(contract.tarieven.stroomKalePrijsPiek || contract.tarieven.stroomKalePrijs || 0.25).toFixed(3)}/kWh normaal, €{(contract.tarieven.stroomKalePrijsDal || contract.tarieven.stroomKalePrijs || 0.25).toFixed(3)}/kWh dal</div>
                                 <div>Gas: €{contract.tarieven.gasKalePrijs.toFixed(3)}/m³</div>
@@ -970,7 +961,7 @@ export default function ToolPage() {
                           <div className="flex justify-between items-start">
                             <div className="flex-1">
                               <h4 className="font-semibold text-gray-900">{contract.leverancier}</h4>
-                              <p className="text-sm text-gray-600">{contract.productNaam}</p>
+                              <p className="text-sm text-gray-600">{contract.productNaam || 'Dynamisch Contract'}</p>
                               <div className="text-xs text-gray-500 mt-1">
                                 <div>Teruglevering: €{contract.tarieven.terugleververgoeding.toFixed(3)}/kWh</div>
                                 <div>Type: Dynamisch</div>
@@ -1041,7 +1032,7 @@ export default function ToolPage() {
                               Goedkoopste Contract: {cheapestResult.contract.leverancier}
                             </h3>
                             <p className="text-lg text-green-700">
-                              {cheapestResult.contract.productNaam}
+                              {cheapestResult.contract.productNaam || `${cheapestResult.contract.type.charAt(0).toUpperCase() + cheapestResult.contract.type.slice(1)} Contract`}
                             </p>
                           </div>
                           <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
@@ -1086,7 +1077,7 @@ export default function ToolPage() {
                                           )}
                                         </div>
                                         
-                                        <p className="text-sm text-gray-600 mb-3">{result.contract.productNaam}</p>
+                                        <p className="text-sm text-gray-600 mb-3">{result.contract.productNaam || `${result.contract.type.charAt(0).toUpperCase() + result.contract.type.slice(1)} Contract`}</p>
                                         
                                         <div className="grid grid-cols-2 gap-4 text-sm">
                                           <div>
