@@ -786,10 +786,10 @@ export default function ToolPage() {
                   <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
                     <h4 className="font-semibold text-gray-800 mb-2">ℹ️ Automatisch Meegenomen Kosten</h4>
                     <div className="text-sm text-gray-600 space-y-1">
-                      <div>• <strong>Netbeheerkosten:</strong> Automatisch berekend per netbeheerder</div>
-                      <div>• <strong>Energiebelasting:</strong> Officiële tarieven (€0.1088/kWh + BTW)</div>
-                      <div>• <strong>Heffingskorting:</strong> €631.35 per jaar vermindering</div>
-                      <div>• <strong>BTW:</strong> 21% over alle kosten</div>
+                      <div>• <strong>Netbeheerkosten:</strong> Automatisch berekend per netbeheerder (vaste kosten per jaar)</div>
+                      <div>• <strong>Energiebelasting:</strong> Officiële tarieven €0.1316/kWh (inclusief 21% BTW)</div>
+                      <div>• <strong>Heffingskorting:</strong> €631.35 per jaar vermindering op energiebelasting</div>
+                      <div>• <strong>BTW:</strong> Al verwerkt in energiebelasting tarieven</div>
                       {userProfile.geenGas && <div>• <strong>Gas:</strong> Uitgesloten van berekening</div>}
                     </div>
                   </div>
