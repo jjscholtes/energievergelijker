@@ -26,7 +26,6 @@ export default function ToolPage() {
 
   // Gebruikersprofiel voor berekeningen
   const [userProfile, setUserProfile] = useState({
-    postcode: '1234AB',
     netbeheerder: 'Liander',
     jaarverbruikStroom: 2900,
     jaarverbruikStroomPiek: 1160, // 40% van 2900
@@ -190,7 +189,7 @@ export default function ToolPage() {
       const fixedResults: BerekeningResult[] = [];
       for (const contract of contracts) {
         const fullUserProfile = {
-          postcode: userProfile.postcode,
+          postcode: '1234AB', // Dummy postcode, netbeheerder wordt direct gebruikt
           netbeheerder: userProfile.netbeheerder,
           aansluitingElektriciteit: '1x25A' as const,
           aansluitingGas: 'G4' as const,
@@ -222,7 +221,7 @@ export default function ToolPage() {
         
         for (const contract of dynamicContracts) {
           const fullUserProfile = {
-            postcode: userProfile.postcode,
+            postcode: '1234AB', // Dummy postcode, netbeheerder wordt direct gebruikt
             netbeheerder: userProfile.netbeheerder,
             aansluitingElektriciteit: '1x25A' as const,
             aansluitingGas: 'G4' as const,
@@ -333,51 +332,34 @@ export default function ToolPage() {
               
               <CardContent>
                 <div className="space-y-6">
-                  {/* Locatie en Netbeheerder */}
+                  {/* Netbeheerder */}
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">
-                      📍 Locatie & Netbeheerder
+                      🏢 Netbeheerder
                     </h3>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="postcode" className="text-sm font-medium text-gray-700">
-                          Postcode
-                        </Label>
-                        <Input
-                          id="postcode"
-                          type="text"
-                          value={userProfile.postcode}
-                          onChange={(e) => setUserProfile(prev => ({ ...prev, postcode: e.target.value }))}
-                          className="h-12"
-                          placeholder="Bijv. 1234AB"
-                        />
-                        <p className="text-xs text-gray-500">Voor netbeheerder bepaling</p>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="netbeheerder" className="text-sm font-medium text-gray-700">
-                          Netbeheerder *
-                        </Label>
-                        <Select
-                          value={userProfile.netbeheerder}
-                          onValueChange={(value: string) => setUserProfile(prev => ({ ...prev, netbeheerder: value }))}
-                        >
-                          <SelectTrigger className="h-12 border-gray-300">
-                            <SelectValue placeholder="Selecteer jouw netbeheerder" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {getAlleNetbeheerders().map((netbeheerder) => (
-                              <SelectItem key={netbeheerder.naam} value={netbeheerder.naam}>
-                                {netbeheerder.naam} (Stroom: €{netbeheerder.kostenStroom}/jaar, Gas: €{netbeheerder.kostenGas}/jaar)
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <p className="text-xs text-gray-500">
-                          Kies de netbeheerder die bij jouw postcode hoort. Dit heeft invloed op de netbeheerkosten.
-                        </p>
-                      </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="netbeheerder" className="text-sm font-medium text-gray-700">
+                        Netbeheerder *
+                      </Label>
+                      <Select
+                        value={userProfile.netbeheerder}
+                        onValueChange={(value: string) => setUserProfile(prev => ({ ...prev, netbeheerder: value }))}
+                      >
+                        <SelectTrigger className="h-12 border-gray-300">
+                          <SelectValue placeholder="Selecteer jouw netbeheerder" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {getAlleNetbeheerders().map((netbeheerder) => (
+                            <SelectItem key={netbeheerder.naam} value={netbeheerder.naam}>
+                              {netbeheerder.naam} (Stroom: €{netbeheerder.kostenStroom}/jaar, Gas: €{netbeheerder.kostenGas}/jaar)
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <p className="text-xs text-gray-500">
+                        Kies de netbeheerder die bij jouw regio hoort. Dit heeft invloed op de netbeheerkosten.
+                      </p>
                     </div>
                   </div>
 
