@@ -32,7 +32,16 @@ export function CostBreakdown({ result }: CostBreakdownProps) {
               <span>€{stroomKosten.kaleEnergie.toFixed(2)}</span>
             </div>
             <div className="text-xs text-gray-500 ml-4">
-              Verbruik × kale prijs = {result.contract.type === 'dynamisch' ? `${result.userProfile?.jaarverbruikStroom || 0} kWh × €${result.contract.tarieven?.stroomKalePrijs?.toFixed(4) || '0.0000'} (gemiddelde spotprijs)` : `${result.userProfile?.jaarverbruikStroom || 0} kWh × €${result.contract.tarieven?.stroomKalePrijs?.toFixed(4) || '0.0000'}`}
+              {result.contract.type === 'dynamisch' ? (
+                `Verbruik × kale prijs = ${result.userProfile?.jaarverbruikStroom || 0} kWh × €${result.contract.tarieven?.stroomKalePrijs?.toFixed(4) || '0.0000'} (gemiddelde spotprijs)`
+              ) : (
+                // Voor vaste contracten: toon piek/dal tarieven als beschikbaar
+                result.contract.tarieven?.stroomKalePrijsPiek && result.contract.tarieven?.stroomKalePrijsDal ? (
+                  `Verbruik × kale prijs = ${result.userProfile?.jaarverbruikStroomPiek || 0} kWh × €${result.contract.tarieven.stroomKalePrijsPiek.toFixed(4)} (normaal) + ${result.userProfile?.jaarverbruikStroomDal || 0} kWh × €${result.contract.tarieven.stroomKalePrijsDal.toFixed(4)} (dal)`
+                ) : (
+                  `Verbruik × kale prijs = ${result.userProfile?.jaarverbruikStroom || 0} kWh × €${result.contract.tarieven?.stroomKalePrijs?.toFixed(4) || '0.0000'}`
+                )
+              )}
             </div>
             
             <div className="flex justify-between">

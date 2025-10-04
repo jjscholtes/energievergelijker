@@ -67,6 +67,8 @@ export interface BerekeningResult {
   // User profile (voor detailweergave)
   userProfile?: {
     jaarverbruikStroom: number;
+    jaarverbruikStroomPiek?: number;
+    jaarverbruikStroomDal?: number;
     jaarverbruikGas: number;
   };
 }

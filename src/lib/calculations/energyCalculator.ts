@@ -91,6 +91,8 @@ export const berekenEnergiekosten = (
     },
     userProfile: {
       jaarverbruikStroom: userProfile.jaarverbruikStroom,
+      jaarverbruikStroomPiek: userProfile.jaarverbruikStroomPiek,
+      jaarverbruikStroomDal: userProfile.jaarverbruikStroomDal,
       jaarverbruikGas: userProfile.jaarverbruikGas
     }
   };

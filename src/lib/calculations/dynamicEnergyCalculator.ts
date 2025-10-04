@@ -143,6 +143,8 @@ export const berekenDynamischeEnergiekosten = async (
       },
       userProfile: {
         jaarverbruikStroom: userProfile.jaarverbruikStroom, // Origineel verbruik zoals ingevoerd
+        jaarverbruikStroomPiek: userProfile.jaarverbruikStroomPiek,
+        jaarverbruikStroomDal: userProfile.jaarverbruikStroomDal,
         jaarverbruikGas: userProfile.jaarverbruikGas
       }
     };
