@@ -178,6 +178,21 @@ export default function ToolPage() {
     }
   };
 
+  // Speciale helper voor contract tarieven
+  const handleContractInputChange = (key: string, value: string, setter: (value: number) => void) => {
+    // Update inputValues state
+    setInputValues(prev => ({ ...prev, [key]: value }));
+    
+    if (value === '' || value === '0') {
+      setter(0);
+    } else {
+      const numValue = parseFloat(value);
+      if (!isNaN(numValue)) {
+        setter(numValue);
+      }
+    }
+  };
+
   const handleCalculate = async () => {
     if (contracts.length === 0 && dynamicContracts.length === 0) {
       setError('Voeg minimaal één energiecontract toe om te berekenen');
@@ -679,11 +694,11 @@ export default function ToolPage() {
                               id="opslagAfname"
                               type="number"
                               step="0.001"
-                              value={getInputValue('opslagAfname', currentContract.tarieven?.stroomKalePrijsPiek || 0.02, true)}
-                              onChange={(e) => handleInputChange('opslagAfname', e.target.value, (value) => setCurrentContract(prev => ({
+                              value={getInputValue('opslagAfname', currentContract.tarieven?.stroomKalePrijsPiek || 0.02)}
+                              onChange={(e) => handleContractInputChange('opslagAfname', e.target.value, (value) => setCurrentContract(prev => ({
                                 ...prev,
                                 tarieven: { ...prev.tarieven!, stroomKalePrijsPiek: value }
-                              })), true)}
+                              })))}
                               className="h-12"
                               placeholder="Bijv. 0.020"
                             />
@@ -698,11 +713,11 @@ export default function ToolPage() {
                               id="opslagInvoeding"
                               type="number"
                               step="0.001"
-                              value={getInputValue('opslagInvoeding', currentContract.tarieven?.stroomKalePrijsDal || 0.00, true)}
-                              onChange={(e) => handleInputChange('opslagInvoeding', e.target.value, (value) => setCurrentContract(prev => ({
+                              value={getInputValue('opslagInvoeding', currentContract.tarieven?.stroomKalePrijsDal || 0.00)}
+                              onChange={(e) => handleContractInputChange('opslagInvoeding', e.target.value, (value) => setCurrentContract(prev => ({
                                 ...prev,
                                 tarieven: { ...prev.tarieven!, stroomKalePrijsDal: value }
-                              })), true)}
+                              })))}
                               className="h-12"
                               placeholder="Bijv. 0.005"
                             />
@@ -732,7 +747,7 @@ export default function ToolPage() {
                             type="number"
                             step="0.001"
                             value={getInputValue('stroomKalePrijsPiek', currentContract.tarieven?.stroomKalePrijsPiek || 0.10)}
-                            onChange={(e) => handleInputChange('stroomKalePrijsPiek', e.target.value, (value) => setCurrentContract(prev => ({
+                            onChange={(e) => handleContractInputChange('stroomKalePrijsPiek', e.target.value, (value) => setCurrentContract(prev => ({
                               ...prev,
                               tarieven: { ...prev.tarieven!, stroomKalePrijsPiek: value }
                             })))}
@@ -750,7 +765,7 @@ export default function ToolPage() {
                             type="number"
                             step="0.001"
                             value={getInputValue('stroomKalePrijsDal', currentContract.tarieven?.stroomKalePrijsDal || 0.10)}
-                            onChange={(e) => handleInputChange('stroomKalePrijsDal', e.target.value, (value) => setCurrentContract(prev => ({
+                            onChange={(e) => handleContractInputChange('stroomKalePrijsDal', e.target.value, (value) => setCurrentContract(prev => ({
                               ...prev,
                               tarieven: { ...prev.tarieven!, stroomKalePrijsDal: value }
                             })))}
