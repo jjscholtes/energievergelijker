@@ -12,6 +12,12 @@ export interface DynamicContractData {
   terugleververgoeding: number;
   maandelijkseVergoeding: number;  // €/maand (bijv. €5.99)
   opslagPerKwh: number;           // €/kWh voor afname (bijv. €0.02)
+  tarieven: {
+    stroomKalePrijs: number;           // €/kWh
+    gasKalePrijs: number;              // €/m³
+    terugleververgoeding: number;      // €/kWh
+    vasteTerugleverkosten?: number;    // €/jaar bij PV
+  };
 }
 
 export interface DynamicCalcParams {

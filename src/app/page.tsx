@@ -34,6 +34,12 @@ export default function Home() {
               >
                 Vergelijken
               </button>
+              <a 
+                href="/tool"
+                className="text-gray-700 hover:text-blue-600 font-medium transition-colors px-4 py-2 rounded-lg hover:bg-blue-50"
+              >
+                Calculator Tool
+              </a>
               <button 
                 onClick={() => {
                   const articlesSection = document.getElementById('articles-section');
@@ -143,6 +149,12 @@ export default function Home() {
                     <span>🚀 Start Gratis Vergelijking</span>
                     <span className="group-hover:translate-x-2 transition-transform text-2xl">→</span>
                   </button>
+                  <a 
+                    href="/tool"
+                    className="bg-white/95 backdrop-blur-md border-2 border-green-600 text-green-600 hover:bg-green-50 px-10 py-5 rounded-3xl font-bold text-xl transition-all duration-300 transform hover:scale-110 shadow-xl hover:shadow-2xl text-center"
+                  >
+                    🛠️ Calculator Tool
+                  </a>
                   <button 
                     onClick={() => document.getElementById('benefits-section')?.scrollIntoView({ behavior: 'smooth' })}
                     className="bg-white/95 backdrop-blur-md border-2 border-blue-600 text-blue-600 hover:bg-blue-50 px-10 py-5 rounded-3xl font-bold text-xl transition-all duration-300 transform hover:scale-110 shadow-xl hover:shadow-2xl"
@@ -241,6 +253,101 @@ export default function Home() {
                 </div>
                 <h4 className="font-semibold text-gray-900 mb-3 text-lg">Geen Verborgen Kosten</h4>
                 <p className="text-sm text-gray-600">Volledig gratis, geen commissies of kosten</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Calculator Tool Section */}
+        <section className="py-20 bg-gradient-to-br from-green-50 via-white to-blue-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center gap-3 bg-gradient-to-r from-green-500 to-blue-500 text-white px-6 py-3 rounded-full text-sm font-bold mb-6 shadow-lg">
+                <span>🛠️</span>
+                <span>Nieuwe Tool</span>
+              </div>
+              <h3 className="text-3xl font-bold text-gray-900 mb-4">
+                Energiecontract Calculator Tool
+              </h3>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+                Wil je je eigen energiecontracten vergelijken? Gebruik onze nieuwe calculator tool 
+                om zelf contracten toe te voegen en de kosten te berekenen.
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div className="space-y-6">
+                <div className="space-y-4">
+                  <h4 className="text-2xl font-bold text-gray-900">Wat kun je doen?</h4>
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-4 p-4 bg-white rounded-xl shadow-lg">
+                      <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-sm">1</div>
+                      <div>
+                        <h5 className="font-semibold text-gray-900">Contracten Toevoegen</h5>
+                        <p className="text-gray-600 text-sm">Voeg je eigen energiecontracten toe met alle tarieven en voorwaarden</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-4 p-4 bg-white rounded-xl shadow-lg">
+                      <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-sm">2</div>
+                      <div>
+                        <h5 className="font-semibold text-gray-900">Automatisch Berekenen</h5>
+                        <p className="text-gray-600 text-sm">Onze calculator berekent automatisch alle kosten inclusief belastingen en netbeheerkosten</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-4 p-4 bg-white rounded-xl shadow-lg">
+                      <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold text-sm">3</div>
+                      <div>
+                        <h5 className="font-semibold text-gray-900">Vergelijken</h5>
+                        <p className="text-gray-600 text-sm">Zie direct welk contract het goedkoopst is en hoeveel je kunt besparen</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-xl p-6">
+                  <h5 className="font-bold text-green-800 mb-2">💡 Perfect voor:</h5>
+                  <ul className="text-sm text-green-700 space-y-1">
+                    <li>• Het vergelijken van verschillende tarieven</li>
+                    <li>• Het testen van verschillende scenario's</li>
+                    <li>• Het berekenen van de impact van zonnepanelen</li>
+                    <li>• Het vergelijken van vaste vs dynamische contracten</li>
+                  </ul>
+                </div>
+              </div>
+              
+              <div className="relative">
+                <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-white/40">
+                  <div className="text-center mb-6">
+                    <div className="w-16 h-16 bg-gradient-to-r from-green-600 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                      <span className="text-white text-3xl">🛠️</span>
+                    </div>
+                    <h4 className="text-xl font-bold text-gray-900 mb-2">Calculator Tool</h4>
+                    <p className="text-gray-600">Vergelijk je eigen energiecontracten</p>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="text-center p-4 bg-gradient-to-r from-green-50 to-green-100 rounded-xl border border-green-200">
+                      <div className="text-2xl font-bold text-green-600 mb-1">100%</div>
+                      <p className="text-green-800 font-semibold text-sm">Gratis te gebruiken</p>
+                    </div>
+                    <div className="text-center p-4 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl border border-blue-200">
+                      <div className="text-2xl font-bold text-blue-600 mb-1">∞</div>
+                      <p className="text-blue-800 font-semibold text-sm">Onbeperkt contracten</p>
+                    </div>
+                    <div className="text-center p-4 bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl border border-purple-200">
+                      <div className="text-2xl font-bold text-purple-600 mb-1">⚡</div>
+                      <p className="text-purple-800 font-semibold text-sm">Real-time berekening</p>
+                    </div>
+                  </div>
+                  
+                  <a 
+                    href="/tool"
+                    className="w-full mt-6 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white px-6 py-4 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl flex items-center justify-center gap-3"
+                  >
+                    <span>🚀</span>
+                    <span>Start Calculator Tool</span>
+                  </a>
+                </div>
               </div>
             </div>
           </div>
