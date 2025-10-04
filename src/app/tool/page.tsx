@@ -46,8 +46,9 @@ export default function ToolPage() {
     duurzaamheidsScore: 5,
     klanttevredenheid: 5,
     tarieven: {
-      stroomKalePrijsPiek: 0.10,  // Nieuwe default
-      stroomKalePrijsDal: 0.10,   // Nieuwe default
+      stroomKalePrijs: 0.15,      // Default voor dynamische contracten
+      stroomKalePrijsPiek: 0.10,  // Default voor vaste contracten
+      stroomKalePrijsDal: 0.10,   // Default voor vaste contracten
       gasKalePrijs: 1.20,
       terugleververgoeding: 0.01,
       vasteTerugleverkosten: 0
@@ -661,11 +662,11 @@ export default function ToolPage() {
                               id="basisprijs"
                               type="number"
                               step="0.001"
-                              value={getInputValue('basisprijs', currentContract.tarieven?.stroomKalePrijs || 0.15, true)}
-                              onChange={(e) => handleInputChange('basisprijs', e.target.value, (value) => setCurrentContract(prev => ({
+                              value={getInputValue('basisprijs', currentContract.tarieven?.stroomKalePrijs || 0.15)}
+                              onChange={(e) => handleContractInputChange('basisprijs', e.target.value, (value) => setCurrentContract(prev => ({
                                 ...prev,
                                 tarieven: { ...prev.tarieven!, stroomKalePrijs: value }
-                              })), true)}
+                              })))}
                               className="h-12"
                               placeholder="Bijv. 0.150"
                             />
