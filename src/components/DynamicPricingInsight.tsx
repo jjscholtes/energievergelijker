@@ -151,6 +151,10 @@ export function DynamicPricingInsight() {
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Ontdek wanneer energie het goedkoopst en duurste is. Maak een educated guess over je gemiddelde kWh prijs.
+            <br />
+            <span className="text-sm text-gray-500 mt-2 block">
+              * Prijzen zijn exclusief energiebelasting (€0.1316/kWh)
+            </span>
           </p>
         </div>
 
@@ -205,7 +209,7 @@ export function DynamicPricingInsight() {
               €{averagePrice.toFixed(3)}/kWh
             </p>
             <p className="text-sm text-gray-600 mt-2">
-              Inclusief energiebelasting: €{(averagePrice * 1.21).toFixed(3)}/kWh
+              Exclusief energiebelasting (€0.1316/kWh) - Totaal: €{(averagePrice + 0.1316).toFixed(3)}/kWh
             </p>
           </div>
 
@@ -220,6 +224,9 @@ export function DynamicPricingInsight() {
               €{minPrice.toFixed(3)}/kWh
             </p>
             <p className="text-sm text-gray-600 mt-2">
+              Excl. belasting - Totaal: €{(minPrice + 0.1316).toFixed(3)}/kWh
+            </p>
+            <p className="text-xs text-gray-500 mt-1">
               Meestal 's nachts (0:00-6:00)
             </p>
           </div>
@@ -235,6 +242,9 @@ export function DynamicPricingInsight() {
               €{maxPrice.toFixed(3)}/kWh
             </p>
             <p className="text-sm text-gray-600 mt-2">
+              Excl. belasting - Totaal: €{(maxPrice + 0.1316).toFixed(3)}/kWh
+            </p>
+            <p className="text-xs text-gray-500 mt-1">
               Meestal 's avonds (17:00-20:00)
             </p>
           </div>
