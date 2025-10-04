@@ -5,7 +5,6 @@ import { ResultsSection } from '@/components/results/ResultsSection';
 import ArticlesSection from '@/components/articles/ArticlesSection';
 import { FAQ } from '@/components/FAQ';
 import { HowToGuide } from '@/components/HowToGuide';
-import { DynamicPricingInsight } from '@/components/DynamicPricingInsight';
 
 export default function Home() {
   return (
@@ -40,6 +39,12 @@ export default function Home() {
                 className="text-gray-700 hover:text-blue-600 font-medium transition-colors px-4 py-2 rounded-lg hover:bg-blue-50"
               >
                 Calculator Tool
+              </a>
+              <a 
+                href="/dynamische-prijzen"
+                className="text-gray-700 hover:text-blue-600 font-medium transition-colors px-4 py-2 rounded-lg hover:bg-blue-50"
+              >
+                Dynamische Prijzen
               </a>
               <button 
                 onClick={() => {
@@ -198,8 +203,6 @@ export default function Home() {
         </section>
 
 
-        {/* Dynamic Pricing Insight Section */}
-        <DynamicPricingInsight />
 
         {/* Input Form Section */}
         <section id="calculation-form" className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
