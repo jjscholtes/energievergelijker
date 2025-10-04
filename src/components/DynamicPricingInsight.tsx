@@ -2,20 +2,20 @@
 
 import React, { useState, useEffect } from 'react';
 import { TrendingUp, TrendingDown, Clock, Sun, Moon, Zap, BarChart3, Info } from 'lucide-react';
-
-interface PriceData {
-  hour: number;
-  price: number;
-  month: string;
-  dayType: 'weekday' | 'weekend';
-  season: 'winter' | 'spring' | 'summer' | 'autumn';
-}
+import { processPriceData, getFilteredPriceData } from '@/lib/data/priceDataProcessor';
 
 export function DynamicPricingInsight() {
+  const [selectedYear, setSelectedYear] = useState(2024);
   const [selectedMonth, setSelectedMonth] = useState('alle');
   const [selectedDayType, setSelectedDayType] = useState('alle');
-  const [priceData, setPriceData] = useState<PriceData[]>([]);
+  const [priceData, setPriceData] = useState<{ hour: number; price: number }[]>([]);
+  const [processedData, setProcessedData] = useState(processPriceData(2024));
   const [loading, setLoading] = useState(true);
+
+  const years = [
+    { value: 2024, label: '2024' },
+    { value: 2025, label: '2025' }
+  ];
 
   const months = [
     { value: 'alle', label: 'Hele jaar' },
@@ -39,70 +39,27 @@ export function DynamicPricingInsight() {
     { value: 'weekend', label: 'Weekend' }
   ];
 
-  // Simulated price data based on real market patterns
-  const generatePriceData = () => {
-    const data: PriceData[] = [];
-    
-    for (let hour = 0; hour < 24; hour++) {
-      // Base price patterns
-      let basePrice = 0.15; // €0.15/kWh base
-      
-      // Time of day adjustments
-      if (hour >= 0 && hour <= 6) {
-        basePrice *= 0.3; // Night: very low
-      } else if (hour >= 7 && hour <= 9) {
-        basePrice *= 1.8; // Morning peak
-      } else if (hour >= 10 && hour <= 16) {
-        basePrice *= 0.7; // Day: moderate
-      } else if (hour >= 17 && hour <= 20) {
-        basePrice *= 2.2; // Evening peak
-      } else if (hour >= 21 && hour <= 23) {
-        basePrice *= 0.9; // Evening: moderate
-      }
-
-      // Seasonal adjustments
-      const seasonalMultiplier = {
-        'winter': 1.3,
-        'spring': 0.9,
-        'summer': 0.8,
-        'autumn': 1.1
-      };
-
-      // Weekend adjustments
-      const weekendMultiplier = 0.7;
-
-      data.push({
-        hour,
-        price: basePrice,
-        month: 'alle',
-        dayType: 'weekday',
-        season: 'winter'
-      });
-    }
-
-    return data;
-  };
-
   useEffect(() => {
-    // Simulate loading
-    setTimeout(() => {
-      setPriceData(generatePriceData());
-      setLoading(false);
-    }, 1000);
-  }, []);
+    setLoading(true);
+    
+    // Process data for selected year
+    const newProcessedData = processPriceData(selectedYear);
+    setProcessedData(newProcessedData);
+    
+    // Get filtered data
+    const filteredData = getFilteredPriceData(selectedYear, selectedMonth, selectedDayType);
+    setPriceData(filteredData);
+    
+    setLoading(false);
+  }, [selectedYear, selectedMonth, selectedDayType]);
 
-  const filteredData = priceData.filter(item => {
-    if (selectedMonth !== 'alle' && item.month !== selectedMonth) return false;
-    if (selectedDayType !== 'alle' && item.dayType !== selectedDayType) return false;
-    return true;
-  });
-
-  const averagePrice = filteredData.length > 0 
-    ? filteredData.reduce((sum, item) => sum + item.price, 0) / filteredData.length 
+  // Calculate statistics from filtered data
+  const averagePrice = priceData.length > 0 
+    ? priceData.reduce((sum, item) => sum + item.price, 0) / priceData.length 
     : 0;
 
-  const minPrice = Math.min(...filteredData.map(item => item.price));
-  const maxPrice = Math.max(...filteredData.map(item => item.price));
+  const minPrice = priceData.length > 0 ? Math.min(...priceData.map(item => item.price)) : 0;
+  const maxPrice = priceData.length > 0 ? Math.max(...priceData.map(item => item.price)) : 0;
 
   const getPriceColor = (price: number) => {
     if (price < 0.05) return 'text-green-600 bg-green-50';
@@ -147,23 +104,39 @@ export function DynamicPricingInsight() {
             <span>Dynamische Prijzen Inzicht</span>
           </div>
           <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-            Begrijp Dynamische Energieprijzen
+            Begrijp Dynamische Energieprijzen {selectedYear}
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Ontdek wanneer energie het goedkoopst en duurste is. Maak een educated guess over je gemiddelde kWh prijs.
             <br />
             <span className="text-sm text-gray-500 mt-2 block">
-              * Prijzen zijn exclusief energiebelasting (€0.1316/kWh)
+              * Prijzen zijn exclusief energiebelasting (€0.1316/kWh) - Gebaseerd op {selectedYear} data
             </span>
           </p>
         </div>
 
         {/* Controls */}
         <div className="bg-white rounded-2xl shadow-lg p-8 mb-8 border border-gray-100">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-3">
-                Periode
+                Jaar
+              </label>
+              <select
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                {years.map(year => (
+                  <option key={year.value} value={year.value}>
+                    {year.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-3">
+                Maand
               </label>
               <select
                 value={selectedMonth}
