@@ -12,6 +12,7 @@ import { BerekeningResult } from '@/types/calculations';
 import { berekenEnergiekosten } from '@/lib/calculations/energyCalculator';
 import { berekenDynamischeEnergiekosten } from '@/lib/calculations/dynamicEnergyCalculator';
 import { generateRealisticCSVData } from '@/lib/data/sampleDynamicData';
+import { CostBreakdown } from '@/components/results/CostBreakdown';
 
 export default function ToolPage() {
   const [contracts, setContracts] = useState<ContractData[]>([]);
@@ -20,6 +21,7 @@ export default function ToolPage() {
   const [dynamicResults, setDynamicResults] = useState<BerekeningResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [expandedResults, setExpandedResults] = useState<Set<string>>(new Set());
 
   // Gebruikersprofiel voor berekeningen
   const [userProfile, setUserProfile] = useState({
@@ -117,6 +119,18 @@ export default function ToolPage() {
       const updatedContracts = contracts.filter((_, i) => i !== index);
       setContracts(updatedContracts);
     }
+  };
+
+  const toggleExpandedResult = (contractKey: string) => {
+    setExpandedResults(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(contractKey)) {
+        newSet.delete(contractKey);
+      } else {
+        newSet.add(contractKey);
+      }
+      return newSet;
+    });
   };
 
   const handleCalculate = async () => {
@@ -961,63 +975,84 @@ export default function ToolPage() {
                             const isDynamic = result.contract.type === 'dynamisch';
                             
                             return (
-                              <Card key={`${result.contract.leverancier}-${index}`} className={`shadow-lg ${isCheapest ? 'border-2 border-green-500 bg-green-50' : 'border border-gray-200'}`}>
-                                <CardContent className="p-4">
-                                  <div className="flex justify-between items-start">
-                                    <div className="flex-1">
-                                      <div className="flex items-center gap-3 mb-2">
-                                        <h4 className="font-semibold text-gray-900">{result.contract.leverancier}</h4>
-                                        <span className={`px-2 py-1 text-xs rounded ${isDynamic ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}`}>
-                                          {isDynamic ? 'Dynamisch' : 'Vast'}
-                                        </span>
-                                        {isCheapest && (
-                                          <span className="px-2 py-1 bg-green-500 text-white text-xs rounded font-bold">
-                                            GOEDKOOPST
+                              <div key={`${result.contract.leverancier}-${index}`}>
+                                <Card className={`shadow-lg ${isCheapest ? 'border-2 border-green-500 bg-green-50' : 'border border-gray-200'}`}>
+                                  <CardContent className="p-4">
+                                    <div className="flex justify-between items-start">
+                                      <div className="flex-1">
+                                        <div className="flex items-center gap-3 mb-2">
+                                          <h4 className="font-semibold text-gray-900">{result.contract.leverancier}</h4>
+                                          <span className={`px-2 py-1 text-xs rounded ${isDynamic ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}`}>
+                                            {isDynamic ? 'Dynamisch' : 'Vast'}
                                           </span>
-                                        )}
-                                      </div>
-                                      
-                                      <p className="text-sm text-gray-600 mb-3">{result.contract.productNaam}</p>
-                                      
-                                      <div className="grid grid-cols-2 gap-4 text-sm">
-                                        <div>
-                                          <div className="font-semibold text-gray-800">Jaarlijkse kosten:</div>
-                                          <div className={`text-lg font-bold ${isCheapest ? 'text-green-600' : 'text-gray-900'}`}>
-                                            €{result.totaleJaarkostenMetPv.toFixed(0)}
-                                          </div>
-                                          <div className="text-xs text-gray-500">
-                                            €{result.maandlastenGemiddeld.toFixed(0)}/maand
-                                          </div>
+                                          {isCheapest && (
+                                            <span className="px-2 py-1 bg-green-500 text-white text-xs rounded font-bold">
+                                              GOEDKOOPST
+                                            </span>
+                                          )}
                                         </div>
                                         
-                                        <div>
-                                          <div className="font-semibold text-gray-800">Kostenopbouw:</div>
-                                          <div className="text-xs text-gray-500 space-y-1">
-                                            <div>Stroom: €{result.stroomKosten.totaal.toFixed(0)}</div>
-                                            <div>Gas: €{result.gasKosten.totaal.toFixed(0)}</div>
-                                            {result.stroomKosten.vasteLeveringskosten && result.stroomKosten.vasteLeveringskosten > 0 && (
-                                              <div>Vaste kosten: €{result.stroomKosten.vasteLeveringskosten.toFixed(0)}</div>
-                                            )}
+                                        <p className="text-sm text-gray-600 mb-3">{result.contract.productNaam}</p>
+                                        
+                                        <div className="grid grid-cols-2 gap-4 text-sm">
+                                          <div>
+                                            <div className="font-semibold text-gray-800">Jaarlijkse kosten:</div>
+                                            <div className={`text-lg font-bold ${isCheapest ? 'text-green-600' : 'text-gray-900'}`}>
+                                              €{result.totaleJaarkostenMetPv.toFixed(0)}
+                                            </div>
+                                            <div className="text-xs text-gray-500">
+                                              €{result.maandlastenGemiddeld.toFixed(0)}/maand
+                                            </div>
+                                          </div>
+                                          
+                                          <div>
+                                            <div className="font-semibold text-gray-800">Kostenopbouw:</div>
+                                            <div className="text-xs text-gray-500 space-y-1">
+                                              <div>Stroom: €{result.stroomKosten.totaal.toFixed(0)}</div>
+                                              <div>Gas: €{result.gasKosten.totaal.toFixed(0)}</div>
+                                              {result.stroomKosten.vasteLeveringskosten && result.stroomKosten.vasteLeveringskosten > 0 && (
+                                                <div>Vaste kosten: €{result.stroomKosten.vasteLeveringskosten.toFixed(0)}</div>
+                                              )}
+                                            </div>
                                           </div>
                                         </div>
+                                      </div>
+                                      
+                                      <div className="text-right">
+                                        <div className="text-2xl font-bold text-gray-900 mb-1">
+                                          #{index + 1}
+                                        </div>
+                                        {index > 0 && (
+                                          <div className="text-sm text-red-600">
+                                            +€{(result.totaleJaarkostenMetPv - cheapestResult.totaleJaarkostenMetPv).toFixed(0)}/jaar
+                                          </div>
+                                        )}
                                       </div>
                                     </div>
                                     
-                                    <div className="text-right">
-                                      <div className="text-2xl font-bold text-gray-900 mb-1">
-                                        #{index + 1}
-                                      </div>
-                                      {index > 0 && (
-                                        <div className="text-sm text-red-600">
-                                          +€{(result.totaleJaarkostenMetPv - cheapestResult.totaleJaarkostenMetPv).toFixed(0)}/jaar
-                                        </div>
-                                      )}
+                                    {/* Toggle Details Button */}
+                                    <div className="mt-4 pt-4 border-t border-gray-200">
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => toggleExpandedResult(`${result.contract.leverancier}-${index}`)}
+                                        className="w-full"
+                                      >
+                                        {expandedResults.has(`${result.contract.leverancier}-${index}`) ? 'Verberg Details' : 'Bekijk Details'}
+                                      </Button>
                                     </div>
+                                  </CardContent>
+                                </Card>
+                                
+                                {/* Detailed Cost Breakdown */}
+                                {expandedResults.has(`${result.contract.leverancier}-${index}`) && (
+                                  <div className="mt-4">
+                                    <CostBreakdown result={result} />
                                   </div>
-                                </CardContent>
-                              </Card>
+                                )}
+                              </div>
                             );
-                          })}
+                        })}
                         </div>
                       </div>
                     </div>
