@@ -147,15 +147,22 @@ export default function ToolPage() {
 
   // State voor input values om lege velden mogelijk te maken
   const [inputValues, setInputValues] = useState<Record<string, string>>({});
+  const [dynamicInputValues, setDynamicInputValues] = useState<Record<string, string>>({});
 
   // Helper functie voor input value
-  const getInputValue = (key: string, defaultValue: number): string => {
-    return inputValues[key] !== undefined ? inputValues[key] : defaultValue.toString();
+  const getInputValue = (key: string, defaultValue: number, isDynamic: boolean = false): string => {
+    const values = isDynamic ? dynamicInputValues : inputValues;
+    return values[key] !== undefined ? values[key] : defaultValue.toString();
   };
 
   // Helper functie voor input change
-  const handleInputChange = (key: string, value: string, setter: (value: number) => void) => {
-    setInputValues(prev => ({ ...prev, [key]: value }));
+  const handleInputChange = (key: string, value: string, setter: (value: number) => void, isDynamic: boolean = false) => {
+    if (isDynamic) {
+      setDynamicInputValues(prev => ({ ...prev, [key]: value }));
+    } else {
+      setInputValues(prev => ({ ...prev, [key]: value }));
+    }
+    
     if (value === '' || value === '0') {
       setter(0);
     } else {
@@ -613,11 +620,11 @@ export default function ToolPage() {
                               id="basisprijs"
                               type="number"
                               step="0.001"
-                              value={getInputValue('basisprijs', currentContract.tarieven?.stroomKalePrijs || 0.15)}
+                              value={getInputValue('basisprijs', currentContract.tarieven?.stroomKalePrijs || 0.15, true)}
                               onChange={(e) => handleInputChange('basisprijs', e.target.value, (value) => setCurrentContract(prev => ({
                                 ...prev,
                                 tarieven: { ...prev.tarieven!, stroomKalePrijs: value }
-                              })))}
+                              })), true)}
                               className="h-12"
                               placeholder="Bijv. 0.150"
                             />
@@ -633,8 +640,8 @@ export default function ToolPage() {
                               id="maandelijkseVergoeding"
                               type="number"
                               step="0.01"
-                              value={getInputValue('maandelijkseVergoeding', currentContract.vasteLeveringskosten || 0)}
-                              onChange={(e) => handleInputChange('maandelijkseVergoeding', e.target.value, (value) => setCurrentContract(prev => ({ ...prev, vasteLeveringskosten: value })))}
+                              value={getInputValue('maandelijkseVergoeding', currentContract.vasteLeveringskosten || 0, true)}
+                              onChange={(e) => handleInputChange('maandelijkseVergoeding', e.target.value, (value) => setCurrentContract(prev => ({ ...prev, vasteLeveringskosten: value })), true)}
                               className="h-12"
                               placeholder="Bijv. 5.99"
                             />
@@ -648,11 +655,11 @@ export default function ToolPage() {
                               id="opslagAfname"
                               type="number"
                               step="0.001"
-                              value={getInputValue('opslagAfname', currentContract.tarieven?.stroomKalePrijsPiek || 0.02)}
+                              value={getInputValue('opslagAfname', currentContract.tarieven?.stroomKalePrijsPiek || 0.02, true)}
                               onChange={(e) => handleInputChange('opslagAfname', e.target.value, (value) => setCurrentContract(prev => ({
                                 ...prev,
                                 tarieven: { ...prev.tarieven!, stroomKalePrijsPiek: value }
-                              })))}
+                              })), true)}
                               className="h-12"
                               placeholder="Bijv. 0.020"
                             />
@@ -667,11 +674,11 @@ export default function ToolPage() {
                               id="opslagInvoeding"
                               type="number"
                               step="0.001"
-                              value={getInputValue('opslagInvoeding', currentContract.tarieven?.stroomKalePrijsDal || 0.00)}
+                              value={getInputValue('opslagInvoeding', currentContract.tarieven?.stroomKalePrijsDal || 0.00, true)}
                               onChange={(e) => handleInputChange('opslagInvoeding', e.target.value, (value) => setCurrentContract(prev => ({
                                 ...prev,
                                 tarieven: { ...prev.tarieven!, stroomKalePrijsDal: value }
-                              })))}
+                              })), true)}
                               className="h-12"
                               placeholder="Bijv. 0.005"
                             />
@@ -841,8 +848,8 @@ export default function ToolPage() {
                         <Input
                           id="kortingEenmalig"
                           type="number"
-                          value={getInputValue('kortingEenmalig', currentContract.kortingEenmalig || 0)}
-                          onChange={(e) => handleInputChange('kortingEenmalig', e.target.value, (value) => setCurrentContract(prev => ({ ...prev, kortingEenmalig: value })))}
+                          value={getInputValue('kortingEenmalig', currentContract.kortingEenmalig || 0, true)}
+                          onChange={(e) => handleInputChange('kortingEenmalig', e.target.value, (value) => setCurrentContract(prev => ({ ...prev, kortingEenmalig: value })), true)}
                           className="h-12"
                           placeholder="Bijv. 0"
                         />
