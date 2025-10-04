@@ -107,9 +107,8 @@ export default function ToolPage() {
       duurzaamheidsScore: 5,
       klanttevredenheid: 5,
       tarieven: {
-        stroomKalePrijs: 0.25, // fallback voor backward compatibility
-        stroomKalePrijsPiek: 0.28,
-        stroomKalePrijsDal: 0.22,
+        stroomKalePrijsPiek: 0.10,  // Nieuwe default
+        stroomKalePrijsDal: 0.10,   // Nieuwe default
         gasKalePrijs: 1.20,
         terugleververgoeding: 0.01,
         vasteTerugleverkosten: 0
@@ -926,7 +925,7 @@ export default function ToolPage() {
                               <h4 className="font-semibold text-gray-900">{contract.leverancier}</h4>
                               <p className="text-sm text-gray-600">{contract.productNaam || 'Dynamisch Contract'}</p>
                               <div className="text-xs text-gray-500 mt-1">
-                                <div>Stroom: €{(contract.tarieven.stroomKalePrijsPiek || contract.tarieven.stroomKalePrijs || 0.25).toFixed(3)}/kWh normaal, €{(contract.tarieven.stroomKalePrijsDal || contract.tarieven.stroomKalePrijs || 0.25).toFixed(3)}/kWh dal</div>
+                                <div>Stroom: €{(contract.tarieven.stroomKalePrijsPiek || 0.10).toFixed(3)}/kWh normaal, €{(contract.tarieven.stroomKalePrijsDal || 0.10).toFixed(3)}/kWh dal</div>
                                 <div>Gas: €{contract.tarieven.gasKalePrijs.toFixed(3)}/m³</div>
                                 <div>Teruglevering: €{contract.tarieven.terugleververgoeding.toFixed(3)}/kWh</div>
                               </div>
