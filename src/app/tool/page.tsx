@@ -553,9 +553,12 @@ export default function ToolPage() {
                               id="basisprijs"
                               type="number"
                               step="0.001"
-                              value={0.15}
+                              value={currentContract.tarieven?.stroomKalePrijs || 0.15}
+                              onChange={(e) => setCurrentContract(prev => ({
+                                ...prev,
+                                tarieven: { ...prev.tarieven!, stroomKalePrijs: Number(e.target.value) }
+                              }))}
                               className="h-12"
-                              disabled
                             />
                             <p className="text-xs text-gray-500">Gemiddelde spotmarktprijs (wordt automatisch gebruikt)</p>
                           </div>
@@ -584,10 +587,13 @@ export default function ToolPage() {
                               id="opslagAfname"
                               type="number"
                               step="0.001"
-                              value={0.02}
+                              value={currentContract.tarieven?.stroomKalePrijsPiek || 0.02}
+                              onChange={(e) => setCurrentContract(prev => ({
+                                ...prev,
+                                tarieven: { ...prev.tarieven!, stroomKalePrijsPiek: Number(e.target.value) }
+                              }))}
                               className="h-12"
                               placeholder="Bijv. 0.020"
-                              disabled
                             />
                             <p className="text-xs text-gray-500">Opslag op afname van het net</p>
                           </div>
@@ -600,10 +606,13 @@ export default function ToolPage() {
                               id="opslagInvoeding"
                               type="number"
                               step="0.001"
-                              value={0.00}
+                              value={currentContract.tarieven?.stroomKalePrijsDal || 0.00}
+                              onChange={(e) => setCurrentContract(prev => ({
+                                ...prev,
+                                tarieven: { ...prev.tarieven!, stroomKalePrijsDal: Number(e.target.value) }
+                              }))}
                               className="h-12"
                               placeholder="Bijv. 0.005"
-                              disabled
                             />
                             <p className="text-xs text-gray-500">Opslag op invoeding (meestal €0.00)</p>
                           </div>
@@ -703,22 +712,6 @@ export default function ToolPage() {
                             onChange={(e) => setCurrentContract(prev => ({
                               ...prev,
                               tarieven: { ...prev.tarieven!, terugleververgoeding: Number(e.target.value) }
-                            }))}
-                            className="h-12"
-                          />
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor="vasteTerugleverkosten" className="text-sm font-medium text-gray-700">
-                            Vaste Terugleverkosten (€/jaar)
-                          </Label>
-                          <Input
-                            id="vasteTerugleverkosten"
-                            type="number"
-                            value={currentContract.tarieven?.vasteTerugleverkosten || 0}
-                            onChange={(e) => setCurrentContract(prev => ({
-                              ...prev,
-                              tarieven: { ...prev.tarieven!, vasteTerugleverkosten: Number(e.target.value) }
                             }))}
                             className="h-12"
                           />
