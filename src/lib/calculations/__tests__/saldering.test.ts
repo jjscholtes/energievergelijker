@@ -72,10 +72,10 @@ describe('Saldering Calculations', () => {
     });
 
     it('should apply terugleverkosten only for fixed contracts', () => {
-      const fixedResult = berekenSaldering(4000, 3000, 35, 0.25, 0.01, 'vast');
-      const dynamicResult = berekenSaldering(4000, 3000, 35, 0.25, 0.15, 'dynamisch');
+      const fixedResult = berekenSaldering(4000, 3000, 35, 0.25, 0.01, 'vast', 1.0, 100);
+      const dynamicResult = berekenSaldering(4000, 3000, 35, 0.25, 0.15, 'dynamisch', 1.0, 0);
 
-      expect(fixedResult.terugleverkosten).toBeGreaterThan(0);
+      expect(fixedResult.terugleverkosten).toBe(100);
       expect(dynamicResult.terugleverkosten).toBe(0);
     });
   });
@@ -84,8 +84,8 @@ describe('Saldering Calculations', () => {
     it('should calculate saldering besparing correctly', () => {
       const result = berekenSaldering(4000, 3000, 35, 0.25, 0.01, 'vast');
 
-      // Saldering besparing = gesaldeerdKwh * 0.1316
-      const expectedBesparing = 1600 * 0.1316; // gesaldeerdKwh * energiebelasting
+      // Saldering besparing = gesaldeerdKwh * 0.13163
+      const expectedBesparing = 1600 * 0.13163; // gesaldeerdKwh * energiebelasting
       expect(result.salderingsBesparing).toBeCloseTo(expectedBesparing, 2);
     });
   });

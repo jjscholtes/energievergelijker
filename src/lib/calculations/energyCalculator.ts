@@ -51,7 +51,8 @@ export const berekenEnergiekosten = (
   const vasteKostenJaar = contract.vasteLeveringskosten * 12;
 
   // Totale kosten zonder PV
-  const totaleJaarkosten = stroomKosten.totaal + gasKosten.totaal + vasteKostenJaar - contract.kortingEenmalig;
+  // vasteKostenJaar is al meegenomen in stroomKosten.totaal, dus niet dubbel tellen
+  const totaleJaarkosten = stroomKosten.totaal + gasKosten.totaal - contract.kortingEenmalig;
 
   // PV opbrengsten berekenen (indien van toepassing)
   let pvOpbrengsten: PvOpbrengsten | undefined;

@@ -1,6 +1,8 @@
 export interface PvOpbrengsten {
   zelfVerbruikKwh: number;
   zelfVerbruikWaarde: number;        // €, informatief
+  terugleveringKwh: number;          // Totale teruglevering naar het net
+  afnameVanNetKwh: number;           // Afname van het net na zelfverbruik
   gesaldeerdKwh: number;
   salderingsBesparing: number;       // € bespaard door saldering
   nettoTerugleveringKwh: number;

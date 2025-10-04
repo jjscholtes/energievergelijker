@@ -49,6 +49,8 @@ export const berekenSaldering = (
   return {
     zelfVerbruikKwh,
     zelfVerbruikWaarde,
+    terugleveringKwh,
+    afnameVanNetKwh,
     gesaldeerdKwh,
     salderingsBesparing,
     nettoTerugleveringKwh,

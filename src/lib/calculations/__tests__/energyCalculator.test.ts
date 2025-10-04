@@ -84,7 +84,7 @@ describe('Energy Calculator', () => {
       const zeroPvProfile = { ...pvProfile, pvOpwek: 0 };
       const result = berekenEnergiekosten(zeroPvProfile, mockContract);
 
-      expect(result.pvOpbrengsten?.totaleOpbrengst).toBe(0);
+      expect(result.pvOpbrengsten).toBeUndefined();
       expect(result.totaleJaarkostenMetPv).toBe(result.totaleJaarkosten);
     });
 
