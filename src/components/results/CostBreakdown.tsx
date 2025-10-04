@@ -42,7 +42,7 @@ export function CostBreakdown({ result }: CostBreakdownProps) {
                     <div>Dal: {result.userProfile?.jaarverbruikStroomDal || 0} kWh × €{result.contract.tarieven.stroomKalePrijsDal.toFixed(4)} = €{((result.userProfile?.jaarverbruikStroomDal || 0) * result.contract.tarieven.stroomKalePrijsDal).toFixed(2)}</div>
                   </div>
                 ) : (
-                  <div>Verbruik × kale prijs = {result.userProfile?.jaarverbruikStroom || 0} kWh × €{result.contract.tarieven?.stroomKalePrijs?.toFixed(4) || '0.0000'}</div>
+                  <div>Verbruik × kale prijs = {result.userProfile?.jaarverbruikStroom || 0} kWh × €{(result.contract.tarieven?.stroomKalePrijs || 0.10).toFixed(4)}</div>
                 )
               )}
             </div>
