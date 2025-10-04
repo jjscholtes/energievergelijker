@@ -5,6 +5,7 @@ import { ResultsSection } from '@/components/results/ResultsSection';
 import ArticlesSection from '@/components/articles/ArticlesSection';
 import { FAQ } from '@/components/FAQ';
 import { HowToGuide } from '@/components/HowToGuide';
+import { DynamicPricingInsight } from '@/components/DynamicPricingInsight';
 
 export default function Home() {
   return (
@@ -197,8 +198,11 @@ export default function Home() {
         </section>
 
 
+        {/* Dynamic Pricing Insight Section */}
+        <DynamicPricingInsight />
+
         {/* Input Form Section */}
-        <section id="user-input-form" className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+        <section id="calculation-form" className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <UserInputForm />
           </div>
