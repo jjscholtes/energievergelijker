@@ -46,6 +46,8 @@ export default function ToolPage() {
     duurzaamheidsScore: 5,
     klanttevredenheid: 5,
     tarieven: {
+      stroomKalePrijsPiek: 0.10,  // Nieuwe default
+      stroomKalePrijsDal: 0.10,   // Nieuwe default
       gasKalePrijs: 1.20,
       terugleververgoeding: 0.01,
       vasteTerugleverkosten: 0
