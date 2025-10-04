@@ -12,6 +12,7 @@ export interface DynamicContractData {
   terugleververgoeding: number;
   maandelijkseVergoeding: number;  // €/maand (bijv. €5.99)
   opslagPerKwh: number;           // €/kWh voor afname (bijv. €0.02)
+  opslagInvoeding: number;        // €/kWh voor invoeding (bijv. €0.023)
   tarieven: {
     stroomKalePrijs?: number;          // €/kWh (deprecated, gebruik piek/dal)
     stroomKalePrijsPiek?: number;      // €/kWh piek tarief

@@ -171,8 +171,14 @@ export const DetailedComparison: React.FC<DetailedComparisonProps> = ({ results,
               )}
               {cheapestDynamic.stroomKosten.opslagPerKwh && cheapestDynamic.stroomKosten.opslagPerKwh > 0 && (
                 <div className="flex justify-between">
-                  <span>Opslag per kWh:</span>
+                  <span>Opslag afname per kWh:</span>
                   <span>€{cheapestDynamic.stroomKosten.opslagPerKwh.toFixed(0)} (€{cheapestDynamic.stroomKosten.opslagPerKwhTarief?.toFixed(3) || '0.020'}/kWh)</span>
+                </div>
+              )}
+              {cheapestDynamic.contract.type === 'dynamisch' && cheapestDynamic.contract.opslagInvoeding && cheapestDynamic.contract.opslagInvoeding > 0 && (
+                <div className="flex justify-between">
+                  <span>Opslag invoeding per kWh:</span>
+                  <span>€{cheapestDynamic.contract.opslagInvoeding.toFixed(3)}/kWh</span>
                 </div>
               )}
               <div className="flex justify-between text-green-600">

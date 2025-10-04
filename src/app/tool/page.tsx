@@ -92,6 +92,7 @@ export default function ToolPage() {
         terugleververgoeding: newContract.tarieven.terugleververgoeding,
         maandelijkseVergoeding: newContract.vasteLeveringskosten,
         opslagPerKwh: 0.023,
+        opslagInvoeding: 0.023,
         tarieven: newContract.tarieven
       };
       
@@ -987,7 +988,8 @@ export default function ToolPage() {
                               <p className="text-sm text-gray-600">{contract.productNaam || 'Dynamisch Contract'}</p>
                               <div className="text-xs text-gray-500 mt-1">
                                 <div>Basisprijs: €{(contract.tarieven.stroomKalePrijs || 0.15).toFixed(3)}/kWh</div>
-                                <div>Opslag: €{(contract.opslagPerKwh || 0.023).toFixed(3)}/kWh</div>
+                                <div>Opslag afname: €{(contract.opslagPerKwh || 0.023).toFixed(3)}/kWh</div>
+                                <div>Opslag invoeding: €{(contract.opslagInvoeding || 0.023).toFixed(3)}/kWh</div>
                                 <div>Maandelijks: €{(contract.maandelijkseVergoeding || 5.99).toFixed(2)}/maand</div>
                               </div>
                             </div>
