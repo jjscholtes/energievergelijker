@@ -36,7 +36,7 @@ export function CostBreakdown({ result }: CostBreakdownProps) {
                 <div>Verbruik × spotprijs = {result.userProfile?.jaarverbruikStroom || 0} kWh × €{result.contract.tarieven?.stroomKalePrijs?.toFixed(4) || '0.0000'} (gemiddelde spotprijs)</div>
               ) : (
                 // Voor vaste contracten: toon piek/dal tarieven als beschikbaar
-                result.contract.tarieven?.stroomKalePrijsPiek && result.contract.tarieven?.stroomKalePrijsDal ? (
+                result.contract.tarieven?.stroomKalePrijsPiek !== undefined && result.contract.tarieven?.stroomKalePrijsDal !== undefined ? (
                   <div className="space-y-1">
                     <div>Normaal: {result.userProfile?.jaarverbruikStroomPiek || 0} kWh × €{result.contract.tarieven.stroomKalePrijsPiek.toFixed(4)} = €{((result.userProfile?.jaarverbruikStroomPiek || 0) * result.contract.tarieven.stroomKalePrijsPiek).toFixed(2)}</div>
                     <div>Dal: {result.userProfile?.jaarverbruikStroomDal || 0} kWh × €{result.contract.tarieven.stroomKalePrijsDal.toFixed(4)} = €{((result.userProfile?.jaarverbruikStroomDal || 0) * result.contract.tarieven.stroomKalePrijsDal).toFixed(2)}</div>
