@@ -540,7 +540,8 @@ export default function ToolPage() {
                         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                           <h4 className="font-semibold text-blue-800 mb-2">⚡ Dynamisch Contract</h4>
                           <p className="text-sm text-blue-700">
-                            Dynamische contracten gebruiken spotmarktprijzen als basis. Je kunt de basisprijs aanpassen en opslagen toevoegen.
+                            Dynamische contracten gebruiken spotmarktprijzen als basis. Je kunt de basisprijs aanpassen en opslagen toevoegen. 
+                            De terugleververgoeding is automatisch gelijk aan de basisprijs.
                           </p>
                         </div>
                         
@@ -617,24 +618,6 @@ export default function ToolPage() {
                             <p className="text-xs text-gray-500">Opslag op invoeding (meestal €0.00)</p>
                           </div>
 
-                          <div className="space-y-2">
-                            <Label htmlFor="terugleververgoeding" className="text-sm font-medium text-gray-700">
-                              Terugleververgoeding (€/kWh)
-                            </Label>
-                            <Input
-                              id="terugleververgoeding"
-                              type="number"
-                              step="0.001"
-                              value={currentContract.tarieven?.terugleververgoeding || 0.15}
-                              onChange={(e) => setCurrentContract(prev => ({
-                                ...prev,
-                                tarieven: { ...prev.tarieven!, terugleververgoeding: Number(e.target.value) }
-                              }))}
-                              className="h-12"
-                              placeholder="Bijv. 0.150"
-                            />
-                            <p className="text-xs text-gray-500">Meestal gelijk aan spotprijs</p>
-                          </div>
                         </div>
                       </div>
                     </div>
