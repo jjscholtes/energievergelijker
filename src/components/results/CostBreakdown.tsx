@@ -33,10 +33,10 @@ export function CostBreakdown({ result }: CostBreakdownProps) {
               <>
                 <div className="flex justify-between">
                   <span>Spotmarkt energie</span>
-                  <span>€{stroomKosten.kaleEnergie.toFixed(2)}</span>
+                  <span>€{((result.userProfile?.jaarverbruikStroom || 0) * (result.contract.tarieven?.stroomKalePrijs || 0)).toFixed(2)}</span>
                 </div>
                 <div className="text-xs text-gray-500 ml-4">
-                  <div>Verbruik × spotprijs = {result.userProfile?.jaarverbruikStroom || 0} kWh × €{result.contract.tarieven?.stroomKalePrijs?.toFixed(4) || '0.0000'} (gemiddelde spotprijs)</div>
+                  <div>Verbruik × basisprijs = {result.userProfile?.jaarverbruikStroom || 0} kWh × €{result.contract.tarieven?.stroomKalePrijs?.toFixed(4) || '0.0000'} (ingevulde basisprijs)</div>
                 </div>
               </>
             ) : (
