@@ -16,9 +16,14 @@ export const berekenEnergiekosten = (
   const netbeheerderKosten = getNetbeheerderKosten(userProfile);
 
   // Berekening stroomkosten
+  // Voor vaste contracten: gebruik piek/dal tarieven als beschikbaar, anders enkel tarief
+  const kalePrijsVoorBerekening = contract.tarieven.stroomKalePrijsPiek && contract.tarieven.stroomKalePrijsDal 
+    ? (contract.tarieven.stroomKalePrijsPiek + contract.tarieven.stroomKalePrijsDal) / 2 // Gemiddelde voor fallback
+    : contract.tarieven.stroomKalePrijs || 0.25; // Enkel tarief of fallback
+
   const stroomKosten = berekenStroomkosten(
     userProfile.jaarverbruikStroom,
-    contract.tarieven.stroomKalePrijs || contract.tarieven.stroomKalePrijsPiek || 0.25, // fallback
+    kalePrijsVoorBerekening,
     userProfile.aansluitingElektriciteit,
     netbeheerderKosten.stroom,
     contract.vasteLeveringskosten,
