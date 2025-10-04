@@ -788,7 +788,7 @@ export default function ToolPage() {
                     <div className="text-sm text-gray-600 space-y-1">
                       <div>• <strong>Netbeheerkosten:</strong> Automatisch berekend per netbeheerder (vaste kosten per jaar)</div>
                       <div>• <strong>Energiebelasting:</strong> Officiële tarieven €0.1316/kWh (inclusief 21% BTW)</div>
-                      <div>• <strong>Heffingskorting:</strong> €631.35 per jaar vermindering op energiebelasting</div>
+                      <div>• <strong>Vermindering Energiebelasting:</strong> €631.35 per jaar vermindering op energiebelasting</div>
                       {userProfile.geenGas && <div>• <strong>Gas:</strong> Uitgesloten van berekening</div>}
                     </div>
                   </div>
