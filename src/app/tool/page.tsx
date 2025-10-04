@@ -495,11 +495,11 @@ export default function ToolPage() {
                           </div>
 
                           <div className="space-y-2">
-                            <Label htmlFor="opslagPerKwh" className="text-sm font-medium text-gray-700">
-                              Opslag per kWh (€/kWh)
+                            <Label htmlFor="opslagAfname" className="text-sm font-medium text-gray-700">
+                              Opslag Afname (€/kWh)
                             </Label>
                             <Input
-                              id="opslagPerKwh"
+                              id="opslagAfname"
                               type="number"
                               step="0.001"
                               value={0.02}
@@ -507,7 +507,42 @@ export default function ToolPage() {
                               placeholder="Bijv. 0.020"
                               disabled
                             />
-                            <p className="text-xs text-gray-500">Standaard opslag voor dynamische contracten</p>
+                            <p className="text-xs text-gray-500">Opslag op afname van het net</p>
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label htmlFor="opslagInvoeding" className="text-sm font-medium text-gray-700">
+                              Opslag Invoeding (€/kWh)
+                            </Label>
+                            <Input
+                              id="opslagInvoeding"
+                              type="number"
+                              step="0.001"
+                              value={0.00}
+                              className="h-12"
+                              placeholder="Bijv. 0.005"
+                              disabled
+                            />
+                            <p className="text-xs text-gray-500">Opslag op invoeding (meestal €0.00)</p>
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label htmlFor="terugleververgoeding" className="text-sm font-medium text-gray-700">
+                              Terugleververgoeding (€/kWh)
+                            </Label>
+                            <Input
+                              id="terugleververgoeding"
+                              type="number"
+                              step="0.001"
+                              value={currentContract.tarieven?.terugleververgoeding || 0.15}
+                              onChange={(e) => setCurrentContract(prev => ({
+                                ...prev,
+                                tarieven: { ...prev.tarieven!, terugleververgoeding: Number(e.target.value) }
+                              }))}
+                              className="h-12"
+                              placeholder="Bijv. 0.150"
+                            />
+                            <p className="text-xs text-gray-500">Meestal gelijk aan spotprijs</p>
                           </div>
                         </div>
                       </div>
@@ -584,27 +619,51 @@ export default function ToolPage() {
                     )}
                   </div>
 
-                  {/* Kosten */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">
-                      💸 Kosten
-                    </h3>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="vasteLeveringskosten" className="text-sm font-medium text-gray-700">
-                          Vaste Leveringskosten (€/maand)
-                        </Label>
-                        <Input
-                          id="vasteLeveringskosten"
-                          type="number"
-                          step="0.01"
-                          value={currentContract.vasteLeveringskosten || 0}
-                          onChange={(e) => setCurrentContract(prev => ({ ...prev, vasteLeveringskosten: Number(e.target.value) }))}
-                          className="h-12"
-                        />
-                      </div>
+                  {/* Kosten - alleen voor vaste contracten */}
+                  {currentContract.type !== 'dynamisch' && (
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">
+                        💸 Kosten
+                      </h3>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="vasteLeveringskosten" className="text-sm font-medium text-gray-700">
+                            Vaste Leveringskosten (€/maand)
+                          </Label>
+                          <Input
+                            id="vasteLeveringskosten"
+                            type="number"
+                            step="0.01"
+                            value={currentContract.vasteLeveringskosten || 0}
+                            onChange={(e) => setCurrentContract(prev => ({ ...prev, vasteLeveringskosten: Number(e.target.value) }))}
+                            className="h-12"
+                          />
+                        </div>
 
+                        <div className="space-y-2">
+                          <Label htmlFor="kortingEenmalig" className="text-sm font-medium text-gray-700">
+                            Eenmalige Korting (€)
+                          </Label>
+                          <Input
+                            id="kortingEenmalig"
+                            type="number"
+                            value={currentContract.kortingEenmalig || 0}
+                            onChange={(e) => setCurrentContract(prev => ({ ...prev, kortingEenmalig: Number(e.target.value) }))}
+                            className="h-12"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Eenmalige korting voor dynamische contracten */}
+                  {currentContract.type === 'dynamisch' && (
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">
+                        💸 Kosten
+                      </h3>
+                      
                       <div className="space-y-2">
                         <Label htmlFor="kortingEenmalig" className="text-sm font-medium text-gray-700">
                           Eenmalige Korting (€)
@@ -617,6 +676,18 @@ export default function ToolPage() {
                           className="h-12"
                         />
                       </div>
+                    </div>
+                  )}
+
+                  {/* Informatie over automatische kosten */}
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                    <h4 className="font-semibold text-gray-800 mb-2">ℹ️ Automatisch Meegenomen Kosten</h4>
+                    <div className="text-sm text-gray-600 space-y-1">
+                      <div>• <strong>Netbeheerkosten:</strong> Automatisch berekend per netbeheerder</div>
+                      <div>• <strong>Energiebelasting:</strong> Officiële tarieven (€0.1088/kWh + BTW)</div>
+                      <div>• <strong>Heffingskorting:</strong> €631.35 per jaar vermindering</div>
+                      <div>• <strong>BTW:</strong> 21% over alle kosten</div>
+                      {userProfile.geenGas && <div>• <strong>Gas:</strong> Uitgesloten van berekening</div>}
                     </div>
                   </div>
 
