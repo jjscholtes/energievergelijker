@@ -15,26 +15,10 @@ export const berekenEnergiekosten = (
   // Haal netbeheerder kosten op
   const netbeheerderKosten = getNetbeheerderKosten(userProfile);
 
-  // Berekening stroomkosten
-  // Logica: 
-  // 1. Als piek EN dal tarieven beschikbaar zijn: gebruik die
-  // 2. Als alleen enkel tarief beschikbaar is: gebruik die  
-  // 3. Alle andere gevinen: gebruik gemiddelde van piek/dal of enkel tarief als basis voor saldering
-  let kalePrijsVoorBerekening: number;
-  if (contract.tarieven.stroomKalePrijsPiek && contract.tarieven.stroomKalePrijsDal) {
-    // Piek/dal tarieven beschikbaar - bereken gemiddelde voor fallback gebruik
-    kalePrijsVoorBerekening = (contract.tarieven.stroomKalePrijsPiek + contract.tarieven.stroomKalePrijsDal) / 2;
-  } else if (contract.tarieven.stroomKalePrijs !== undefined) {
-    // Enkel tarief beschikbaar
-    kalePrijsVoorBerekening = contract.tarieven.stroomKalePrijs;
-  } else {
-    // Fallback naar 0.25 als er geen tarieven zijn
-    kalePrijsVoorBerekening = 0.25;
-  }
-
+  // Berekening stroomkosten - SIMPEL!
   const stroomKosten = berekenStroomkosten(
     userProfile.jaarverbruikStroom,
-    kalePrijsVoorBerekening,
+    contract.tarieven.stroomKalePrijs || 0.25, // alleen voor enkel tarief contracts
     userProfile.aansluitingElektriciteit,
     netbeheerderKosten.stroom,
     contract.vasteLeveringskosten,
@@ -74,7 +58,7 @@ export const berekenEnergiekosten = (
       userProfile.pvOpwek,
       userProfile.jaarverbruikStroom,
       userProfile.percentageZelfverbruik,
-      kalePrijsVoorBerekening, // Gebruik de geëvalueerde kale prijs
+      contract.tarieven.stroomKalePrijs || contract.tarieven.stroomKalePrijsPiek || 0.25, // Gebruik ingevulde tarieven
       contract.tarieven.terugleververgoeding,
       contract.type as 'vast' | 'dynamisch',
       1.0, // salderingsPercentage
