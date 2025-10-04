@@ -5,6 +5,7 @@ import { ResultsSection } from '@/components/results/ResultsSection';
 import ArticlesSection from '@/components/articles/ArticlesSection';
 import { FAQ } from '@/components/FAQ';
 import { HowToGuide } from '@/components/HowToGuide';
+import { DynamicPricingSummary } from '@/components/DynamicPricingSummary';
 
 export default function Home() {
   return (
@@ -218,6 +219,12 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Dynamic Pricing Summary */}
+        <section className="py-20 bg-gradient-to-br from-blue-50 to-purple-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <DynamicPricingSummary />
+          </div>
+        </section>
 
         {/* Trust Section */}
         <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">

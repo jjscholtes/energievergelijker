@@ -309,7 +309,7 @@ export function DynamicPricingPage() {
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
               <h3 className="text-xl font-bold mb-4 text-center">Seizoenspatronen</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {weightedAverage.seasonalBreakdown.map((season, index) => (
+                {weightedAverage.seasonalBreakdown.map((season: { season: string; average: number; months: number[] }, index: number) => (
                   <div key={index} className="bg-white/5 rounded-lg p-4 text-center">
                     <h4 className="font-semibold text-lg mb-2">{season.season}</h4>
                     <p className="text-2xl font-bold mb-1">
@@ -364,56 +364,6 @@ export function DynamicPricingPage() {
 
         {currentMonthData ? (
           <>
-            {/* Monthly Statistics */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 bg-blue-100 rounded-lg">
-                    <Zap className="w-6 h-6 text-blue-600" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-900">Gemiddelde Prijs</h3>
-                </div>
-                <p className="text-3xl font-bold text-blue-600">
-                  €{currentMonthData.average.toFixed(3)}/kWh
-                </p>
-                <p className="text-sm text-gray-600 mt-2">
-                  Exclusief energiebelasting (€0.1316/kWh)
-                </p>
-                <p className="text-sm text-gray-500 mt-1">
-                  Totaal: €{(currentMonthData.average + 0.1316).toFixed(3)}/kWh
-                </p>
-              </div>
-
-              <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 bg-green-100 rounded-lg">
-                    <TrendingDown className="w-6 h-6 text-green-600" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-900">Laagste Prijs</h3>
-                </div>
-                <p className="text-3xl font-bold text-green-600">
-                  €{currentMonthData.minimum.toFixed(3)}/kWh
-                </p>
-                <p className="text-sm text-gray-600 mt-2">
-                  Excl. belasting - Totaal: €{(currentMonthData.minimum + 0.1316).toFixed(3)}/kWh
-                </p>
-              </div>
-
-              <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 bg-red-100 rounded-lg">
-                    <TrendingUp className="w-6 h-6 text-red-600" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-900">Hoogste Prijs</h3>
-                </div>
-                <p className="text-3xl font-bold text-red-600">
-                  €{currentMonthData.maximum.toFixed(3)}/kWh
-                </p>
-                <p className="text-sm text-gray-600 mt-2">
-                  Excl. belasting - Totaal: €{(currentMonthData.maximum + 0.1316).toFixed(3)}/kWh
-                </p>
-              </div>
-            </div>
 
             {/* Hourly Chart */}
             <div className="bg-white rounded-2xl shadow-lg p-8 mb-8 border border-gray-100">
