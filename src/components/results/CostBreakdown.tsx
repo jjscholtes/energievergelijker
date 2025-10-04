@@ -32,7 +32,7 @@ export function CostBreakdown({ result }: CostBreakdownProps) {
               // Dynamische contracten
               <>
                 <div className="flex justify-between">
-                  <span>Kale energie prijs</span>
+                  <span>Spotmarkt energie</span>
                   <span>€{stroomKosten.kaleEnergie.toFixed(2)}</span>
                 </div>
                 <div className="text-xs text-gray-500 ml-4">
