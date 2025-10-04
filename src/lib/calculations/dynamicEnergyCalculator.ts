@@ -35,8 +35,9 @@ export const berekenDynamischeEnergiekosten = async (
       ? timestamps.reduce((sum, ts) => sum + priceMap[ts], 0) / timestamps.length 
       : 0.15; // Fallback prijs
 
-    // 3. Bereken kosten op basis van jaarverbruik en gemiddelde spotprijs
-    const totaleKaleEnergie = userProfile.jaarverbruikStroom * gemiddeldeSpotPrijs;
+    // 3. Bereken kosten op basis van jaarverbruik en gebruiker input basisprijs
+    const basisprijs = contract.tarieven?.stroomKalePrijs || gemiddeldeSpotPrijs;
+    const totaleKaleEnergie = userProfile.jaarverbruikStroom * basisprijs;
     const totaleEnergiebelasting = userProfile.jaarverbruikStroom * 0.1316; // €/kWh (€0,1088 * 1,21)
     const totaleStroomKosten = totaleKaleEnergie + totaleEnergiebelasting;
 
@@ -90,16 +91,15 @@ export const berekenDynamischeEnergiekosten = async (
     let totaleJaarkostenMetPv = totaleJaarkosten;
 
     if (userProfile.heeftZonnepanelen && userProfile.pvOpwek && userProfile.percentageZelfverbruik) {
-      // Voor dynamische contracten gebruiken we de gemiddelde spotprijs voor saldering
-      // (gemiddeldeSpotPrijs is al berekend boven)
+      // Voor dynamische contracten gebruiken we de basisprijs (gebruiker input) voor saldering
       
       pvOpbrengsten = berekenSaldering(
         userProfile.pvOpwek,
         userProfile.jaarverbruikStroom,
         userProfile.percentageZelfverbruik,
-        gemiddeldeSpotPrijs, // Gebruik gemiddelde spotprijs
-        gemiddeldeSpotPrijs, // Voor dynamische contracten is terugleververgoeding = spotprijs
-        'dynamisch', // Dynamische contracten gebruiken spotprijs
+        basisprijs, // Gebruik basisprijs (gebruiker input)
+        basisprijs, // Voor dynamische contracten is terugleververgoeding = basisprijs
+        'dynamisch', // Dynamische contracten gebruiken basisprijs
         1.0, // salderingsPercentage
         0 // Dynamische contracten hebben geen terugleverkosten
       );
