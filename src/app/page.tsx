@@ -26,7 +26,7 @@ export default function Home() {
             <nav className="hidden md:flex items-center space-x-6">
               <button 
                 onClick={() => {
-                  const formSection = document.getElementById('user-input-form');
+                  const formSection = document.getElementById('calculation-form');
                   if (formSection) {
                     formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   }
@@ -35,12 +35,12 @@ export default function Home() {
               >
                 Vergelijken
               </button>
-              <a 
-                href="/tool"
-                className="text-gray-700 hover:text-blue-600 font-medium transition-colors px-4 py-2 rounded-lg hover:bg-blue-50"
-              >
-                Calculator Tool
-              </a>
+      <a 
+        href="/tool"
+        className="text-gray-700 hover:text-blue-600 font-medium transition-colors px-4 py-2 rounded-lg hover:bg-blue-50"
+      >
+        Zelf Vergelijken
+      </a>
               <a 
                 href="/dynamische-prijzen"
                 className="text-gray-700 hover:text-blue-600 font-medium transition-colors px-4 py-2 rounded-lg hover:bg-blue-50"
@@ -71,7 +71,7 @@ export default function Home() {
               </button>
               <button 
                 onClick={() => {
-                  const formSection = document.getElementById('user-input-form');
+                  const formSection = document.getElementById('calculation-form');
                   if (formSection) {
                     formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   }
@@ -150,7 +150,7 @@ export default function Home() {
                 {/* Enhanced CTA Buttons */}
                 <div className="flex flex-col sm:flex-row gap-6">
                   <button 
-                    onClick={() => document.getElementById('user-input-form')?.scrollIntoView({ behavior: 'smooth' })}
+                    onClick={() => document.getElementById('calculation-form')?.scrollIntoView({ behavior: 'smooth' })}
                     className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white px-10 py-5 rounded-3xl font-bold text-xl transition-all duration-300 transform hover:scale-110 shadow-2xl hover:shadow-3xl flex items-center gap-4 group"
                   >
                     <span>🚀 Start Gratis Vergelijking</span>
@@ -160,7 +160,7 @@ export default function Home() {
                     href="/tool"
                     className="bg-white/95 backdrop-blur-md border-2 border-green-600 text-green-600 hover:bg-green-50 px-10 py-5 rounded-3xl font-bold text-xl transition-all duration-300 transform hover:scale-110 shadow-xl hover:shadow-2xl text-center"
                   >
-                    🛠️ Calculator Tool
+                    🛠️ Zelf Vergelijken
                   </a>
                   <button 
                     onClick={() => document.getElementById('benefits-section')?.scrollIntoView({ behavior: 'smooth' })}
