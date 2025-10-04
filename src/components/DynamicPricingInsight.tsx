@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { TrendingUp, TrendingDown, Clock, Sun, Moon, Zap, BarChart3, Info } from 'lucide-react';
+import { getFilteredPriceData } from '@/lib/data/priceDataProcessor';
 
 export function DynamicPricingInsight() {
   const [selectedYear, setSelectedYear] = useState(2024);
@@ -36,52 +37,15 @@ export function DynamicPricingInsight() {
     { value: 'weekend', label: 'Weekend' }
   ];
 
-  // Realistic price data with monthly variations based on real market data
+  // Get real price data from CSV analysis
   const getPriceData = () => {
-    // Base hourly pattern (realistic 2024 data)
-    const basePattern = [
-      0.062, 0.060, 0.059, 0.056, 0.055, 0.059, 0.067, 0.081,
-      0.096, 0.093, 0.086, 0.079, 0.074, 0.073, 0.077, 0.084,
-      0.093, 0.107, 0.107, 0.098, 0.086, 0.080, 0.076, 0.071
-    ];
-
-    // Monthly multipliers based on real market patterns
-    const monthlyMultipliers: { [key: string]: number } = {
-      'alle': 1.0,
-      'januari': 1.2,    // Winter - higher prices
-      'februari': 1.15,  // Winter - higher prices
-      'maart': 1.0,      // Spring - normal
-      'april': 0.9,      // Spring - lower
-      'mei': 0.85,       // Spring - lower
-      'juni': 0.8,       // Summer - lowest
-      'juli': 0.75,      // Summer - lowest
-      'augustus': 0.8,   // Summer - low
-      'september': 0.9,  // Autumn - normal
-      'oktober': 1.0,    // Autumn - normal
-      'november': 1.1,   // Winter - higher
-      'december': 1.25   // Winter - highest
-    };
-
-    // Weekend discount (15% lower)
-    const weekendDiscount = selectedDayType === 'weekend' ? 0.85 : 1.0;
-    
-    // Year multiplier (2025 slightly higher)
-    const yearMultiplier = selectedYear === 2025 ? 1.1 : 1.0;
-    
-    // Month multiplier
-    const monthMultiplier = monthlyMultipliers[selectedMonth] || 1.0;
-
-    return basePattern.map((basePrice, hour) => {
-      let price = basePrice * monthMultiplier * yearMultiplier * weekendDiscount;
-      
-      // Ensure minimum realistic price
-      price = Math.max(price, 0.001);
-      
-      return {
-        hour,
-        price: Math.round(price * 1000) / 1000 // Round to 3 decimals
-      };
-    });
+    try {
+      return getFilteredPriceData(selectedYear, selectedMonth, selectedDayType);
+    } catch (error) {
+      console.error('Error loading price data:', error);
+      // Fallback to empty array if CSV data fails
+      return [];
+    }
   };
 
   useEffect(() => {
