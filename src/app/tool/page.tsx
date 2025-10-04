@@ -21,6 +21,16 @@ export default function ToolPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Gebruikersprofiel voor berekeningen
+  const [userProfile, setUserProfile] = useState({
+    jaarverbruikStroom: 2900,
+    jaarverbruikGas: 1200,
+    geenGas: false,
+    heeftZonnepanelen: false,
+    pvOpwek: 0,
+    percentageZelfverbruik: 35
+  });
+
   const [currentContract, setCurrentContract] = useState<Partial<ContractData>>({
     type: 'vast',
     looptijdMaanden: 12,
@@ -45,7 +55,7 @@ export default function ToolPage() {
     const newContract: ContractData = {
       leverancier: currentContract.leverancier,
       productNaam: currentContract.productNaam,
-      type: currentContract.type as 'vast' | 'variabel' | 'dynamisch',
+      type: currentContract.type as 'vast' | 'dynamisch',
       looptijdMaanden: currentContract.looptijdMaanden || 12,
       vasteLeveringskosten: currentContract.vasteLeveringskosten || 0,
       kortingEenmalig: currentContract.kortingEenmalig || 0,
@@ -118,26 +128,26 @@ export default function ToolPage() {
       // Voor vaste contracten
       const fixedResults: BerekeningResult[] = [];
       for (const contract of contracts) {
-        const userProfile = {
+        const fullUserProfile = {
           postcode: '1234AB',
           netbeheerder: 'Liander',
           aansluitingElektriciteit: '1x25A' as const,
           aansluitingGas: 'G4' as const,
-          jaarverbruikStroom: 2900,
-          jaarverbruikGas: 1200,
-          heeftZonnepanelen: false,
-          pvOpwek: 0,
-          percentageZelfverbruik: 35,
+          jaarverbruikStroom: userProfile.jaarverbruikStroom,
+          jaarverbruikGas: userProfile.jaarverbruikGas,
+          heeftZonnepanelen: userProfile.heeftZonnepanelen,
+          pvOpwek: userProfile.pvOpwek,
+          percentageZelfverbruik: userProfile.percentageZelfverbruik,
           heeftWarmtepomp: false,
           heeftElektrischeAuto: false,
-          geenGas: false,
+          geenGas: userProfile.geenGas,
           piekDalVerdeling: {
             piek: 0.4,
             dal: 0.6
           }
         };
 
-        const result = berekenEnergiekosten(userProfile, contract);
+        const result = berekenEnergiekosten(fullUserProfile, contract);
         fixedResults.push(result);
       }
 
@@ -148,19 +158,19 @@ export default function ToolPage() {
         const csv2025 = generateRealisticCSVData(2025, 0.15);
         
         for (const contract of dynamicContracts) {
-          const userProfile = {
+          const fullUserProfile = {
             postcode: '1234AB',
             netbeheerder: 'Liander',
             aansluitingElektriciteit: '1x25A' as const,
             aansluitingGas: 'G4' as const,
-            jaarverbruikStroom: 2900,
-            jaarverbruikGas: 1200,
-            heeftZonnepanelen: false,
-            pvOpwek: 0,
-            percentageZelfverbruik: 35,
+            jaarverbruikStroom: userProfile.jaarverbruikStroom,
+            jaarverbruikGas: userProfile.jaarverbruikGas,
+            heeftZonnepanelen: userProfile.heeftZonnepanelen,
+            pvOpwek: userProfile.pvOpwek,
+            percentageZelfverbruik: userProfile.percentageZelfverbruik,
             heeftWarmtepomp: false,
             heeftElektrischeAuto: false,
-            geenGas: false,
+            geenGas: userProfile.geenGas,
             piekDalVerdeling: {
               piek: 0.4,
               dal: 0.6
@@ -174,7 +184,7 @@ export default function ToolPage() {
           };
 
           const result = await berekenDynamischeEnergiekosten(
-            userProfile,
+            fullUserProfile,
             dynamicContract,
             csv2024,
             csv2025,
@@ -245,6 +255,133 @@ export default function ToolPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Contract Form */}
           <div>
+            {/* Gebruikersprofiel */}
+            <Card className="shadow-2xl border-0 bg-white/95 backdrop-blur-sm mb-6">
+              <CardHeader>
+                <CardTitle className="text-xl font-bold text-gray-900 text-center">
+                  📊 Jouw Energieprofiel
+                </CardTitle>
+                <p className="text-gray-600 text-center mt-2">
+                  Vul je verbruik en apparaten in voor accurate berekeningen
+                </p>
+              </CardHeader>
+              
+              <CardContent>
+                <div className="space-y-6">
+                  {/* Verbruik */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">
+                      ⚡ Energieverbruik
+                    </h3>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="jaarverbruikStroom" className="text-sm font-medium text-gray-700">
+                          Jaarverbruik Stroom (kWh)
+                        </Label>
+                        <Input
+                          id="jaarverbruikStroom"
+                          type="number"
+                          value={userProfile.jaarverbruikStroom}
+                          onChange={(e) => setUserProfile(prev => ({ ...prev, jaarverbruikStroom: Number(e.target.value) }))}
+                          className="h-12"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <Label htmlFor="jaarverbruikGas" className="text-sm font-medium text-gray-700">
+                            Jaarverbruik Gas (m³)
+                          </Label>
+                          <div className="flex items-center space-x-2">
+                            <input
+                              type="checkbox"
+                              id="geenGas"
+                              checked={userProfile.geenGas}
+                              onChange={(e) => setUserProfile(prev => ({ ...prev, geenGas: e.target.checked }))}
+                              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                            />
+                            <Label htmlFor="geenGas" className="text-sm text-gray-600 font-normal">
+                              Geen gas
+                            </Label>
+                          </div>
+                        </div>
+                        
+                        {!userProfile.geenGas ? (
+                          <Input
+                            id="jaarverbruikGas"
+                            type="number"
+                            value={userProfile.jaarverbruikGas}
+                            onChange={(e) => setUserProfile(prev => ({ ...prev, jaarverbruikGas: Number(e.target.value) }))}
+                            className="h-12"
+                          />
+                        ) : (
+                          <div className="h-12 bg-gray-50 border border-gray-200 rounded-md flex items-center px-3 text-gray-500 text-sm">
+                            Geen gas verbruik - alleen elektriciteit wordt berekend
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Zonnepanelen */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">
+                      ☀️ Zonnepanelen
+                    </h3>
+                    
+                    <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-xl border border-gray-200">
+                      <input
+                        type="checkbox"
+                        id="heeftZonnepanelen"
+                        checked={userProfile.heeftZonnepanelen}
+                        onChange={(e) => setUserProfile(prev => ({ ...prev, heeftZonnepanelen: e.target.checked }))}
+                        className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      />
+                      <Label htmlFor="heeftZonnepanelen" className="text-sm font-medium text-gray-700 cursor-pointer">
+                        ☀️ Ik heb zonnepanelen
+                      </Label>
+                    </div>
+
+                    {userProfile.heeftZonnepanelen && (
+                      <div className="space-y-4 p-6 bg-green-50 rounded-xl border border-green-200">
+                        <h4 className="font-semibold text-green-800">☀️ Zonnepanelen Details</h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="pvOpwek" className="text-sm font-medium text-green-700">
+                              Jaarproductie (kWh)
+                            </Label>
+                            <Input
+                              id="pvOpwek"
+                              type="number"
+                              value={userProfile.pvOpwek}
+                              onChange={(e) => setUserProfile(prev => ({ ...prev, pvOpwek: Number(e.target.value) }))}
+                              className="h-12 border-green-300"
+                              placeholder="Bijv. 3500"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="percentageZelfverbruik" className="text-sm font-medium text-green-700">
+                              Zelfverbruik (%)
+                            </Label>
+                            <Input
+                              id="percentageZelfverbruik"
+                              type="number"
+                              min="0"
+                              max="100"
+                              value={userProfile.percentageZelfverbruik}
+                              onChange={(e) => setUserProfile(prev => ({ ...prev, percentageZelfverbruik: Number(e.target.value) }))}
+                              className="h-12 border-green-300"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             <Card className="shadow-2xl border-0 bg-white/95 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="text-2xl font-bold text-gray-900 text-center">
@@ -296,7 +433,7 @@ export default function ToolPage() {
                         </Label>
                         <Select
                           value={currentContract.type}
-                          onValueChange={(value: 'vast' | 'variabel' | 'dynamisch') => 
+                          onValueChange={(value: 'vast' | 'dynamisch') => 
                             setCurrentContract(prev => ({ ...prev, type: value }))
                           }
                         >
@@ -305,7 +442,6 @@ export default function ToolPage() {
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="vast">Vast Contract</SelectItem>
-                            <SelectItem value="variabel">Variabel Contract</SelectItem>
                             <SelectItem value="dynamisch">Dynamisch Contract</SelectItem>
                           </SelectContent>
                         </Select>
@@ -332,74 +468,120 @@ export default function ToolPage() {
                       💰 Tarieven
                     </h3>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="stroomKalePrijs" className="text-sm font-medium text-gray-700">
-                          Stroom Kale Prijs (€/kWh)
-                        </Label>
-                        <Input
-                          id="stroomKalePrijs"
-                          type="number"
-                          step="0.001"
-                          value={currentContract.tarieven?.stroomKalePrijs || 0.25}
-                          onChange={(e) => setCurrentContract(prev => ({
-                            ...prev,
-                            tarieven: { ...prev.tarieven!, stroomKalePrijs: Number(e.target.value) }
-                          }))}
-                          className="h-12"
-                        />
-                      </div>
+                    {currentContract.type === 'dynamisch' ? (
+                      // Dynamische contracten - alleen relevante velden
+                      <div className="space-y-4">
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                          <h4 className="font-semibold text-blue-800 mb-2">⚡ Dynamisch Contract</h4>
+                          <p className="text-sm text-blue-700">
+                            Dynamische contracten gebruiken spotmarktprijzen. Je hoeft alleen de vaste kosten en opslagen in te vullen.
+                          </p>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="maandelijkseVergoeding" className="text-sm font-medium text-gray-700">
+                              Maandelijkse Vergoeding (€/maand)
+                            </Label>
+                            <Input
+                              id="maandelijkseVergoeding"
+                              type="number"
+                              step="0.01"
+                              value={currentContract.vasteLeveringskosten || 0}
+                              onChange={(e) => setCurrentContract(prev => ({ ...prev, vasteLeveringskosten: Number(e.target.value) }))}
+                              className="h-12"
+                              placeholder="Bijv. 5.99"
+                            />
+                          </div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="gasKalePrijs" className="text-sm font-medium text-gray-700">
-                          Gas Kale Prijs (€/m³)
-                        </Label>
-                        <Input
-                          id="gasKalePrijs"
-                          type="number"
-                          step="0.001"
-                          value={currentContract.tarieven?.gasKalePrijs || 1.20}
-                          onChange={(e) => setCurrentContract(prev => ({
-                            ...prev,
-                            tarieven: { ...prev.tarieven!, gasKalePrijs: Number(e.target.value) }
-                          }))}
-                          className="h-12"
-                        />
+                          <div className="space-y-2">
+                            <Label htmlFor="opslagPerKwh" className="text-sm font-medium text-gray-700">
+                              Opslag per kWh (€/kWh)
+                            </Label>
+                            <Input
+                              id="opslagPerKwh"
+                              type="number"
+                              step="0.001"
+                              value={0.02}
+                              className="h-12"
+                              placeholder="Bijv. 0.020"
+                              disabled
+                            />
+                            <p className="text-xs text-gray-500">Standaard opslag voor dynamische contracten</p>
+                          </div>
+                        </div>
                       </div>
+                    ) : (
+                      // Vaste contracten - alle tarieven
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="stroomKalePrijs" className="text-sm font-medium text-gray-700">
+                            Stroom Kale Prijs (€/kWh)
+                          </Label>
+                          <Input
+                            id="stroomKalePrijs"
+                            type="number"
+                            step="0.001"
+                            value={currentContract.tarieven?.stroomKalePrijs || 0.25}
+                            onChange={(e) => setCurrentContract(prev => ({
+                              ...prev,
+                              tarieven: { ...prev.tarieven!, stroomKalePrijs: Number(e.target.value) }
+                            }))}
+                            className="h-12"
+                          />
+                        </div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="terugleververgoeding" className="text-sm font-medium text-gray-700">
-                          Terugleververgoeding (€/kWh)
-                        </Label>
-                        <Input
-                          id="terugleververgoeding"
-                          type="number"
-                          step="0.001"
-                          value={currentContract.tarieven?.terugleververgoeding || 0.01}
-                          onChange={(e) => setCurrentContract(prev => ({
-                            ...prev,
-                            tarieven: { ...prev.tarieven!, terugleververgoeding: Number(e.target.value) }
-                          }))}
-                          className="h-12"
-                        />
-                      </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="gasKalePrijs" className="text-sm font-medium text-gray-700">
+                            Gas Kale Prijs (€/m³)
+                          </Label>
+                          <Input
+                            id="gasKalePrijs"
+                            type="number"
+                            step="0.001"
+                            value={currentContract.tarieven?.gasKalePrijs || 1.20}
+                            onChange={(e) => setCurrentContract(prev => ({
+                              ...prev,
+                              tarieven: { ...prev.tarieven!, gasKalePrijs: Number(e.target.value) }
+                            }))}
+                            className="h-12"
+                          />
+                        </div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="vasteTerugleverkosten" className="text-sm font-medium text-gray-700">
-                          Vaste Terugleverkosten (€/jaar)
-                        </Label>
-                        <Input
-                          id="vasteTerugleverkosten"
-                          type="number"
-                          value={currentContract.tarieven?.vasteTerugleverkosten || 0}
-                          onChange={(e) => setCurrentContract(prev => ({
-                            ...prev,
-                            tarieven: { ...prev.tarieven!, vasteTerugleverkosten: Number(e.target.value) }
-                          }))}
-                          className="h-12"
-                        />
+                        <div className="space-y-2">
+                          <Label htmlFor="terugleververgoeding" className="text-sm font-medium text-gray-700">
+                            Terugleververgoeding (€/kWh)
+                          </Label>
+                          <Input
+                            id="terugleververgoeding"
+                            type="number"
+                            step="0.001"
+                            value={currentContract.tarieven?.terugleververgoeding || 0.01}
+                            onChange={(e) => setCurrentContract(prev => ({
+                              ...prev,
+                              tarieven: { ...prev.tarieven!, terugleververgoeding: Number(e.target.value) }
+                            }))}
+                            className="h-12"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="vasteTerugleverkosten" className="text-sm font-medium text-gray-700">
+                            Vaste Terugleverkosten (€/jaar)
+                          </Label>
+                          <Input
+                            id="vasteTerugleverkosten"
+                            type="number"
+                            value={currentContract.tarieven?.vasteTerugleverkosten || 0}
+                            onChange={(e) => setCurrentContract(prev => ({
+                              ...prev,
+                              tarieven: { ...prev.tarieven!, vasteTerugleverkosten: Number(e.target.value) }
+                            }))}
+                            className="h-12"
+                          />
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
 
                   {/* Kosten */}
