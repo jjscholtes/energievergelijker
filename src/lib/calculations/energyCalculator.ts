@@ -18,10 +18,14 @@ export const berekenEnergiekosten = (
   // Berekening stroomkosten
   const stroomKosten = berekenStroomkosten(
     userProfile.jaarverbruikStroom,
-    contract.tarieven.stroomKalePrijs,
+    contract.tarieven.stroomKalePrijs || contract.tarieven.stroomKalePrijsPiek || 0.25, // fallback
     userProfile.aansluitingElektriciteit,
     netbeheerderKosten.stroom,
-    contract.vasteLeveringskosten
+    contract.vasteLeveringskosten,
+    userProfile.jaarverbruikStroomPiek,
+    userProfile.jaarverbruikStroomDal,
+    contract.tarieven.stroomKalePrijsPiek,
+    contract.tarieven.stroomKalePrijsDal
   );
 
   // Berekening gaskosten (alleen als geenGas false is)
@@ -53,7 +57,7 @@ export const berekenEnergiekosten = (
       userProfile.pvOpwek,
       userProfile.jaarverbruikStroom,
       userProfile.percentageZelfverbruik,
-      contract.tarieven.stroomKalePrijs,
+      contract.tarieven.stroomKalePrijs || contract.tarieven.stroomKalePrijsPiek || 0.25,
       contract.tarieven.terugleververgoeding,
       contract.type as 'vast' | 'dynamisch'
     );
@@ -89,17 +93,28 @@ export const berekenEnergiekosten = (
 
 /**
  * Berekent de stroomkosten inclusief alle belastingen en netbeheerkosten
- * Opbouw: kale prijs, energiebelasting (incl BTW), netbeheer, vermindering energiebelasting
+ * Ondersteunt zowel enkel tarief als piek/dal tarieven
  */
 function berekenStroomkosten(
   verbruikKwh: number,
   kalePrijs: number,
   aansluiting: UserProfile['aansluitingElektriciteit'],
   netbeheerKosten: number,
-  vasteLeveringskostenMaand: number = 0
+  vasteLeveringskostenMaand: number = 0,
+  verbruikPiek?: number,
+  verbruikDal?: number,
+  kalePrijsPiek?: number,
+  kalePrijsDal?: number
 ): StroomKosten {
-  // 1. Kale energie (inclusief BTW)
-  const kaleEnergie = verbruikKwh * kalePrijs;
+  // 1. Kale energie (inclusief BTW) - gebruik piek/dal als beschikbaar
+  let kaleEnergie: number;
+  if (verbruikPiek && verbruikDal && kalePrijsPiek && kalePrijsDal) {
+    // Piek/dal tarieven
+    kaleEnergie = (verbruikPiek * kalePrijsPiek) + (verbruikDal * kalePrijsDal);
+  } else {
+    // Enkel tarief (fallback)
+    kaleEnergie = verbruikKwh * kalePrijs;
+  }
 
   // 2. Energiebelasting stroom (2025 tarief) - inclusief BTW
   const energiebelasting = verbruikKwh * 0.1316; // €/kWh (€0,1088 * 1,21)

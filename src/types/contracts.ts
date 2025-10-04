@@ -7,7 +7,9 @@ export interface ContractData {
   // Leverancier kosten
   vasteLeveringskosten: number;        // €/maand
   tarieven: {
-    stroomKalePrijs: number;           // €/kWh
+    stroomKalePrijs?: number;          // €/kWh (deprecated, gebruik piek/dal)
+    stroomKalePrijsPiek?: number;      // €/kWh piek tarief
+    stroomKalePrijsDal?: number;       // €/kWh dal tarief
     gasKalePrijs: number;              // €/m³
     terugleververgoeding: number;      // €/kWh
     vasteTerugleverkosten?: number;    // €/jaar bij PV

@@ -4,6 +4,8 @@ export interface UserProfile {
   aansluitingElektriciteit: "1x25A" | "1x35A" | "3x25A" | "3x35A" | "3x50A";
   aansluitingGas: "G4" | "G6" | "G10" | "G16" | "G25";
   jaarverbruikStroom: number;          // kWh
+  jaarverbruikStroomPiek?: number;     // kWh piek verbruik
+  jaarverbruikStroomDal?: number;      // kWh dal verbruik
   jaarverbruikGas: number;             // m³
   heeftZonnepanelen: boolean;
   // Alleen als heeftZonnepanelen = true

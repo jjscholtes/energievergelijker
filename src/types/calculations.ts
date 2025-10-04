@@ -56,7 +56,9 @@ export interface BerekeningResult {
     productNaam: string;
     type: string;
     tarieven?: {
-      stroomKalePrijs: number;
+      stroomKalePrijs?: number;
+      stroomKalePrijsPiek?: number;
+      stroomKalePrijsDal?: number;
       gasKalePrijs: number;
       terugleververgoeding: number;
     };

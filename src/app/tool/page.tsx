@@ -24,6 +24,8 @@ export default function ToolPage() {
   // Gebruikersprofiel voor berekeningen
   const [userProfile, setUserProfile] = useState({
     jaarverbruikStroom: 2900,
+    jaarverbruikStroomPiek: 1160, // 40% van 2900
+    jaarverbruikStroomDal: 1740, // 60% van 2900
     jaarverbruikGas: 1200,
     geenGas: false,
     heeftZonnepanelen: false,
@@ -97,7 +99,9 @@ export default function ToolPage() {
       duurzaamheidsScore: 5,
       klanttevredenheid: 5,
       tarieven: {
-        stroomKalePrijs: 0.25,
+        stroomKalePrijs: 0.25, // fallback voor backward compatibility
+        stroomKalePrijsPiek: 0.28,
+        stroomKalePrijsDal: 0.22,
         gasKalePrijs: 1.20,
         terugleververgoeding: 0.01,
         vasteTerugleverkosten: 0
@@ -134,6 +138,8 @@ export default function ToolPage() {
           aansluitingElektriciteit: '1x25A' as const,
           aansluitingGas: 'G4' as const,
           jaarverbruikStroom: userProfile.jaarverbruikStroom,
+          jaarverbruikStroomPiek: userProfile.jaarverbruikStroomPiek,
+          jaarverbruikStroomDal: userProfile.jaarverbruikStroomDal,
           jaarverbruikGas: userProfile.jaarverbruikGas,
           heeftZonnepanelen: userProfile.heeftZonnepanelen,
           pvOpwek: userProfile.pvOpwek,
@@ -164,6 +170,8 @@ export default function ToolPage() {
             aansluitingElektriciteit: '1x25A' as const,
             aansluitingGas: 'G4' as const,
             jaarverbruikStroom: userProfile.jaarverbruikStroom,
+            jaarverbruikStroomPiek: userProfile.jaarverbruikStroomPiek,
+            jaarverbruikStroomDal: userProfile.jaarverbruikStroomDal,
             jaarverbruikGas: userProfile.jaarverbruikGas,
             heeftZonnepanelen: userProfile.heeftZonnepanelen,
             pvOpwek: userProfile.pvOpwek,
@@ -274,19 +282,77 @@ export default function ToolPage() {
                       ⚡ Energieverbruik
                     </h3>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-4">
                       <div className="space-y-2">
                         <Label htmlFor="jaarverbruikStroom" className="text-sm font-medium text-gray-700">
-                          Jaarverbruik Stroom (kWh)
+                          Totaal Jaarverbruik Stroom (kWh)
                         </Label>
                         <Input
                           id="jaarverbruikStroom"
                           type="number"
                           value={userProfile.jaarverbruikStroom}
-                          onChange={(e) => setUserProfile(prev => ({ ...prev, jaarverbruikStroom: Number(e.target.value) }))}
+                          onChange={(e) => {
+                            const totaal = Number(e.target.value);
+                            const piek = Math.round(totaal * 0.4);
+                            const dal = Math.round(totaal * 0.6);
+                            setUserProfile(prev => ({ 
+                              ...prev, 
+                              jaarverbruikStroom: totaal,
+                              jaarverbruikStroomPiek: piek,
+                              jaarverbruikStroomDal: dal
+                            }));
+                          }}
                           className="h-12"
                         />
+                        <p className="text-xs text-gray-500">Automatisch verdeeld: {userProfile.jaarverbruikStroomPiek} kWh piek, {userProfile.jaarverbruikStroomDal} kWh dal</p>
                       </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="jaarverbruikStroomPiek" className="text-sm font-medium text-gray-700">
+                            Piek Verbruik (kWh)
+                          </Label>
+                          <Input
+                            id="jaarverbruikStroomPiek"
+                            type="number"
+                            value={userProfile.jaarverbruikStroomPiek}
+                            onChange={(e) => {
+                              const piek = Number(e.target.value);
+                              const dal = userProfile.jaarverbruikStroomDal;
+                              setUserProfile(prev => ({ 
+                                ...prev, 
+                                jaarverbruikStroomPiek: piek,
+                                jaarverbruikStroom: piek + dal
+                              }));
+                            }}
+                            className="h-12"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="jaarverbruikStroomDal" className="text-sm font-medium text-gray-700">
+                            Dal Verbruik (kWh)
+                          </Label>
+                          <Input
+                            id="jaarverbruikStroomDal"
+                            type="number"
+                            value={userProfile.jaarverbruikStroomDal}
+                            onChange={(e) => {
+                              const dal = Number(e.target.value);
+                              const piek = userProfile.jaarverbruikStroomPiek;
+                              setUserProfile(prev => ({ 
+                                ...prev, 
+                                jaarverbruikStroomDal: dal,
+                                jaarverbruikStroom: piek + dal
+                              }));
+                            }}
+                            className="h-12"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
@@ -474,11 +540,27 @@ export default function ToolPage() {
                         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                           <h4 className="font-semibold text-blue-800 mb-2">⚡ Dynamisch Contract</h4>
                           <p className="text-sm text-blue-700">
-                            Dynamische contracten gebruiken spotmarktprijzen. Je hoeft alleen de vaste kosten en opslagen in te vullen.
+                            Dynamische contracten gebruiken spotmarktprijzen als basis. Je kunt de basisprijs aanpassen en opslagen toevoegen.
                           </p>
                         </div>
                         
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="basisprijs" className="text-sm font-medium text-gray-700">
+                              Basisprijs per kWh (€/kWh)
+                            </Label>
+                            <Input
+                              id="basisprijs"
+                              type="number"
+                              step="0.001"
+                              value={0.15}
+                              className="h-12"
+                              disabled
+                            />
+                            <p className="text-xs text-gray-500">Gemiddelde spotmarktprijs (wordt automatisch gebruikt)</p>
+                          </div>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="space-y-2">
                             <Label htmlFor="maandelijkseVergoeding" className="text-sm font-medium text-gray-700">
                               Maandelijkse Vergoeding (€/maand)
@@ -546,25 +628,51 @@ export default function ToolPage() {
                           </div>
                         </div>
                       </div>
-                    ) : (
-                      // Vaste contracten - alle tarieven
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="stroomKalePrijs" className="text-sm font-medium text-gray-700">
-                            Stroom Kale Prijs (€/kWh)
-                          </Label>
-                          <Input
-                            id="stroomKalePrijs"
-                            type="number"
-                            step="0.001"
-                            value={currentContract.tarieven?.stroomKalePrijs || 0.25}
-                            onChange={(e) => setCurrentContract(prev => ({
-                              ...prev,
-                              tarieven: { ...prev.tarieven!, stroomKalePrijs: Number(e.target.value) }
-                            }))}
-                            className="h-12"
-                          />
-                        </div>
+        ) : (
+          // Vaste contracten - alle tarieven
+          <div className="space-y-4">
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <h4 className="font-semibold text-green-800 mb-2">⚡ Vaste Contract Tarieven</h4>
+              <p className="text-sm text-green-700">
+                Vul de tarieven in voor piek en dal verbruik. Meestal is dal goedkoper dan piek.
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="stroomKalePrijsPiek" className="text-sm font-medium text-gray-700">
+                  Stroom Piek Tarief (€/kWh)
+                </Label>
+                <Input
+                  id="stroomKalePrijsPiek"
+                  type="number"
+                  step="0.001"
+                  value={currentContract.tarieven?.stroomKalePrijsPiek || 0.28}
+                  onChange={(e) => setCurrentContract(prev => ({
+                    ...prev,
+                    tarieven: { ...prev.tarieven!, stroomKalePrijsPiek: Number(e.target.value) }
+                  }))}
+                  className="h-12"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="stroomKalePrijsDal" className="text-sm font-medium text-gray-700">
+                  Stroom Dal Tarief (€/kWh)
+                </Label>
+                <Input
+                  id="stroomKalePrijsDal"
+                  type="number"
+                  step="0.001"
+                  value={currentContract.tarieven?.stroomKalePrijsDal || 0.22}
+                  onChange={(e) => setCurrentContract(prev => ({
+                    ...prev,
+                    tarieven: { ...prev.tarieven!, stroomKalePrijsDal: Number(e.target.value) }
+                  }))}
+                  className="h-12"
+                />
+              </div>
+            </div>
 
                         <div className="space-y-2">
                           <Label htmlFor="gasKalePrijs" className="text-sm font-medium text-gray-700">
@@ -616,8 +724,107 @@ export default function ToolPage() {
                           />
                         </div>
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  ) : (
+                    // Vaste contracten - alle tarieven
+                    <div className="space-y-4">
+                      <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                        <h4 className="font-semibold text-green-800 mb-2">⚡ Vaste Contract Tarieven</h4>
+                        <p className="text-sm text-green-700">
+                          Vul de tarieven in voor piek en dal verbruik. Meestal is dal goedkoper dan piek.
+                        </p>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="stroomKalePrijsPiek" className="text-sm font-medium text-gray-700">
+                            Stroom Piek Tarief (€/kWh)
+                          </Label>
+                          <Input
+                            id="stroomKalePrijsPiek"
+                            type="number"
+                            step="0.001"
+                            value={currentContract.tarieven?.stroomKalePrijsPiek || 0.28}
+                            onChange={(e) => setCurrentContract(prev => ({
+                              ...prev,
+                              tarieven: { ...prev.tarieven!, stroomKalePrijsPiek: Number(e.target.value) }
+                            }))}
+                            className="h-12"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="stroomKalePrijsDal" className="text-sm font-medium text-gray-700">
+                            Stroom Dal Tarief (€/kWh)
+                          </Label>
+                          <Input
+                            id="stroomKalePrijsDal"
+                            type="number"
+                            step="0.001"
+                            value={currentContract.tarieven?.stroomKalePrijsDal || 0.22}
+                            onChange={(e) => setCurrentContract(prev => ({
+                              ...prev,
+                              tarieven: { ...prev.tarieven!, stroomKalePrijsDal: Number(e.target.value) }
+                            }))}
+                            className="h-12"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="gasKalePrijs" className="text-sm font-medium text-gray-700">
+                            Gas Kale Prijs (€/m³)
+                          </Label>
+                          <Input
+                            id="gasKalePrijs"
+                            type="number"
+                            step="0.001"
+                            value={currentContract.tarieven?.gasKalePrijs || 1.20}
+                            onChange={(e) => setCurrentContract(prev => ({
+                              ...prev,
+                              tarieven: { ...prev.tarieven!, gasKalePrijs: Number(e.target.value) }
+                            }))}
+                            className="h-12"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="terugleververgoeding" className="text-sm font-medium text-gray-700">
+                            Terugleververgoeding (€/kWh)
+                          </Label>
+                          <Input
+                            id="terugleververgoeding"
+                            type="number"
+                            step="0.001"
+                            value={currentContract.tarieven?.terugleververgoeding || 0.01}
+                            onChange={(e) => setCurrentContract(prev => ({
+                              ...prev,
+                              tarieven: { ...prev.tarieven!, terugleververgoeding: Number(e.target.value) }
+                            }))}
+                            className="h-12"
+                          />
+                        </div>
+                      </div>
+
+                      {userProfile.heeftZonnepanelen && (
+                        <div className="space-y-2">
+                          <Label htmlFor="vasteTerugleverkosten" className="text-sm font-medium text-gray-700">
+                            Vaste Terugleverkosten (€/jaar)
+                          </Label>
+                          <Input
+                            id="vasteTerugleverkosten"
+                            type="number"
+                            value={currentContract.tarieven?.vasteTerugleverkosten || 0}
+                            onChange={(e) => setCurrentContract(prev => ({
+                              ...prev,
+                              tarieven: { ...prev.tarieven!, vasteTerugleverkosten: Number(e.target.value) }
+                            }))}
+                            className="h-12"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
 
                   {/* Kosten - alleen voor vaste contracten */}
                   {currentContract.type !== 'dynamisch' && (
@@ -724,7 +931,7 @@ export default function ToolPage() {
                               <h4 className="font-semibold text-gray-900">{contract.leverancier}</h4>
                               <p className="text-sm text-gray-600">{contract.productNaam}</p>
                               <div className="text-xs text-gray-500 mt-1">
-                                <div>Stroom: €{contract.tarieven.stroomKalePrijs.toFixed(3)}/kWh</div>
+                                <div>Stroom: €{(contract.tarieven.stroomKalePrijsPiek || contract.tarieven.stroomKalePrijs || 0.25).toFixed(3)}/kWh piek, €{(contract.tarieven.stroomKalePrijsDal || contract.tarieven.stroomKalePrijs || 0.25).toFixed(3)}/kWh dal</div>
                                 <div>Gas: €{contract.tarieven.gasKalePrijs.toFixed(3)}/m³</div>
                                 <div>Teruglevering: €{contract.tarieven.terugleververgoeding.toFixed(3)}/kWh</div>
                               </div>
