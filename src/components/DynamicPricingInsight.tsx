@@ -9,7 +9,7 @@ export function DynamicPricingInsight() {
   const [selectedMonth, setSelectedMonth] = useState('alle');
   const [selectedDayType, setSelectedDayType] = useState('alle');
   const [priceData, setPriceData] = useState<{ hour: number; price: number }[]>([]);
-  const [processedData, setProcessedData] = useState(processPriceData(2024));
+  const [processedData, setProcessedData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   const years = [
@@ -40,15 +40,25 @@ export function DynamicPricingInsight() {
   ];
 
   useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+    
     setLoading(true);
     
-    // Process data for selected year
-    const newProcessedData = processPriceData(selectedYear);
-    setProcessedData(newProcessedData);
-    
-    // Get filtered data
-    const filteredData = getFilteredPriceData(selectedYear, selectedMonth, selectedDayType);
-    setPriceData(filteredData);
+    try {
+      // Process data for selected year
+      const newProcessedData = processPriceData(selectedYear);
+      setProcessedData(newProcessedData);
+      
+      // Get filtered data
+      const filteredData = getFilteredPriceData(selectedYear, selectedMonth, selectedDayType);
+      setPriceData(filteredData);
+    } catch (error) {
+      console.error('Error processing price data:', error);
+      // Fallback to empty data
+      setPriceData([]);
+      setProcessedData(null);
+    }
     
     setLoading(false);
   }, [selectedYear, selectedMonth, selectedDayType]);
@@ -88,6 +98,24 @@ export function DynamicPricingInsight() {
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
             <p className="mt-4 text-gray-600">Prijzen analyseren...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Fallback if no data
+  if (!processedData || priceData.length === 0) {
+    return (
+      <section className="py-16 bg-gradient-to-br from-blue-50 via-white to-purple-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+              Dynamische Prijzen Inzicht
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              De prijsdata wordt geladen. Probeer de pagina te vernieuwen.
+            </p>
           </div>
         </div>
       </section>
