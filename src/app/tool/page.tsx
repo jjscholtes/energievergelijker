@@ -304,25 +304,25 @@ export default function ToolPage() {
                           }}
                           className="h-12"
                         />
-                        <p className="text-xs text-gray-500">Automatisch verdeeld: {userProfile.jaarverbruikStroomPiek} kWh piek, {userProfile.jaarverbruikStroomDal} kWh dal</p>
+                        <p className="text-xs text-gray-500">Automatisch verdeeld: {userProfile.jaarverbruikStroomPiek} kWh normaal, {userProfile.jaarverbruikStroomDal} kWh dal</p>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="jaarverbruikStroomPiek" className="text-sm font-medium text-gray-700">
-                            Piek Verbruik (kWh)
+                            Normaal Verbruik (kWh)
                           </Label>
                           <Input
                             id="jaarverbruikStroomPiek"
                             type="number"
                             value={userProfile.jaarverbruikStroomPiek}
                             onChange={(e) => {
-                              const piek = Number(e.target.value);
+                              const normaal = Number(e.target.value);
                               const dal = userProfile.jaarverbruikStroomDal;
                               setUserProfile(prev => ({ 
                                 ...prev, 
-                                jaarverbruikStroomPiek: piek,
-                                jaarverbruikStroom: piek + dal
+                                jaarverbruikStroomPiek: normaal,
+                                jaarverbruikStroom: normaal + dal
                               }));
                             }}
                             className="h-12"
@@ -627,14 +627,14 @@ export default function ToolPage() {
                       <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                         <h4 className="font-semibold text-green-800 mb-2">⚡ Vaste Contract Tarieven</h4>
                         <p className="text-sm text-green-700">
-                          Vul de tarieven in voor piek en dal verbruik. Meestal is dal goedkoper dan piek.
+                          Vul de tarieven in voor normaal en dal verbruik. Meestal is dal goedkoper dan normaal.
                         </p>
                       </div>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="stroomKalePrijsPiek" className="text-sm font-medium text-gray-700">
-                            Stroom Piek Tarief (€/kWh)
+                            Stroom Normaal Tarief (€/kWh)
                           </Label>
                           <Input
                             id="stroomKalePrijsPiek"
@@ -827,7 +827,7 @@ export default function ToolPage() {
                               <h4 className="font-semibold text-gray-900">{contract.leverancier}</h4>
                               <p className="text-sm text-gray-600">{contract.productNaam}</p>
                               <div className="text-xs text-gray-500 mt-1">
-                                <div>Stroom: €{(contract.tarieven.stroomKalePrijsPiek || contract.tarieven.stroomKalePrijs || 0.25).toFixed(3)}/kWh piek, €{(contract.tarieven.stroomKalePrijsDal || contract.tarieven.stroomKalePrijs || 0.25).toFixed(3)}/kWh dal</div>
+                                <div>Stroom: €{(contract.tarieven.stroomKalePrijsPiek || contract.tarieven.stroomKalePrijs || 0.25).toFixed(3)}/kWh normaal, €{(contract.tarieven.stroomKalePrijsDal || contract.tarieven.stroomKalePrijs || 0.25).toFixed(3)}/kWh dal</div>
                                 <div>Gas: €{contract.tarieven.gasKalePrijs.toFixed(3)}/m³</div>
                                 <div>Teruglevering: €{contract.tarieven.terugleververgoeding.toFixed(3)}/kWh</div>
                               </div>
