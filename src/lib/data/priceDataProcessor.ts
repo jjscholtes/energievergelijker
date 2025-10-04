@@ -47,33 +47,83 @@ const PRICE_DATA_2024 = [
   { hour: 22, price: 0.04765, month: 1, dayOfWeek: 1, isWeekend: false },
   { hour: 23, price: 0.03555, month: 1, dayOfWeek: 1, isWeekend: false },
   
-  // More realistic data for different months and times
-  // Summer data (June-August) - generally lower prices
-  ...Array.from({ length: 24 }, (_, hour) => ({
-    hour,
-    price: Math.max(0, 0.02 + Math.random() * 0.08 + (hour >= 17 && hour <= 20 ? 0.05 : 0)),
-    month: 7, // July
-    dayOfWeek: 1,
-    isWeekend: false
-  })),
+  // Summer data (July) - generally lower prices
+  { hour: 0, price: 0.015, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 1, price: 0.012, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 2, price: 0.010, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 3, price: 0.008, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 4, price: 0.006, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 5, price: 0.005, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 6, price: 0.008, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 7, price: 0.012, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 8, price: 0.018, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 9, price: 0.025, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 10, price: 0.030, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 11, price: 0.035, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 12, price: 0.040, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 13, price: 0.045, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 14, price: 0.050, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 15, price: 0.055, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 16, price: 0.060, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 17, price: 0.080, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 18, price: 0.085, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 19, price: 0.090, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 20, price: 0.075, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 21, price: 0.065, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 22, price: 0.055, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 23, price: 0.045, month: 7, dayOfWeek: 1, isWeekend: false },
   
-  // Winter data (December-February) - generally higher prices
-  ...Array.from({ length: 24 }, (_, hour) => ({
-    hour,
-    price: Math.max(0, 0.05 + Math.random() * 0.12 + (hour >= 17 && hour <= 20 ? 0.08 : 0)),
-    month: 12, // December
-    dayOfWeek: 1,
-    isWeekend: false
-  })),
+  // Winter data (December) - generally higher prices
+  { hour: 0, price: 0.025, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 1, price: 0.020, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 2, price: 0.018, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 3, price: 0.015, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 4, price: 0.012, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 5, price: 0.010, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 6, price: 0.015, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 7, price: 0.025, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 8, price: 0.035, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 9, price: 0.045, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 10, price: 0.055, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 11, price: 0.065, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 12, price: 0.075, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 13, price: 0.080, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 14, price: 0.085, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 15, price: 0.090, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 16, price: 0.095, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 17, price: 0.120, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 18, price: 0.130, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 19, price: 0.135, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 20, price: 0.125, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 21, price: 0.110, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 22, price: 0.095, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 23, price: 0.080, month: 12, dayOfWeek: 1, isWeekend: false },
   
   // Weekend data - generally lower prices
-  ...Array.from({ length: 24 }, (_, hour) => ({
-    hour,
-    price: Math.max(0, 0.03 + Math.random() * 0.06 + (hour >= 17 && hour <= 20 ? 0.03 : 0)),
-    month: 1,
-    dayOfWeek: 6, // Saturday
-    isWeekend: true
-  }))
+  { hour: 0, price: 0.020, month: 1, dayOfWeek: 6, isWeekend: true },
+  { hour: 1, price: 0.015, month: 1, dayOfWeek: 6, isWeekend: true },
+  { hour: 2, price: 0.012, month: 1, dayOfWeek: 6, isWeekend: true },
+  { hour: 3, price: 0.010, month: 1, dayOfWeek: 6, isWeekend: true },
+  { hour: 4, price: 0.008, month: 1, dayOfWeek: 6, isWeekend: true },
+  { hour: 5, price: 0.006, month: 1, dayOfWeek: 6, isWeekend: true },
+  { hour: 6, price: 0.008, month: 1, dayOfWeek: 6, isWeekend: true },
+  { hour: 7, price: 0.010, month: 1, dayOfWeek: 6, isWeekend: true },
+  { hour: 8, price: 0.012, month: 1, dayOfWeek: 6, isWeekend: true },
+  { hour: 9, price: 0.015, month: 1, dayOfWeek: 6, isWeekend: true },
+  { hour: 10, price: 0.018, month: 1, dayOfWeek: 6, isWeekend: true },
+  { hour: 11, price: 0.020, month: 1, dayOfWeek: 6, isWeekend: true },
+  { hour: 12, price: 0.025, month: 1, dayOfWeek: 6, isWeekend: true },
+  { hour: 13, price: 0.030, month: 1, dayOfWeek: 6, isWeekend: true },
+  { hour: 14, price: 0.035, month: 1, dayOfWeek: 6, isWeekend: true },
+  { hour: 15, price: 0.040, month: 1, dayOfWeek: 6, isWeekend: true },
+  { hour: 16, price: 0.045, month: 1, dayOfWeek: 6, isWeekend: true },
+  { hour: 17, price: 0.060, month: 1, dayOfWeek: 6, isWeekend: true },
+  { hour: 18, price: 0.065, month: 1, dayOfWeek: 6, isWeekend: true },
+  { hour: 19, price: 0.070, month: 1, dayOfWeek: 6, isWeekend: true },
+  { hour: 20, price: 0.060, month: 1, dayOfWeek: 6, isWeekend: true },
+  { hour: 21, price: 0.050, month: 1, dayOfWeek: 6, isWeekend: true },
+  { hour: 22, price: 0.040, month: 1, dayOfWeek: 6, isWeekend: true },
+  { hour: 23, price: 0.030, month: 1, dayOfWeek: 6, isWeekend: true }
 ];
 
 const PRICE_DATA_2025 = [
@@ -104,21 +154,57 @@ const PRICE_DATA_2025 = [
   { hour: 23, price: 0.03800, month: 1, dayOfWeek: 1, isWeekend: false },
   
   // More 2025 data with realistic patterns
-  ...Array.from({ length: 24 }, (_, hour) => ({
-    hour,
-    price: Math.max(0, 0.03 + Math.random() * 0.10 + (hour >= 17 && hour <= 20 ? 0.06 : 0)),
-    month: 7, // July
-    dayOfWeek: 1,
-    isWeekend: false
-  })),
+  // Summer 2025 data
+  { hour: 0, price: 0.018, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 1, price: 0.015, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 2, price: 0.012, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 3, price: 0.010, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 4, price: 0.008, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 5, price: 0.006, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 6, price: 0.010, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 7, price: 0.015, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 8, price: 0.022, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 9, price: 0.030, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 10, price: 0.035, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 11, price: 0.040, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 12, price: 0.045, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 13, price: 0.050, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 14, price: 0.055, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 15, price: 0.060, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 16, price: 0.065, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 17, price: 0.085, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 18, price: 0.090, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 19, price: 0.095, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 20, price: 0.080, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 21, price: 0.070, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 22, price: 0.060, month: 7, dayOfWeek: 1, isWeekend: false },
+  { hour: 23, price: 0.050, month: 7, dayOfWeek: 1, isWeekend: false },
   
-  ...Array.from({ length: 24 }, (_, hour) => ({
-    hour,
-    price: Math.max(0, 0.06 + Math.random() * 0.15 + (hour >= 17 && hour <= 20 ? 0.10 : 0)),
-    month: 12, // December
-    dayOfWeek: 1,
-    isWeekend: false
-  }))
+  // Winter 2025 data
+  { hour: 0, price: 0.030, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 1, price: 0.025, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 2, price: 0.022, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 3, price: 0.018, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 4, price: 0.015, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 5, price: 0.012, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 6, price: 0.018, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 7, price: 0.030, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 8, price: 0.040, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 9, price: 0.050, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 10, price: 0.060, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 11, price: 0.070, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 12, price: 0.080, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 13, price: 0.085, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 14, price: 0.090, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 15, price: 0.095, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 16, price: 0.100, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 17, price: 0.130, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 18, price: 0.140, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 19, price: 0.145, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 20, price: 0.135, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 21, price: 0.120, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 22, price: 0.100, month: 12, dayOfWeek: 1, isWeekend: false },
+  { hour: 23, price: 0.085, month: 12, dayOfWeek: 1, isWeekend: false }
 ];
 
 export function processPriceData(year: number = 2024): ProcessedPriceData {
