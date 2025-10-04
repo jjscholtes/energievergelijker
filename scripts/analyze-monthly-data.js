@@ -26,8 +26,8 @@ function analyzeMonthlyData() {
       const hour = date.getHours();
       const price = parseFloat(priceStr);
       
-      // Only include positive prices
-      if (price > 0) {
+      // Include all prices (including negative ones - they're real market data)
+      if (!isNaN(price)) {
         if (!monthlyData[month]) {
           monthlyData[month] = {
             allPrices: [],

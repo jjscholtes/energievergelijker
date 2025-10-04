@@ -64,6 +64,8 @@ export function DynamicPricingPage() {
     const range = max - min;
     const position = (price - min) / range;
     
+    // Special handling for negative prices
+    if (price < 0) return 'text-green-700 bg-green-100 border-green-300 font-bold';
     if (position < 0.2) return 'text-green-600 bg-green-50 border-green-200';
     if (position < 0.4) return 'text-yellow-600 bg-yellow-50 border-yellow-200';
     if (position < 0.6) return 'text-orange-600 bg-orange-50 border-orange-200';
@@ -277,6 +279,15 @@ export function DynamicPricingPage() {
                     <li>• Monitor prijzen via apps</li>
                   </ul>
                 </div>
+              </div>
+              
+              {/* Negative Prices Explanation */}
+              <div className="mt-4 p-4 bg-green-500/20 rounded-lg border border-green-400/30">
+                <h4 className="font-semibold text-green-200 mb-2">🟢 Negatieve Prijzen</h4>
+                <p className="text-green-100 text-sm">
+                  Soms zijn de spotmarkt prijzen negatief (je krijgt geld toe!). Dit gebeurt bij overschot aan duurzame energie. 
+                  Perfect moment om je auto op te laden, de wasmachine te draaien of je huis te verwarmen!
+                </p>
               </div>
             </div>
           </div>
