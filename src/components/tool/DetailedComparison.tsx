@@ -41,7 +41,7 @@ export const DetailedComparison: React.FC<DetailedComparisonProps> = ({ results,
             <>
               <div className="flex items-start gap-2">
                 <span className="text-green-600 font-bold">✓</span>
-                <span><strong>Dynamisch is goedkoper</strong> omdat je profiteert van lagere spotprijzen</span>
+                <span><strong>Dynamisch is goedkoper</strong> omdat je profiteert van lagere spotprijzen en hogere terugleververgoeding</span>
               </div>
               {hasPV && cheapestDynamic?.pvOpbrengsten && cheapestFixed?.pvOpbrengsten && cheapestDynamic.pvOpbrengsten.totaleOpbrengst > cheapestFixed.pvOpbrengsten.totaleOpbrengst && (
                 <div className="flex items-start gap-2">
@@ -215,8 +215,8 @@ export const DetailedComparison: React.FC<DetailedComparisonProps> = ({ results,
                 Dit betekent dat je profiteert van goedkope nachttarieven en weekendprijzen.
               </p>
               <p>
-                <strong>Geen winstmarge:</strong> Leveranciers van dynamische contracten nemen geen grote winstmarge 
-                omdat ze de spotmarktprijzen doorgeven zonder opslag.
+                <strong>Hogere terugleververgoeding:</strong> Bij dynamische contracten krijg je de spotprijs terug 
+                voor je teruggeleverde stroom, wat veel meer oplevert dan de vaste €0.01/kWh bij vaste contracten.
               </p>
               <p>
                 <strong>Flexibiliteit:</strong> Als je slim bent met je energieverbruik (bijvoorbeeld 's nachts 
@@ -224,8 +224,8 @@ export const DetailedComparison: React.FC<DetailedComparisonProps> = ({ results,
               </p>
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-4">
                 <p className="text-yellow-800">
-                  <strong>Let op:</strong> Dynamische contracten zijn alleen voordelig als je flexibel bent met je verbruik. 
-                  Als je altijd op piekmomenten verbruikt, kan een vast contract goedkoper zijn.
+                  <strong>Let op:</strong> Dynamische contracten zijn vooral voordelig met zonnepanelen (hoge terugleververgoeding) 
+                  en als je flexibel bent met je verbruik. Zonder zonnepanelen kan een vast contract goedkoper zijn.
                 </p>
               </div>
             </>
