@@ -90,7 +90,7 @@ export default function ToolPage() {
         csvData2025: '',
         terugleververgoeding: newContract.tarieven.terugleververgoeding,
         maandelijkseVergoeding: newContract.vasteLeveringskosten,
-        opslagPerKwh: 0.02,
+        opslagPerKwh: 0.023,
         tarieven: newContract.tarieven
       };
       
@@ -697,13 +697,13 @@ export default function ToolPage() {
                               id="opslagAfname"
                               type="number"
                               step="0.001"
-                              value={getInputValue('opslagAfname', currentContract.tarieven?.stroomKalePrijsPiek || 0.02)}
+                              value={getInputValue('opslagAfname', currentContract.tarieven?.stroomKalePrijsPiek || (currentContract.type === 'dynamisch' ? 0.023 : 0.10))}
                               onChange={(e) => handleContractInputChange('opslagAfname', e.target.value, (value) => setCurrentContract(prev => ({
                                 ...prev,
                                 tarieven: { ...prev.tarieven!, stroomKalePrijsPiek: value }
                               })))}
                               className="h-12"
-                              placeholder="Bijv. 0.020"
+                              placeholder={currentContract.type === 'dynamisch' ? "Bijv. 0.023" : "Bijv. 0.100"}
                             />
                             <p className="text-xs text-gray-500">Opslag op afname van het net</p>
                           </div>
@@ -716,13 +716,13 @@ export default function ToolPage() {
                               id="opslagInvoeding"
                               type="number"
                               step="0.001"
-                              value={getInputValue('opslagInvoeding', currentContract.tarieven?.stroomKalePrijsDal || 0.00)}
+                              value={getInputValue('opslagInvoeding', currentContract.tarieven?.stroomKalePrijsDal || (currentContract.type === 'dynamisch' ? 0.023 : 0.10))}
                               onChange={(e) => handleContractInputChange('opslagInvoeding', e.target.value, (value) => setCurrentContract(prev => ({
                                 ...prev,
                                 tarieven: { ...prev.tarieven!, stroomKalePrijsDal: value }
                               })))}
                               className="h-12"
-                              placeholder="Bijv. 0.005"
+                              placeholder={currentContract.type === 'dynamisch' ? "Bijv. 0.023" : "Bijv. 0.100"}
                             />
                             <p className="text-xs text-gray-500">Opslag op invoeding (meestal €0.00)</p>
                           </div>
