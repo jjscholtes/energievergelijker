@@ -16,10 +16,21 @@ export const berekenEnergiekosten = (
   const netbeheerderKosten = getNetbeheerderKosten(userProfile);
 
   // Berekening stroomkosten
-  // Voor vaste contracten: gebruik piek/dal tarieven als beschikbaar, anders enkel tarief
-  const kalePrijsVoorBerekening = contract.tarieven.stroomKalePrijsPiek && contract.tarieven.stroomKalePrijsDal 
-    ? (contract.tarieven.stroomKalePrijsPiek + contract.tarieven.stroomKalePrijsDal) / 2 // Gemiddelde voor fallback
-    : contract.tarieven.stroomKalePrijs || 0.25; // Enkel tarief of fallback
+  // Logica: 
+  // 1. Als piek EN dal tarieven beschikbaar zijn: gebruik die
+  // 2. Als alleen enkel tarief beschikbaar is: gebruik die  
+  // 3. Alle andere gevinen: gebruik gemiddelde van piek/dal of enkel tarief als basis voor saldering
+  let kalePrijsVoorBerekening: number;
+  if (contract.tarieven.stroomKalePrijsPiek && contract.tarieven.stroomKalePrijsDal) {
+    // Piek/dal tarieven beschikbaar - bereken gemiddelde voor fallback gebruik
+    kalePrijsVoorBerekening = (contract.tarieven.stroomKalePrijsPiek + contract.tarieven.stroomKalePrijsDal) / 2;
+  } else if (contract.tarieven.stroomKalePrijs !== undefined) {
+    // Enkel tarief beschikbaar
+    kalePrijsVoorBerekening = contract.tarieven.stroomKalePrijs;
+  } else {
+    // Fallback naar 0.25 als er geen tarieven zijn
+    kalePrijsVoorBerekening = 0.25;
+  }
 
   const stroomKosten = berekenStroomkosten(
     userProfile.jaarverbruikStroom,
@@ -63,7 +74,7 @@ export const berekenEnergiekosten = (
       userProfile.pvOpwek,
       userProfile.jaarverbruikStroom,
       userProfile.percentageZelfverbruik,
-      contract.tarieven.stroomKalePrijs || contract.tarieven.stroomKalePrijsPiek || 0.25,
+      kalePrijsVoorBerekening, // Gebruik de geëvalueerde kale prijs
       contract.tarieven.terugleververgoeding,
       contract.type as 'vast' | 'dynamisch',
       1.0, // salderingsPercentage
@@ -122,7 +133,7 @@ function berekenStroomkosten(
     // Piek/dal tarieven
     kaleEnergie = (verbruikPiek * kalePrijsPiek) + (verbruikDal * kalePrijsDal);
   } else {
-    // Enkel tarief (fallback)
+    // Enkel tarief - gebruik de CALCULATED kalePrijs (zonder fallback naar 0.25)
     kaleEnergie = verbruikKwh * kalePrijs;
   }
 
