@@ -46,7 +46,6 @@ export default function ToolPage() {
     duurzaamheidsScore: 5,
     klanttevredenheid: 5,
     tarieven: {
-      stroomKalePrijs: 0.25,
       gasKalePrijs: 1.20,
       terugleververgoeding: 0.01,
       vasteTerugleverkosten: 0
@@ -69,7 +68,9 @@ export default function ToolPage() {
       duurzaamheidsScore: currentContract.duurzaamheidsScore || 5,
       klanttevredenheid: currentContract.klanttevredenheid || 5,
       tarieven: {
+        // Alleen enkel tarief als geen piek/dal tarieven zijn ingevuld
         stroomKalePrijs: currentContract.tarieven?.stroomKalePrijs,
+        // Piek/dal tarieven (prioriteit)
         stroomKalePrijsPiek: currentContract.tarieven?.stroomKalePrijsPiek,
         stroomKalePrijsDal: currentContract.tarieven?.stroomKalePrijsDal,
         gasKalePrijs: currentContract.tarieven?.gasKalePrijs || 1.20,
