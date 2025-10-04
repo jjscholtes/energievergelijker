@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { TrendingUp, TrendingDown, Clock, Sun, Moon, Zap, BarChart3, Info, ArrowLeft, Calendar, DollarSign } from 'lucide-react';
 import Link from 'next/link';
-import { getMonthlyData, getHourlyDataForMonth, getDailyDataForMonth, getWeightedAverage, getAvailableMonths, MonthlyStats } from '@/lib/data/monthlyPriceData';
+import { getMonthlyData, getHourlyDataForMonth, getDailyDataForMonth, MonthlyStats } from '@/lib/data/monthlyPriceData';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 
 export function DynamicPricingPage() {
@@ -41,13 +41,13 @@ export function DynamicPricingPage() {
       setMonthlyData(data);
       
       // Set first available month as default
-      const availableMonths = getAvailableMonths(selectedYear);
+      const availableMonths = Object.keys(data).map(Number).sort((a, b) => a - b);
       if (availableMonths.length > 0 && !data[selectedMonth]) {
         setSelectedMonth(availableMonths[0]);
       }
       
       // Calculate weighted average for all available months
-      const weightedAvg = getWeightedAverage(selectedYear, availableMonths);
+      const weightedAvg = calculateWeightedAverage(data, availableMonths);
       setWeightedAverage(weightedAvg);
     } catch (error) {
       console.error('Error loading monthly data:', error);
@@ -84,6 +84,75 @@ export function DynamicPricingPage() {
   const getTimeIcon = (hour: number) => {
     if (hour >= 6 && hour < 18) return <Sun className="w-4 h-4" />;
     return <Moon className="w-4 h-4" />;
+  };
+
+  // Calculate weighted average for available months
+  const calculateWeightedAverage = (data: { [month: number]: MonthlyStats }, months: number[]) => {
+    let totalWeightedSum = 0;
+    let totalDataPoints = 0;
+    let minPrice = Infinity;
+    let maxPrice = -Infinity;
+    const seasonalBreakdown: { season: string; average: number; months: number[] }[] = [];
+    
+    // Group months by season
+    const seasons = {
+      winter: { months: [12, 1, 2], name: 'Winter' },
+      spring: { months: [3, 4, 5], name: 'Lente' },
+      summer: { months: [6, 7, 8], name: 'Zomer' },
+      autumn: { months: [9, 10, 11], name: 'Herfst' }
+    };
+    
+    Object.keys(seasons).forEach(seasonKey => {
+      const season = seasons[seasonKey as keyof typeof seasons];
+      const seasonMonths = months.filter(month => season.months.includes(month));
+      
+      if (seasonMonths.length > 0) {
+        let seasonSum = 0;
+        let seasonDataPoints = 0;
+        let seasonMin = Infinity;
+        let seasonMax = -Infinity;
+        
+        seasonMonths.forEach(month => {
+          const monthStats = data[month];
+          if (monthStats) {
+            // Weight by number of data points (more data = more reliable)
+            const weight = monthStats.dataPoints;
+            seasonSum += monthStats.average * weight;
+            seasonDataPoints += weight;
+            seasonMin = Math.min(seasonMin, monthStats.minimum);
+            seasonMax = Math.max(seasonMax, monthStats.maximum);
+          }
+        });
+        
+        if (seasonDataPoints > 0) {
+          const seasonAverage = seasonSum / seasonDataPoints;
+          seasonalBreakdown.push({
+            season: season.name,
+            average: Math.round(seasonAverage * 1000) / 1000,
+            months: seasonMonths
+          });
+          
+          totalWeightedSum += seasonSum;
+          totalDataPoints += seasonDataPoints;
+          minPrice = Math.min(minPrice, seasonMin);
+          maxPrice = Math.max(maxPrice, seasonMax);
+        }
+      }
+    });
+    
+    const weightedAverage = totalDataPoints > 0 ? totalWeightedSum / totalDataPoints : 0;
+    const monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 
+                       'juli', 'augustus', 'september', 'oktober', 'november', 'december'];
+    const period = months.map(m => monthNames[m - 1]).join(', ');
+    
+    return {
+      weightedAverage: Math.round(weightedAverage * 1000) / 1000,
+      totalDataPoints,
+      period,
+      minPrice: minPrice === Infinity ? 0 : Math.round(minPrice * 1000) / 1000,
+      maxPrice: maxPrice === -Infinity ? 0 : Math.round(maxPrice * 1000) / 1000,
+      seasonalBreakdown
+    };
   };
 
   if (loading) {
