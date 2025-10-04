@@ -133,6 +133,18 @@ export default function ToolPage() {
     });
   };
 
+  // Helper functie voor betere input handling
+  const handleNumberInput = (value: string, setter: (value: number) => void) => {
+    if (value === '' || value === '0') {
+      setter(0);
+    } else {
+      const numValue = parseFloat(value);
+      if (!isNaN(numValue)) {
+        setter(numValue);
+      }
+    }
+  };
+
   const handleCalculate = async () => {
     if (contracts.length === 0 && dynamicContracts.length === 0) {
       setError('Voeg minimaal één energiecontract toe om te berekenen');
@@ -306,7 +318,7 @@ export default function ToolPage() {
                           type="number"
                           value={userProfile.jaarverbruikStroom}
                           onChange={(e) => {
-                            const totaal = Number(e.target.value);
+                            const totaal = e.target.value === '' ? 0 : parseFloat(e.target.value) || 0;
                             const piek = Math.round(totaal * 0.4);
                             const dal = Math.round(totaal * 0.6);
                             setUserProfile(prev => ({ 
@@ -331,7 +343,7 @@ export default function ToolPage() {
                             type="number"
                             value={userProfile.jaarverbruikStroomPiek}
                             onChange={(e) => {
-                              const normaal = Number(e.target.value);
+                              const normaal = e.target.value === '' ? 0 : parseFloat(e.target.value) || 0;
                               const dal = userProfile.jaarverbruikStroomDal;
                               setUserProfile(prev => ({ 
                                 ...prev, 
@@ -352,7 +364,7 @@ export default function ToolPage() {
                             type="number"
                             value={userProfile.jaarverbruikStroomDal}
                             onChange={(e) => {
-                              const dal = Number(e.target.value);
+                              const dal = e.target.value === '' ? 0 : parseFloat(e.target.value) || 0;
                               const piek = userProfile.jaarverbruikStroomPiek;
                               setUserProfile(prev => ({ 
                                 ...prev, 
@@ -392,7 +404,7 @@ export default function ToolPage() {
                             id="jaarverbruikGas"
                             type="number"
                             value={userProfile.jaarverbruikGas}
-                            onChange={(e) => setUserProfile(prev => ({ ...prev, jaarverbruikGas: Number(e.target.value) }))}
+                            onChange={(e) => setUserProfile(prev => ({ ...prev, jaarverbruikGas: e.target.value === '' ? 0 : parseFloat(e.target.value) || 0 }))}
                             className="h-12"
                           />
                         ) : (
@@ -435,7 +447,7 @@ export default function ToolPage() {
                               id="pvOpwek"
                               type="number"
                               value={userProfile.pvOpwek}
-                              onChange={(e) => setUserProfile(prev => ({ ...prev, pvOpwek: Number(e.target.value) }))}
+                              onChange={(e) => setUserProfile(prev => ({ ...prev, pvOpwek: e.target.value === '' ? 0 : parseFloat(e.target.value) || 0 }))}
                               className="h-12 border-green-300"
                               placeholder="Bijv. 3500"
                             />
@@ -450,7 +462,7 @@ export default function ToolPage() {
                               min="0"
                               max="100"
                               value={userProfile.percentageZelfverbruik}
-                              onChange={(e) => setUserProfile(prev => ({ ...prev, percentageZelfverbruik: Number(e.target.value) }))}
+                              onChange={(e) => setUserProfile(prev => ({ ...prev, percentageZelfverbruik: e.target.value === '' ? 0 : parseFloat(e.target.value) || 0 }))}
                               className="h-12 border-green-300"
                             />
                           </div>
@@ -535,7 +547,7 @@ export default function ToolPage() {
                           id="looptijd"
                           type="number"
                           value={currentContract.looptijdMaanden || 12}
-                          onChange={(e) => setCurrentContract(prev => ({ ...prev, looptijdMaanden: Number(e.target.value) }))}
+                          onChange={(e) => setCurrentContract(prev => ({ ...prev, looptijdMaanden: e.target.value === '' ? 12 : parseFloat(e.target.value) || 12 }))}
                           className="h-12"
                         />
                       </div>
@@ -571,7 +583,7 @@ export default function ToolPage() {
                               value={currentContract.tarieven?.stroomKalePrijs || 0.15}
                               onChange={(e) => setCurrentContract(prev => ({
                                 ...prev,
-                                tarieven: { ...prev.tarieven!, stroomKalePrijs: Number(e.target.value) }
+                                tarieven: { ...prev.tarieven!, stroomKalePrijs: e.target.value === '' ? 0.15 : parseFloat(e.target.value) || 0.15 }
                               }))}
                               className="h-12"
                             />
@@ -588,7 +600,7 @@ export default function ToolPage() {
                               type="number"
                               step="0.01"
                               value={currentContract.vasteLeveringskosten || 0}
-                              onChange={(e) => setCurrentContract(prev => ({ ...prev, vasteLeveringskosten: Number(e.target.value) }))}
+                              onChange={(e) => setCurrentContract(prev => ({ ...prev, vasteLeveringskosten: e.target.value === '' ? 0 : parseFloat(e.target.value) || 0 }))}
                               className="h-12"
                               placeholder="Bijv. 5.99"
                             />
@@ -605,7 +617,7 @@ export default function ToolPage() {
                               value={currentContract.tarieven?.stroomKalePrijsPiek || 0.02}
                               onChange={(e) => setCurrentContract(prev => ({
                                 ...prev,
-                                tarieven: { ...prev.tarieven!, stroomKalePrijsPiek: Number(e.target.value) }
+                                tarieven: { ...prev.tarieven!, stroomKalePrijsPiek: e.target.value === '' ? 0.02 : parseFloat(e.target.value) || 0.02 }
                               }))}
                               className="h-12"
                               placeholder="Bijv. 0.020"
@@ -624,7 +636,7 @@ export default function ToolPage() {
                               value={currentContract.tarieven?.stroomKalePrijsDal || 0.00}
                               onChange={(e) => setCurrentContract(prev => ({
                                 ...prev,
-                                tarieven: { ...prev.tarieven!, stroomKalePrijsDal: Number(e.target.value) }
+                                tarieven: { ...prev.tarieven!, stroomKalePrijsDal: e.target.value === '' ? 0.00 : parseFloat(e.target.value) || 0.00 }
                               }))}
                               className="h-12"
                               placeholder="Bijv. 0.005"
@@ -657,7 +669,7 @@ export default function ToolPage() {
                             value={currentContract.tarieven?.stroomKalePrijsPiek || 0.28}
                             onChange={(e) => setCurrentContract(prev => ({
                               ...prev,
-                              tarieven: { ...prev.tarieven!, stroomKalePrijsPiek: Number(e.target.value) }
+                              tarieven: { ...prev.tarieven!, stroomKalePrijsPiek: e.target.value === '' ? 0.28 : parseFloat(e.target.value) || 0.28 }
                             }))}
                             className="h-12"
                           />
@@ -674,7 +686,7 @@ export default function ToolPage() {
                             value={currentContract.tarieven?.stroomKalePrijsDal || 0.22}
                             onChange={(e) => setCurrentContract(prev => ({
                               ...prev,
-                              tarieven: { ...prev.tarieven!, stroomKalePrijsDal: Number(e.target.value) }
+                              tarieven: { ...prev.tarieven!, stroomKalePrijsDal: e.target.value === '' ? 0.22 : parseFloat(e.target.value) || 0.22 }
                             }))}
                             className="h-12"
                           />
@@ -691,7 +703,7 @@ export default function ToolPage() {
                             value={currentContract.tarieven?.gasKalePrijs || 1.20}
                             onChange={(e) => setCurrentContract(prev => ({
                               ...prev,
-                              tarieven: { ...prev.tarieven!, gasKalePrijs: Number(e.target.value) }
+                              tarieven: { ...prev.tarieven!, gasKalePrijs: e.target.value === '' ? 1.20 : parseFloat(e.target.value) || 1.20 }
                             }))}
                             className="h-12"
                           />
@@ -708,7 +720,7 @@ export default function ToolPage() {
                             value={currentContract.tarieven?.terugleververgoeding || 0.01}
                             onChange={(e) => setCurrentContract(prev => ({
                               ...prev,
-                              tarieven: { ...prev.tarieven!, terugleververgoeding: Number(e.target.value) }
+                              tarieven: { ...prev.tarieven!, terugleververgoeding: e.target.value === '' ? 0.01 : parseFloat(e.target.value) || 0.01 }
                             }))}
                             className="h-12"
                           />
@@ -724,10 +736,10 @@ export default function ToolPage() {
                             id="vasteTerugleverkosten"
                             type="number"
                             value={currentContract.tarieven?.vasteTerugleverkosten || 0}
-                            onChange={(e) => setCurrentContract(prev => ({
-                              ...prev,
-                              tarieven: { ...prev.tarieven!, vasteTerugleverkosten: Number(e.target.value) }
-                            }))}
+                              onChange={(e) => setCurrentContract(prev => ({
+                                ...prev,
+                                tarieven: { ...prev.tarieven!, vasteTerugleverkosten: e.target.value === '' ? 0 : parseFloat(e.target.value) || 0 }
+                              }))}
                             className="h-12"
                           />
                         </div>
@@ -753,7 +765,7 @@ export default function ToolPage() {
                             type="number"
                             step="0.01"
                             value={currentContract.vasteLeveringskosten || 0}
-                            onChange={(e) => setCurrentContract(prev => ({ ...prev, vasteLeveringskosten: Number(e.target.value) }))}
+                            onChange={(e) => setCurrentContract(prev => ({ ...prev, vasteLeveringskosten: e.target.value === '' ? 0 : parseFloat(e.target.value) || 0 }))}
                             className="h-12"
                           />
                         </div>
@@ -766,7 +778,7 @@ export default function ToolPage() {
                             id="kortingEenmalig"
                             type="number"
                             value={currentContract.kortingEenmalig || 0}
-                            onChange={(e) => setCurrentContract(prev => ({ ...prev, kortingEenmalig: Number(e.target.value) }))}
+                            onChange={(e) => setCurrentContract(prev => ({ ...prev, kortingEenmalig: e.target.value === '' ? 0 : parseFloat(e.target.value) || 0 }))}
                             className="h-12"
                           />
                         </div>
@@ -789,7 +801,7 @@ export default function ToolPage() {
                           id="kortingEenmalig"
                           type="number"
                           value={currentContract.kortingEenmalig || 0}
-                          onChange={(e) => setCurrentContract(prev => ({ ...prev, kortingEenmalig: Number(e.target.value) }))}
+                          onChange={(e) => setCurrentContract(prev => ({ ...prev, kortingEenmalig: e.target.value === '' ? 0 : parseFloat(e.target.value) || 0 }))}
                           className="h-12"
                         />
                       </div>

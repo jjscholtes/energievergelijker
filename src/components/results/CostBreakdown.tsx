@@ -28,11 +28,11 @@ export function CostBreakdown({ result }: CostBreakdownProps) {
           
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
-              <span>Kale energieprijs</span>
+              <span>Kale energie prijs</span>
               <span>€{stroomKosten.kaleEnergie.toFixed(2)}</span>
             </div>
             <div className="text-xs text-gray-500 ml-4">
-              Verbruik × kale prijs = {result.contract.type === 'dynamisch' ? `${result.userProfile?.jaarverbruikStroom || 0} kWh × €${result.contract.tarieven?.stroomKalePrijs.toFixed(4) || '0.0000'} (gemiddelde spotprijs)` : `${result.userProfile?.jaarverbruikStroom || 0} kWh × €${result.contract.tarieven?.stroomKalePrijs.toFixed(4) || '0.0000'}`}
+              Verbruik × kale prijs = {result.contract.type === 'dynamisch' ? `${result.userProfile?.jaarverbruikStroom || 0} kWh × €${result.contract.tarieven?.stroomKalePrijs?.toFixed(4) || '0.0000'} (gemiddelde spotprijs)` : `${result.userProfile?.jaarverbruikStroom || 0} kWh × €${result.contract.tarieven?.stroomKalePrijs?.toFixed(4) || '0.0000'}`}
             </div>
             
             <div className="flex justify-between">
