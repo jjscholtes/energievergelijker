@@ -63,7 +63,7 @@ export default function ToolPage() {
 
     const newContract: ContractData = {
       leverancier: currentContract.leverancier,
-      productNaam: currentContract.productNaam || `${currentContract.type.charAt(0).toUpperCase() + currentContract.type.slice(1)} Contract`,
+      productNaam: currentContract.productNaam || `${(currentContract.type || 'vast').charAt(0).toUpperCase() + (currentContract.type || 'vast').slice(1)} Contract`,
       type: currentContract.type as 'vast' | 'dynamisch',
       looptijdMaanden: currentContract.looptijdMaanden || 12,
       vasteLeveringskosten: currentContract.vasteLeveringskosten || 0,
@@ -337,9 +337,9 @@ export default function ToolPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Contract Form */}
-          <div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+          {/* Left Column - Forms */}
+          <div className="space-y-6">
             {/* Gebruikersprofiel */}
             <Card className="shadow-2xl border-0 bg-white/95 backdrop-blur-sm mb-6">
               <CardHeader>
@@ -924,8 +924,12 @@ export default function ToolPage() {
               </CardContent>
             </Card>
 
+          </div>
+
+          {/* Right Column - Results & Contract Lists */}
+          <div className="space-y-6 lg:sticky lg:top-24 lg:max-h-screen lg:overflow-y-auto">
             {/* Contract Lists */}
-            <div className="mt-6 space-y-4">
+            <div className="space-y-4">
               {/* Vaste Contracten */}
               {contracts.length > 0 && (
                 <Card className="shadow-xl border-0 bg-white/95 backdrop-blur-sm">
@@ -941,7 +945,7 @@ export default function ToolPage() {
                           <div className="flex justify-between items-start">
                             <div className="flex-1">
                               <h4 className="font-semibold text-gray-900">{contract.leverancier}</h4>
-                              <p className="text-sm text-gray-600">{contract.productNaam || 'Dynamisch Contract'}</p>
+                              <p className="text-sm text-gray-600">{contract.productNaam || 'Vast Contract'}</p>
                               <div className="text-xs text-gray-500 mt-1">
                                 <div>Stroom: €{(contract.tarieven.stroomKalePrijsPiek || 0.10).toFixed(3)}/kWh normaal, €{(contract.tarieven.stroomKalePrijsDal || 0.10).toFixed(3)}/kWh dal</div>
                                 <div>Gas: €{contract.tarieven.gasKalePrijs.toFixed(3)}/m³</div>
@@ -981,8 +985,9 @@ export default function ToolPage() {
                               <h4 className="font-semibold text-gray-900">{contract.leverancier}</h4>
                               <p className="text-sm text-gray-600">{contract.productNaam || 'Dynamisch Contract'}</p>
                               <div className="text-xs text-gray-500 mt-1">
-                                <div>Teruglevering: €{contract.tarieven.terugleververgoeding.toFixed(3)}/kWh</div>
-                                <div>Type: Dynamisch</div>
+                                <div>Basisprijs: €{(contract.tarieven.stroomKalePrijs || 0.15).toFixed(3)}/kWh</div>
+                                <div>Opslag: €{(contract.opslagPerKwh || 0.023).toFixed(3)}/kWh</div>
+                                <div>Maandelijks: €{(contract.maandelijkseVergoeding || 5.99).toFixed(2)}/maand</div>
                               </div>
                             </div>
                             <Button
@@ -1001,10 +1006,7 @@ export default function ToolPage() {
                 </Card>
               )}
             </div>
-          </div>
 
-          {/* Results */}
-          <div>
             <Card className="shadow-2xl border-0 bg-white/95 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="text-2xl font-bold text-gray-900 text-center">
