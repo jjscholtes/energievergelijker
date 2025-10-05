@@ -432,6 +432,7 @@ export default function ToolPage() {
                           }}
                           className="h-12"
                           placeholder="Bijv. 2900"
+                          title="Je totale jaarverbruik aan elektriciteit. Dit wordt automatisch verdeeld in 40% normaal (dag) en 60% dal (nacht/weekend) verbruik. Je kunt deze verdeling handmatig aanpassen."
                         />
                         <p className="text-xs text-gray-500">Automatisch verdeeld: {userProfile.jaarverbruikStroomPiek} kWh normaal, {userProfile.jaarverbruikStroomDal} kWh dal</p>
                       </div>
@@ -458,6 +459,7 @@ export default function ToolPage() {
                             }}
                             className="h-12"
                             placeholder="Bijv. 1160"
+                            title="Verbruik tijdens normale uren (meestal werkdagen 7:00-23:00). Dit tarief is meestal hoger dan het dal tarief."
                           />
                         </div>
 
@@ -482,6 +484,7 @@ export default function ToolPage() {
                             }}
                             className="h-12"
                             placeholder="Bijv. 1740"
+                            title="Verbruik tijdens daluren (meestal nacht 23:00-7:00 en weekenden). Dit tarief is meestal lager dan het normale tarief."
                           />
                         </div>
                       </div>
@@ -516,6 +519,7 @@ export default function ToolPage() {
                             onChange={(e) => handleInputChange('jaarverbruikGas', e.target.value, (value) => setUserProfile(prev => ({ ...prev, jaarverbruikGas: value })))}
                             className="h-12"
                             placeholder="Bijv. 1450"
+                            title="Je jaarverbruik aan gas in kubieke meters (m³). Gemiddeld verbruikt een huishouden 1200-1500 m³ per jaar. Gas wordt gebruikt voor verwarming, warm water en koken."
                           />
                         ) : (
                           <div className="h-12 bg-gray-50 border border-gray-200 rounded-md flex items-center px-3 text-gray-500 text-sm">
@@ -560,6 +564,7 @@ export default function ToolPage() {
                               onChange={(e) => handleInputChange('pvOpwek', e.target.value, (value) => setUserProfile(prev => ({ ...prev, pvOpwek: value })))}
                               className="h-12 border-green-300"
                               placeholder="Bijv. 3500"
+                              title="De totale jaarproductie van je zonnepanelen in kWh. Een gemiddeld systeem van 10 panelen produceert ongeveer 3000-4000 kWh per jaar."
                             />
                           </div>
                           <div className="space-y-2">
@@ -575,6 +580,7 @@ export default function ToolPage() {
                               onChange={(e) => handleInputChange('percentageZelfverbruik', e.target.value, (value) => setUserProfile(prev => ({ ...prev, percentageZelfverbruik: value })))}
                               className="h-12 border-green-300"
                               placeholder="Bijv. 35"
+                              title="Het percentage van je zonnepaneel productie dat je direct zelf gebruikt. Gemiddeld is dit 30-40%. De rest wordt teruggeleverd aan het net."
                             />
                           </div>
                         </div>
@@ -726,6 +732,7 @@ export default function ToolPage() {
                               onChange={(e) => handleInputChange('maandelijkseVergoeding', e.target.value, (value) => setCurrentContract(prev => ({ ...prev, vasteLeveringskosten: value })), true)}
                               className="h-12"
                               placeholder="Bijv. 5.99"
+                              title="Vaste maandelijkse vergoeding voor dynamische contracten. Dit is vergelijkbaar met vaste leveringskosten bij vaste contracten."
                             />
                           </div>
 
@@ -744,6 +751,7 @@ export default function ToolPage() {
                               })))}
                               className="h-12"
                               placeholder={currentContract.type === 'dynamisch' ? "Bijv. 0.023" : "Bijv. 0.100"}
+                              title="Opslag die de energieleverancier rekent bovenop de spotmarktprijs voor afname van het net. Dit is de winstmarge van de leverancier."
                             />
                             <p className="text-xs text-gray-500">Opslag op afname van het net</p>
                           </div>
@@ -763,6 +771,7 @@ export default function ToolPage() {
                               })))}
                               className="h-12"
                               placeholder={currentContract.type === 'dynamisch' ? "Bijv. 0.023" : "Bijv. 0.100"}
+                              title="Opslag die de energieleverancier rekent op de terugleververgoeding voor invoeding op het net. Meestal €0.00 omdat dit de winstmarge van de leverancier zou verminderen."
                             />
                             <p className="text-xs text-gray-500">Opslag op invoeding (meestal €0.00)</p>
                           </div>
@@ -796,6 +805,7 @@ export default function ToolPage() {
                             })))}
                             className="h-12"
                             placeholder="Bijv. 0.100"
+                            title="De kale energieprijs voor normaal verbruik (excl. energiebelasting en BTW). Dit is de basisprijs die de energieleverancier rekent voor elektriciteit tijdens normale uren (7:00-23:00)."
                           />
                         </div>
 
@@ -814,6 +824,7 @@ export default function ToolPage() {
                             })))}
                             className="h-12"
                             placeholder="Bijv. 0.100"
+                            title="De kale energieprijs voor dal verbruik (excl. energiebelasting en BTW). Dit is de basisprijs voor elektriciteit tijdens daluren (23:00-7:00 en weekenden). Meestal goedkoper dan normaal tarief."
                           />
                         </div>
 
@@ -832,6 +843,7 @@ export default function ToolPage() {
                             })))}
                             className="h-12"
                             placeholder="Bijv. 1.200"
+                            title="De kale gasprijs per kubieke meter (excl. energiebelasting en BTW). Dit is de basisprijs die de energieleverancier rekent voor aardgas."
                           />
                         </div>
                       </div>
@@ -871,6 +883,7 @@ export default function ToolPage() {
                             })), false)}
                             className="h-12"
                             placeholder="Bijv. 0.010"
+                            title="De vergoeding die je krijgt voor stroom die je teruglevert aan het net (bij vaste contracten). Meestal lager dan de kale energieprijs. Voor dynamische contracten is dit meestal gelijk aan de spotmarktprijs."
                           />
                           <p className="text-xs text-gray-500">Terugleververgoeding voor vaste contracten</p>
                         </div>
@@ -899,6 +912,7 @@ export default function ToolPage() {
                             onChange={(e) => handleInputChange('vasteLeveringskosten', e.target.value, (value) => setCurrentContract(prev => ({ ...prev, vasteLeveringskosten: value })))}
                             className="h-12"
                             placeholder="Bijv. 0.00"
+                            title="Vaste kosten per maand die de energieleverancier rekent, onafhankelijk van je verbruik. Dit zijn kosten voor meterhuur, administratie en service."
                           />
                         </div>
 
@@ -913,6 +927,7 @@ export default function ToolPage() {
                             onChange={(e) => handleInputChange('kortingEenmalig', e.target.value, (value) => setCurrentContract(prev => ({ ...prev, kortingEenmalig: value })))}
                             className="h-12"
                             placeholder="Bijv. 0"
+                            title="Eenmalige korting die je krijgt bij het afsluiten van het contract. Dit bedrag wordt eenmalig afgetrokken van je jaarlijkse kosten."
                           />
                         </div>
                       </div>
@@ -950,6 +965,50 @@ export default function ToolPage() {
                       <div>• <strong>Energiebelasting:</strong> Officiële tarieven €0.1316/kWh (inclusief 21% BTW)</div>
                       <div>• <strong>Vermindering Energiebelasting:</strong> €631.35 per jaar vermindering op energiebelasting</div>
                       {userProfile.geenGas && <div>• <strong>Gas:</strong> Uitgesloten van berekening</div>}
+                    </div>
+                  </div>
+
+                  {/* Uitgebreide uitleg sectie */}
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                    <h4 className="font-semibold text-blue-800 mb-4">📚 Uitgebreide Uitleg</h4>
+                    <div className="text-sm text-blue-700 space-y-4">
+                      <div>
+                        <h5 className="font-semibold mb-2">⚡ Energieverbruik</h5>
+                        <ul className="list-disc list-inside space-y-1 ml-4">
+                          <li><strong>Totaal verbruik:</strong> Je totale jaarverbruik aan elektriciteit</li>
+                          <li><strong>Normaal verbruik:</strong> Verbruik tijdens werkdagen 7:00-23:00 (meestal duurder)</li>
+                          <li><strong>Dal verbruik:</strong> Verbruik tijdens nacht 23:00-7:00 en weekenden (meestal goedkoper)</li>
+                          <li><strong>Gas verbruik:</strong> Jaarverbruik in kubieke meters (m³) voor verwarming, warm water en koken</li>
+                        </ul>
+                      </div>
+                      
+                      <div>
+                        <h5 className="font-semibold mb-2">🏠 Zonnepanelen</h5>
+                        <ul className="list-disc list-inside space-y-1 ml-4">
+                          <li><strong>Jaarproductie:</strong> Totale kWh die je zonnepanelen per jaar opwekken</li>
+                          <li><strong>Zelfverbruik:</strong> Percentage dat je direct zelf gebruikt (rest wordt teruggeleverd)</li>
+                          <li><strong>Saldering:</strong> Teruggeleverde stroom wordt verrekend met je verbruik</li>
+                        </ul>
+                      </div>
+                      
+                      <div>
+                        <h5 className="font-semibold mb-2">💰 Tarieven Uitleg</h5>
+                        <ul className="list-disc list-inside space-y-1 ml-4">
+                          <li><strong>Kale energieprijs:</strong> Basisprijs excl. energiebelasting en BTW</li>
+                          <li><strong>Energiebelasting:</strong> €0.1316/kWh (inclusief 21% BTW) - officieel tarief</li>
+                          <li><strong>Vermindering Energiebelasting:</strong> €631.35/jaar korting op energiebelasting</li>
+                          <li><strong>Netbeheerkosten:</strong> Vaste kosten per netbeheerder voor netwerk</li>
+                        </ul>
+                      </div>
+                      
+                      <div>
+                        <h5 className="font-semibold mb-2">🔄 Contract Types</h5>
+                        <ul className="list-disc list-inside space-y-1 ml-4">
+                          <li><strong>Vast contract:</strong> Vaste tarieven voor normaal/dal verbruik</li>
+                          <li><strong>Dynamisch contract:</strong> Variabele tarieven gebaseerd op spotmarktprijzen</li>
+                          <li><strong>Opslag:</strong> Winstmarge van de energieleverancier bovenop spotmarktprijzen</li>
+                        </ul>
+                      </div>
                     </div>
                   </div>
 
