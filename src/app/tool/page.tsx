@@ -806,14 +806,15 @@ export default function ToolPage() {
                             id="terugleververgoeding"
                             type="number"
                             step="0.001"
-                            value={getInputValue('terugleververgoeding', currentContract.tarieven?.terugleververgoeding || (currentContract.type === 'dynamisch' ? 0.0595 : 0.01))}
+                            value={getInputValue('terugleververgoeding', currentContract.tarieven?.terugleververgoeding || 0.0595, true)}
                             onChange={(e) => handleInputChange('terugleververgoeding', e.target.value, (value) => setCurrentContract(prev => ({
                               ...prev,
                               tarieven: { ...prev.tarieven!, terugleververgoeding: value }
-                            })))}
+                            })), true)}
                             className="h-12"
-                            placeholder={currentContract.type === 'dynamisch' ? "Bijv. 0.0595" : "Bijv. 0.010"}
+                            placeholder="Bijv. 0.0595"
                           />
+                          <p className="text-xs text-gray-500">Gemiddelde terugleververgoeding voor dynamische contracten</p>
                         </div>
                       </div>
 
@@ -833,6 +834,27 @@ export default function ToolPage() {
                             className="h-12"
                             placeholder="Bijv. 0"
                           />
+                        </div>
+                      )}
+                      
+                      {userProfile.heeftZonnepanelen && (
+                        <div className="space-y-2">
+                          <Label htmlFor="terugleververgoeding" className="text-sm font-medium text-gray-700">
+                            Terugleververgoeding (€/kWh)
+                          </Label>
+                          <Input
+                            id="terugleververgoeding"
+                            type="number"
+                            step="0.001"
+                            value={getInputValue('terugleververgoeding', currentContract.tarieven?.terugleververgoeding || 0.01, false)}
+                            onChange={(e) => handleInputChange('terugleververgoeding', e.target.value, (value) => setCurrentContract(prev => ({
+                              ...prev,
+                              tarieven: { ...prev.tarieven!, terugleververgoeding: value }
+                            })), false)}
+                            className="h-12"
+                            placeholder="Bijv. 0.010"
+                          />
+                          <p className="text-xs text-gray-500">Terugleververgoeding voor vaste contracten</p>
                         </div>
                       )}
                     </div>
