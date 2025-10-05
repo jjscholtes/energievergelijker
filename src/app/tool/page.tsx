@@ -666,7 +666,7 @@ export default function ToolPage() {
                         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                           <h4 className="font-semibold text-blue-800 mb-2">⚡ Dynamisch Contract</h4>
                           <p className="text-sm text-blue-700">
-                            Dynamische contracten gebruiken spotmarktprijzen als basis. Je kunt de basisprijs en terugleververgoeding aanpassen en opslagen toevoegen.
+                            Dynamische contracten gebruiken spotmarktprijzen als basis. Je kunt de gemiddelde prijzen voor afname en invoeding aanpassen en opslagen toevoegen.
                           </p>
                         </div>
                         
@@ -674,7 +674,7 @@ export default function ToolPage() {
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
                               <Label htmlFor="basisprijs" className="text-sm font-medium text-gray-700">
-                                Basisprijs per kWh (€/kWh)
+                                Gemiddelde prijs kWh afname (€/kWh)
                               </Label>
                               <Input
                                 id="basisprijs"
@@ -687,13 +687,14 @@ export default function ToolPage() {
                                 })))}
                                 className="h-12"
                                 placeholder="Bijv. 0.085"
+                                title="Deze pre-filled bedragen zijn de berekende gemiddelde waarden die het beste uitgangspunt vormen voor dynamische contracten"
                               />
-                              <p className="text-xs text-gray-500">Gemiddelde spotmarktprijs</p>
+                              <p className="text-xs text-gray-500">Gemiddelde spotmarktprijs voor afname</p>
                             </div>
                             
                             <div className="space-y-2">
                               <Label htmlFor="terugleververgoeding" className="text-sm font-medium text-gray-700">
-                                Terugleververgoeding (€/kWh)
+                                Gemiddelde prijs kWh invoeding (€/kWh)
                               </Label>
                               <Input
                                 id="terugleververgoeding"
@@ -706,8 +707,9 @@ export default function ToolPage() {
                                 })), true)}
                                 className="h-12"
                                 placeholder="Bijv. 0.0595"
+                                title="Deze pre-filled bedragen zijn de berekende gemiddelde waarden die het beste uitgangspunt vormen voor dynamische contracten"
                               />
-                              <p className="text-xs text-gray-500">Gemiddelde terugleververgoeding</p>
+                              <p className="text-xs text-gray-500">Gemiddelde terugleververgoeding voor invoeding</p>
                             </div>
                           </div>
                           
