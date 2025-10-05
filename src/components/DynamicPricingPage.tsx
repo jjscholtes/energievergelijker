@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { TrendingUp, TrendingDown, Clock, Sun, Moon, Zap, BarChart3, Info, ArrowLeft, Calendar, DollarSign } from 'lucide-react';
+import { TrendingUp, TrendingDown, Clock, Sun, Moon, Zap, BarChart3, Info, ArrowLeft, Calendar, DollarSign, FileText, Image as ImageIcon } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { getMonthlyData, getHourlyDataForMonth, getDailyDataForMonth, MonthlyStats } from '@/lib/data/monthlyPriceData';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 
@@ -12,6 +13,14 @@ export function DynamicPricingPage() {
   const [monthlyData, setMonthlyData] = useState<{ [month: number]: MonthlyStats }>({});
   const [weightedAverage, setWeightedAverage] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  
+  // Jaarlijkse gemiddelde prijzen data
+  const yearlyAverages = [
+    { jaar: 2022, gemiddelde_prijs: 0.2409 },
+    { jaar: 2023, gemiddelde_prijs: 0.0961 },
+    { jaar: 2024, gemiddelde_prijs: 0.0771 },
+    { jaar: 2025, gemiddelde_prijs: 0.0868 }
+  ];
 
   const years = [
     { value: 2024, label: '2024' },
@@ -522,6 +531,219 @@ export function DynamicPricingPage() {
             </div>
           </div>
         )}
+
+        {/* Diepgaande Analyses */}
+        <div className="mt-12 space-y-8">
+          <div className="text-center">
+            <div className="inline-flex items-center gap-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-full text-sm font-bold mb-4 shadow-lg">
+              <FileText className="w-5 h-5" />
+              <span>Diepgaande Analyses</span>
+            </div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Historische Trends & Patronen
+            </h2>
+            <p className="text-gray-600 text-lg max-w-3xl mx-auto">
+              Ontdek de lange-termijn trends en seizoenspatronen in dynamische energieprijzen
+            </p>
+          </div>
+
+          {/* Jaarlijkse Trends */}
+          <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+            <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+              <TrendingDown className="w-6 h-6 text-blue-600" />
+              Jaarlijkse Gemiddelde Prijzen (2022-2025)
+            </h3>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Chart */}
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={yearlyAverages}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis 
+                      dataKey="jaar" 
+                      tick={{ fontSize: 12 }}
+                      tickFormatter={(value) => `${value}`}
+                    />
+                    <YAxis 
+                      tick={{ fontSize: 12 }}
+                      tickFormatter={(value) => `€${value.toFixed(3)}`}
+                    />
+                    <Tooltip 
+                      formatter={(value: number) => [`€${value.toFixed(3)}/kWh`, 'Gemiddelde Prijs']}
+                      labelFormatter={(label) => `Jaar ${label}`}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="gemiddelde_prijs" 
+                      stroke="#3B82F6" 
+                      strokeWidth={3}
+                      dot={{ fill: '#3B82F6', strokeWidth: 2, r: 6 }}
+                      activeDot={{ r: 8, stroke: '#3B82F6', strokeWidth: 2 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+              
+              {/* Analysis */}
+              <div className="space-y-6">
+                <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-xl p-6 border border-red-200">
+                  <h4 className="font-bold text-red-800 mb-3">📈 2022: Energiecrisis</h4>
+                  <p className="text-red-700 text-sm mb-2">
+                    <strong>€0.241/kWh</strong> - Extreem hoge prijzen door oorlog in Oekraïne
+                  </p>
+                  <p className="text-red-600 text-xs">
+                    Gasprijzen stegen dramatisch, wat directe impact had op elektriciteitsprijzen
+                  </p>
+                </div>
+                
+                <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-6 border border-green-200">
+                  <h4 className="font-bold text-green-800 mb-3">📉 2023-2024: Normalisatie</h4>
+                  <p className="text-green-700 text-sm mb-2">
+                    <strong>€0.096/kWh (2023)</strong> → <strong>€0.077/kWh (2024)</strong>
+                  </p>
+                  <p className="text-green-600 text-xs">
+                    Markt stabiliseerde, meer duurzame energie, lagere gasprijzen
+                  </p>
+                </div>
+                
+                <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 border border-blue-200">
+                  <h4 className="font-bold text-blue-800 mb-3">🔮 2025: Lichte Stijging</h4>
+                  <p className="text-blue-700 text-sm mb-2">
+                    <strong>€0.087/kWh</strong> - Voorspelling voor 2025
+                  </p>
+                  <p className="text-blue-600 text-xs">
+                    Verwacht lichte stijging door toenemende vraag en transitie naar duurzame energie
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Maandelijkse Trends Visualisatie */}
+          <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+            <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+              <ImageIcon className="w-6 h-6 text-purple-600" />
+              Maandelijkse Prijstrends (2022-2025)
+            </h3>
+            
+            <div className="text-center mb-6">
+              <Image
+                src="/spotprijs-maandelijks-2022-2025.png"
+                alt="Gemiddelde spotprijs per maand 2022-2025"
+                width={800}
+                height={400}
+                className="rounded-xl shadow-lg mx-auto"
+              />
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
+                <h4 className="font-bold text-blue-800 mb-3">📊 Wat Zie Je Hier?</h4>
+                <ul className="space-y-2 text-blue-700 text-sm">
+                  <li>• <strong>Seizoenspatronen:</strong> Winter duurder, zomer goedkoper</li>
+                  <li>• <strong>2022 piek:</strong> Extreem hoge prijzen door energiecrisis</li>
+                  <li>• <strong>2023-2024:</strong> Duidelijke normalisatie van prijzen</li>
+                  <li>• <strong>Voorspelling 2025:</strong> Lichte stijging verwacht</li>
+                </ul>
+              </div>
+              
+              <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
+                <h4 className="font-bold text-green-800 mb-3">💡 Praktische Tips</h4>
+                <ul className="space-y-2 text-green-700 text-sm">
+                  <li>• <strong>Plan je contract:</strong> Overweeg vaste contracten in winter</li>
+                  <li>• <strong>Dynamisch in zomer:</strong> Profiteer van lagere zomerprijzen</li>
+                  <li>• <strong>Hybride aanpak:</strong> Combineer vaste en dynamische contracten</li>
+                  <li>• <strong>Monitor trends:</strong> Houd ontwikkelingen in de gaten</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* Herfst 2024 Detailanalyse */}
+          <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+            <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+              <Calendar className="w-6 h-6 text-orange-600" />
+              Herfst 2024: Uur- en Dagpatronen
+            </h3>
+            
+            <div className="text-center mb-6">
+              <Image
+                src="/herfst-2024-uur-dag-prijzen.png"
+                alt="Gemiddelde prijs per uur en dag - Herfst 2024"
+                width={800}
+                height={400}
+                className="rounded-xl shadow-lg mx-auto"
+              />
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl p-6 border border-orange-200">
+                <h4 className="font-bold text-orange-800 mb-3">🌅 Ochtendpiek</h4>
+                <p className="text-orange-700 text-sm">
+                  <strong>7:00-9:00:</strong> Hoge prijzen door ochtendspits
+                </p>
+                <p className="text-orange-600 text-xs mt-2">
+                  Vermijd grootverbruikers in deze periode
+                </p>
+              </div>
+              
+              <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
+                <h4 className="font-bold text-green-800 mb-3">🌙 Nachtvoordeel</h4>
+                <p className="text-green-700 text-sm">
+                  <strong>23:00-6:00:</strong> Laagste prijzen van de dag
+                </p>
+                <p className="text-green-600 text-xs mt-2">
+                  Perfect voor auto opladen en wasmachine
+                </p>
+              </div>
+              
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
+                <h4 className="font-bold text-blue-800 mb-3">📅 Weekendvoordeel</h4>
+                <p className="text-blue-700 text-sm">
+                  <strong>Zaterdag/Zondag:</strong> Consistente lagere prijzen
+                </p>
+                <p className="text-blue-600 text-xs mt-2">
+                  Ideaal voor huishoudelijke taken
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Conclusie */}
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl shadow-lg p-8 text-white">
+            <h3 className="text-2xl font-bold mb-6 text-center">🎯 Belangrijkste Conclusies</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div>
+                <h4 className="font-bold text-lg mb-4">📈 Trends</h4>
+                <ul className="space-y-2 text-blue-100 text-sm">
+                  <li>• Prijzen zijn sinds 2022 drastisch gedaald</li>
+                  <li>• 2024 was het goedkoopste jaar (€0.077/kWh)</li>
+                  <li>• 2025 verwacht lichte stijging naar €0.087/kWh</li>
+                  <li>• Seizoenspatronen blijven consistent</li>
+                </ul>
+              </div>
+              
+              <div>
+                <h4 className="font-bold text-lg mb-4">💡 Strategie</h4>
+                <ul className="space-y-2 text-blue-100 text-sm">
+                  <li>• Overweeg dynamische contracten voor zomer</li>
+                  <li>• Plan grootverbruikers buiten piekuren</li>
+                  <li>• Weekend is meestal goedkoper</li>
+                  <li>• Monitor prijzen via apps en websites</li>
+                </ul>
+              </div>
+            </div>
+            
+            <div className="mt-6 p-4 bg-white/10 rounded-xl">
+              <p className="text-center text-blue-100">
+                <strong>💡 Tip:</strong> Deze analyses helpen je een realistische verwachting te vormen van dynamische energieprijzen. 
+                Gebruik deze inzichten bij het vergelijken van energiecontracten!
+              </p>
+            </div>
+          </div>
+        </div>
 
         {/* Call to Action */}
         <div className="text-center mt-12">
