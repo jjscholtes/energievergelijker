@@ -91,14 +91,14 @@ export const berekenDynamischeEnergiekosten = async (
     let totaleJaarkostenMetPv = totaleJaarkosten;
 
     if (userProfile.heeftZonnepanelen && userProfile.pvOpwek && userProfile.percentageZelfverbruik) {
-      // Voor dynamische contracten gebruiken we de basisprijs (gebruiker input) voor saldering
+      // Voor dynamische contracten gebruiken we de basisprijs voor saldering en terugleververgoeding voor PV opbrengsten
       
       pvOpbrengsten = berekenSaldering(
         userProfile.pvOpwek,
         userProfile.jaarverbruikStroom,
         userProfile.percentageZelfverbruik,
         basisprijs, // Gebruik basisprijs (gebruiker input)
-        basisprijs, // Voor dynamische contracten is terugleververgoeding = basisprijs
+        contract.tarieven?.terugleververgoeding || basisprijs, // Gebruik terugleververgoeding of fallback naar basisprijs
         'dynamisch', // Dynamische contracten gebruiken basisprijs
         1.0, // salderingsPercentage
         0 // Dynamische contracten hebben geen terugleverkosten
