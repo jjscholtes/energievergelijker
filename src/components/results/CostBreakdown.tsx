@@ -210,6 +210,25 @@ export function CostBreakdown({ result }: CostBreakdownProps) {
           </div>
         )}
 
+        {/* Eenmalige Korting (alleen als korting > 0) */}
+        {result.contract.kortingEenmalig && result.contract.kortingEenmalig > 0 && (
+          <div className="space-y-3">
+            <h3 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">
+              💰 Eenmalige Korting
+            </h3>
+            
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span>Eenmalige korting</span>
+                <span className="text-green-600">-€{result.contract.kortingEenmalig.toFixed(2)}</span>
+              </div>
+              <div className="text-xs text-gray-500 ml-4">
+                Eenmalige korting bij afsluiten van het contract
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Totaal */}
         <div className="space-y-3 pt-4 border-t-2 border-gray-300">
           <div className="flex justify-between text-lg font-bold">

@@ -57,6 +57,7 @@ export interface BerekeningResult {
     leverancier: string;
     productNaam: string;
     type: string;
+    kortingEenmalig?: number;
     tarieven?: {
       stroomKalePrijs?: number;
       stroomKalePrijsPiek?: number;

@@ -137,6 +137,7 @@ export const berekenDynamischeEnergiekosten = async (
         leverancier: contract.leverancier,
         productNaam: contract.productNaam,
         type: contract.type,
+        kortingEenmalig: contract.kortingEenmalig,
         tarieven: {
           stroomKalePrijs: basisprijs, // Gebruiker input basisprijs
           gasKalePrijs: contract.tarieven?.gasKalePrijs || 1.20,

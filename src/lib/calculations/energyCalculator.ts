@@ -85,6 +85,7 @@ export const berekenEnergiekosten = (
       leverancier: contract.leverancier,
       productNaam: contract.productNaam,
       type: contract.type,
+      kortingEenmalig: contract.kortingEenmalig,
       tarieven: contract.tarieven
     },
     userProfile: {
