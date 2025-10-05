@@ -138,9 +138,9 @@ export const berekenDynamischeEnergiekosten = async (
         productNaam: contract.productNaam,
         type: contract.type,
         tarieven: {
-          stroomKalePrijs: gemiddeldeSpotPrijs,
-          gasKalePrijs: 0.30, // Gemiddelde gasprijs voor dynamische contracten
-          terugleververgoeding: gemiddeldeSpotPrijs
+          stroomKalePrijs: basisprijs, // Gebruiker input basisprijs
+          gasKalePrijs: contract.tarieven?.gasKalePrijs || 1.20,
+          terugleververgoeding: contract.tarieven?.terugleververgoeding || basisprijs
         }
       },
       userProfile: {

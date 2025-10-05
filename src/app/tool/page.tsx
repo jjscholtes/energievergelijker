@@ -51,7 +51,7 @@ export default function ToolPage() {
       stroomKalePrijsPiek: 0.10,  // Default voor vaste contracten
       stroomKalePrijsDal: 0.10,   // Default voor vaste contracten
       gasKalePrijs: 1.20,
-      terugleververgoeding: 0.0595, // Default voor dynamische contracten (5.95 cent)
+      terugleververgoeding: 0.01, // Default voor vaste contracten (1 cent)
       vasteTerugleverkosten: 0
     }
   });
@@ -78,7 +78,7 @@ export default function ToolPage() {
         stroomKalePrijsPiek: currentContract.tarieven?.stroomKalePrijsPiek,
         stroomKalePrijsDal: currentContract.tarieven?.stroomKalePrijsDal,
         gasKalePrijs: currentContract.tarieven?.gasKalePrijs || 1.20,
-        terugleververgoeding: currentContract.tarieven?.terugleververgoeding || 0.0595,
+        terugleververgoeding: currentContract.tarieven?.terugleververgoeding || (currentContract.type === 'dynamisch' ? 0.0595 : 0.01),
         vasteTerugleverkosten: currentContract.tarieven?.vasteTerugleverkosten || 0
       }
     };
@@ -116,7 +116,7 @@ export default function ToolPage() {
         stroomKalePrijsPiek: 0.10,  // Nieuwe default
         stroomKalePrijsDal: 0.10,   // Nieuwe default
         gasKalePrijs: 1.20,
-        terugleververgoeding: 0.0595, // Default voor dynamische contracten (5.95 cent)
+        terugleververgoeding: 0.01, // Default voor vaste contracten (1 cent)
         vasteTerugleverkosten: 0
       }
     });
