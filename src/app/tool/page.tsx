@@ -666,7 +666,7 @@ export default function ToolPage() {
                         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                           <h4 className="font-semibold text-blue-800 mb-2">⚡ Dynamisch Contract</h4>
                           <p className="text-sm text-blue-700">
-                            Dynamische contracten gebruiken spotmarktprijzen als basis. Je kunt de gemiddelde prijzen voor afname en invoeding aanpassen en opslagen toevoegen.
+                            Dynamische contracten gebruiken spotmarktprijzen als basis. De 8,5 cent (afname) en 5,95 cent (invoeding) zijn berekende gemiddelden die je kunt aanpassen, plus opslagen.
                           </p>
                         </div>
                         
@@ -687,7 +687,7 @@ export default function ToolPage() {
                                 })))}
                                 className="h-12"
                                 placeholder="Bijv. 0.085"
-                                title="Deze pre-filled bedragen zijn de berekende gemiddelde waarden die het beste uitgangspunt vormen voor dynamische contracten"
+                                title="De 8,5 cent is een berekend gemiddelde van de spotmarktprijzen voor afname van het net. Dit vormt het beste uitgangspunt voor dynamische contracten."
                               />
                               <p className="text-xs text-gray-500">Gemiddelde spotmarktprijs voor afname</p>
                             </div>
@@ -707,7 +707,7 @@ export default function ToolPage() {
                                 })), true)}
                                 className="h-12"
                                 placeholder="Bijv. 0.0595"
-                                title="Deze pre-filled bedragen zijn de berekende gemiddelde waarden die het beste uitgangspunt vormen voor dynamische contracten"
+                                title="De 5,95 cent is een berekend gemiddelde van de terugleververgoeding voor invoeding op het net. Dit vormt het beste uitgangspunt voor dynamische contracten."
                               />
                               <p className="text-xs text-gray-500">Gemiddelde terugleververgoeding voor invoeding</p>
                             </div>
