@@ -660,17 +660,17 @@ export function DynamicPricingPage() {
             </div>
           </div>
 
-          {/* Herfst 2024 Detailanalyse */}
+          {/* Seizoenspatronen Detailanalyse */}
           <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
             <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
               <Calendar className="w-6 h-6 text-orange-600" />
-              Herfst 2024: Uur- en Dagpatronen
+              Seizoenspatronen
             </h3>
             
             <div className="text-center mb-6">
               <Image
                 src="/herfst-2024-uur-dag-prijzen.png"
-                alt="Gemiddelde prijs per uur en dag - Herfst 2024"
+                alt="Gemiddelde prijs per uur en dag - Alle seizoenen"
                 width={800}
                 height={400}
                 className="rounded-xl shadow-lg mx-auto"
