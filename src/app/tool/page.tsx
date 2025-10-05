@@ -42,12 +42,12 @@ export default function ToolPage() {
   const [currentContract, setCurrentContract] = useState<Partial<ContractData>>({
     type: 'vast',
     looptijdMaanden: 12,
-    vasteLeveringskosten: 0,
+    vasteLeveringskosten: 0, // Wordt overschreven bij dynamische contracten
     kortingEenmalig: 0,
     duurzaamheidsScore: 5,
     klanttevredenheid: 5,
     tarieven: {
-      stroomKalePrijs: 0.15,      // Default voor dynamische contracten
+      stroomKalePrijs: 0.085,     // Default voor dynamische contracten
       stroomKalePrijsPiek: 0.10,  // Default voor vaste contracten
       stroomKalePrijsDal: 0.10,   // Default voor vaste contracten
       gasKalePrijs: 1.20,
@@ -67,7 +67,7 @@ export default function ToolPage() {
       productNaam: currentContract.productNaam || `${(currentContract.type || 'vast').charAt(0).toUpperCase() + (currentContract.type || 'vast').slice(1)} Contract`,
       type: currentContract.type as 'vast' | 'dynamisch',
       looptijdMaanden: currentContract.looptijdMaanden || 12,
-      vasteLeveringskosten: currentContract.vasteLeveringskosten || 0,
+      vasteLeveringskosten: currentContract.vasteLeveringskosten || (currentContract.type === 'dynamisch' ? 5.99 : 0),
       kortingEenmalig: currentContract.kortingEenmalig || 0,
       duurzaamheidsScore: currentContract.duurzaamheidsScore || 5,
       klanttevredenheid: currentContract.klanttevredenheid || 5,
@@ -112,6 +112,7 @@ export default function ToolPage() {
       duurzaamheidsScore: 5,
       klanttevredenheid: 5,
       tarieven: {
+        stroomKalePrijs: 0.085,     // Default voor dynamische contracten
         stroomKalePrijsPiek: 0.10,  // Nieuwe default
         stroomKalePrijsDal: 0.10,   // Nieuwe default
         gasKalePrijs: 1.20,
@@ -664,13 +665,13 @@ export default function ToolPage() {
                               id="basisprijs"
                               type="number"
                               step="0.001"
-                              value={getInputValue('basisprijs', currentContract.tarieven?.stroomKalePrijs || 0.15)}
+                              value={getInputValue('basisprijs', currentContract.tarieven?.stroomKalePrijs || 0.085)}
                               onChange={(e) => handleContractInputChange('basisprijs', e.target.value, (value) => setCurrentContract(prev => ({
                                 ...prev,
                                 tarieven: { ...prev.tarieven!, stroomKalePrijs: value }
                               })))}
                               className="h-12"
-                              placeholder="Bijv. 0.150"
+                              placeholder="Bijv. 0.085"
                             />
                             <p className="text-xs text-gray-500">Gemiddelde spotmarktprijs (wordt automatisch gebruikt)</p>
                           </div>
@@ -684,7 +685,7 @@ export default function ToolPage() {
                               id="maandelijkseVergoeding"
                               type="number"
                               step="0.01"
-                              value={getInputValue('maandelijkseVergoeding', currentContract.vasteLeveringskosten || 0, true)}
+                              value={getInputValue('maandelijkseVergoeding', currentContract.vasteLeveringskosten || 5.99, true)}
                               onChange={(e) => handleInputChange('maandelijkseVergoeding', e.target.value, (value) => setCurrentContract(prev => ({ ...prev, vasteLeveringskosten: value })), true)}
                               className="h-12"
                               placeholder="Bijv. 5.99"

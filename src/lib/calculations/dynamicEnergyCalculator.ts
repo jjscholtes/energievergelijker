@@ -33,7 +33,7 @@ export const berekenDynamischeEnergiekosten = async (
     const timestamps = Object.keys(priceMap).sort();
     const gemiddeldeSpotPrijs = timestamps.length > 0 
       ? timestamps.reduce((sum, ts) => sum + priceMap[ts], 0) / timestamps.length 
-      : 0.15; // Fallback prijs
+      : 0.085; // Fallback prijs
 
     // 3. Bereken kosten op basis van jaarverbruik en gebruiker input basisprijs
     const basisprijs = contract.tarieven?.stroomKalePrijs || gemiddeldeSpotPrijs;

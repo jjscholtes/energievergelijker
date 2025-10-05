@@ -407,64 +407,81 @@ Met deze tips kun je direct beginnen met besparen. Start met de gratis opties en
     summary: 'Ontdek de werkelijke kosten van dynamische energiecontracten in 2025. Uitgebreide analyse van kWh-prijzen, verbruiksprofielen en besparingsmogelijkheden voor Nederlandse huishoudens.',
     imageUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=400&fit=crop&crop=center',
     content: `
-# Dynamische Energiecontracten Kosten 2025: Complete Prijsanalyse
+# Dynamische Energiecontracten Kosten 2025
+## Complete Prijsanalyse & Besparingstips
 
 Dynamische energiecontracten worden steeds populairder, maar wat kosten ze nu echt? In deze uitgebreide analyse bekijken we de werkelijke kWh-prijzen, verbruiksprofielen en besparingsmogelijkheden voor Nederlandse huishoudens in 2025.
 
+---
+
 ## Wat is een dynamisch energiecontract?
 
-Een dynamisch energiecontract werkt anders dan traditionele vaste contracten. De elektriciteitsprijs verandert elk uur en de gasprijs elke dag op basis van de werkelijke marktprijzen.
+Een dynamisch energiecontract werkt fundamenteel anders dan traditionele vaste contracten. De elektriciteitsprijs verandert elk uur en de gasprijs elke dag op basis van de werkelijke marktprijzen.
 
-### Hoe werkt het?
-- Veel wind en zon → Prijs daalt
-- Gas- en kolencentrales nodig → Prijs stijgt  
-- Directe marktprijzen → Geen winstmarge leverancier
+### Hoe werkt het precies?
 
-Je betaalt dus direct de goedkope of dure uren en profiteert direct van prijsdalingen.
+> **Kernprincipe**: Je betaalt direct de werkelijke marktprijs zonder winstmarge van de leverancier.
 
-## All-in versus kale prijs: Wat betaal je werkelijk?
+**Prijsmechanisme:**
+- Veel wind en zon → Prijs daalt drastisch
+- Gas- en kolencentrales nodig → Prijs stijgt
+- Directe EPEX-spotmarktprijzen → Geen tussenhandel
+
+Je profiteert dus direct van prijsdalingen en betaalt direct voor dure uren.
+
+---
+
+## All-in versus kale prijs: De werkelijke kosten
 
 ### Kale prijs (EPEX-spotmarkt)
 De uurprijzen uit de EPEX-spotmarkt zijn "kale" groothandelsprijzen zonder:
 - Energiebelasting
 - BTW
-- Netbeheerkosten
+- Netbeheerkosten  
 - Leveranciersopslag
 
 ### All-in prijs (wat je werkelijk betaalt)
-De kale prijs wordt aangevuld met:
 
-**Belastingen en kosten (2025)**
-- Energiebelasting, BTW en netbeheerkosten: ± 12–15 ct/kWh
-- Leveranciersopslag (vaste marge en meetkosten)
+> **Belangrijke toevoegingen aan kale prijs:**
+> - Energiebelasting, BTW en netbeheerkosten: ± 12–15 ct/kWh
+> - Leveranciersopslag (vaste marge en meetkosten)
 
 **Zonneplan schatting**: All-in tarieven tussen €0,10 en €0,35 per kWh
 
 Wie slim stroom verplaatst naar goedkope uren, komt dichter bij de onderkant van die bandbreedte.
 
-## Dynamische stroomprijzen 2024: De cijfers
+---
+
+## Dynamische stroomprijzen 2024: De harde cijfers
 
 ### Gemiddelde kale prijs 2024
-De analyse van dynamische prijzen in 2024 toont een gemiddelde kale stroomprijs van 7,7 cent per kWh. Dat is bijna 20% lager dan in 2023.
+
+> **Hoofdconclusie**: De analyse van dynamische prijzen in 2024 toont een gemiddelde kale stroomprijs van **7,7 cent per kWh**. Dat is bijna **20% lager dan in 2023**.
 
 ### Seizoensverschillen
+
 | Seizoen | Kale prijs | Verschil t.o.v. gemiddelde |
 |---------|------------|----------------------------|
-| Lente | 6,3 ct/kWh | -18% (goedkoopste) |
-| Winter | 7,2 ct/kWh | -6% |
-| Herfst | 10,1 ct/kWh | +31% (duurste) |
+| **Lente** | 6,3 ct/kWh | -18% (goedkoopste) |
+| **Winter** | 7,2 ct/kWh | -6% |
+| **Herfst** | 10,1 ct/kWh | +31% (duurste) |
 
-**Belangrijk**: Deze waarden zijn exclusief energiebelasting en BTW. Tel je die er bij op, dan kom je uit op 20–30 cent per kWh.
+> **Let op**: Deze waarden zijn exclusief energiebelasting en BTW. Tel je die er bij op, dan kom je uit op **20–30 cent per kWh**.
 
 ### Piek- en daluren analyse
+
 De uurprijzen schommelen sterk gedurende de dag:
 
-- **Nacht (00:00-06:00)**: €0,06–0,07/kWh
-- **Ochtend (06:00-12:00)**: €0,08–0,10/kWh  
-- **Middag (12:00-18:00)**: €0,07–0,09/kWh
-- **Avond (18:00-24:00)**: €0,11+/kWh
+| Tijdstip | Prijsrange | Karakteristiek |
+|----------|------------|----------------|
+| **Nacht** (00:00-06:00) | €0,06–0,07/kWh | Meest voordelig |
+| **Ochtend** (06:00-12:00) | €0,08–0,10/kWh | Gemiddeld |
+| **Middag** (12:00-18:00) | €0,07–0,09/kWh | Variabel |
+| **Avond** (18:00-24:00) | €0,11+/kWh | Duurst |
 
-**Extreme dalen**: In 2024 waren er bijna 900 uur waarin de prijs onder de 1 cent/kWh lag — ideaal voor het laden van een elektrische auto of het opwarmen van een boiler.
+> **Extreme dalen**: In 2024 waren er bijna **900 uur** waarin de prijs onder de 1 cent/kWh lag — ideaal voor het laden van een elektrische auto of het opwarmen van een boiler.
+
+---
 
 ## Wat betekent dit voor jouw kWh-prijs?
 
@@ -473,12 +490,12 @@ Op basis van uurlijkse prijzen uit 2024 en typische Nederlandse verbruiksprofiel
 ### Kostenvergelijking per woningtype
 
 | Woningtype | Jaarverbruik | Kale prijs | Jaarlijkse kosten | All-in prijs |
-|---|---|---|---|---|
-| Gasgestookt huis | 3.500 kWh | 8,35 ct/kWh | €292 | €700-875 |
-| Warmtepomp huis | 8.000 kWh | 8,51 ct/kWh | €681 | €1.600-2.000 |
-| EV + Warmtepomp | 10.500 kWh | 8,22 ct/kWh | €863 | €2.100-2.625 |
+|------------|--------------|------------|-------------------|--------------|
+| **Gasgestookt huis** | 3.500 kWh | 8,35 ct/kWh | €292 | €700-875 |
+| **Warmtepomp huis** | 8.000 kWh | 8,51 ct/kWh | €681 | €1.600-2.000 |
+| **EV + Warmtepomp** | 10.500 kWh | 8,22 ct/kWh | €863 | €2.100-2.625 |
 
-**Opmerking**: De kale prijs is inclusief verbruiksprofiel. Belastingen en netkosten (±12–15 ct/kWh) komen daar nog bovenop.
+> **Opmerking**: De kale prijs is inclusief verbruiksprofiel. Belastingen en netkosten (±12–15 ct/kWh) komen daar nog bovenop.
 
 ### Waarom verschillen de prijzen per woningtype?
 
@@ -497,22 +514,24 @@ Op basis van uurlijkse prijzen uit 2024 en typische Nederlandse verbruiksprofiel
 - **Prijsimpact**: Nachtverbruik is goedkoper  
 - **Resultaat**: Gemiddelde kale prijs circa 8,22 ct/kWh
 
-## Vijf tips om maximaal te profiteren van dynamische contracten
+---
+
+## Vijf tips om maximaal te profiteren
 
 ### 1. Schuif verbruik naar daluren
 Gebruik timers voor wasmachines, vaatwassers en boilers zodat ze draaien wanneer de prijs laag is.
 
-**Besparing**: €50-100 per jaar
+> **Besparing**: €50-100 per jaar
 
 ### 2. Laad je EV 's nachts
 Laden tussen middernacht en zes uur kan tientallen euro's per maand schelen.
 
-**Besparing**: €200-300 per jaar
+> **Besparing**: €200-300 per jaar
 
 ### 3. Combineer met zonnepanelen
 Dynamische contracten vergoeden teruggeleverde stroom tegen de kale marktprijs. Op zonnige dagen krijg je dus de hoogste vergoeding.
 
-**Besparing**: €100-200 per jaar
+> **Besparing**: €100-200 per jaar
 
 ### 4. Investeer in slimme apparaten
 - Slimme thermostaat
@@ -520,12 +539,14 @@ Dynamische contracten vergoeden teruggeleverde stroom tegen de kale marktprijs. 
 - EV laadpaal met timer
 - Energiebeheersysteem
 
-**Besparing**: €150-250 per jaar
+> **Besparing**: €150-250 per jaar
 
 ### 5. Monitor je verbruik
 Gebruik energie-apps om je verbruik te tracken en te optimaliseren.
 
-**Besparing**: €50-100 per jaar
+> **Besparing**: €50-100 per jaar
+
+---
 
 ## Voor wie zijn dynamische contracten geschikt?
 
@@ -540,6 +561,8 @@ Gebruik energie-apps om je verbruik te tracken en te optimaliseren.
 - **Hoog piekverbruik**: Huishoudens die veel verbruiken tijdens dure uren
 - **Prijszekerheid**: Mensen die voorspelbare kosten willen
 
+---
+
 ## Conclusie: Is een dynamisch contract voordelig?
 
 Een dynamisch contract biedt de kans om je stroomprijs actief te sturen. De belangrijkste conclusies:
@@ -550,20 +573,22 @@ Een dynamisch contract biedt de kans om je stroomprijs actief te sturen. De bela
 - **Seizoensvariatie**: Lente goedkoopst, herfst duurst
 
 ### Besparingspotentieel
-Door slim te laden en apparaten te laten draaien op momenten dat stroom goedkoop is, kun je de all-in prijs richting de onderkant van de bandbreedte sturen.
 
-**De sleutel tot succes**: Flexibiliteit en slimme timing.
+> **De sleutel tot succes**: Flexibiliteit en slimme timing.
+
+Door slim te laden en apparaten te laten draaien op momenten dat stroom goedkoop is, kun je de all-in prijs richting de onderkant van de bandbreedte sturen.
 
 Voor consumenten die bereid zijn hun verbruik aan te passen biedt een dynamisch contract dus een reële besparing ten opzichte van vaste tarieven.
 
 ### Aanbeveling
+
 Dynamische contracten zijn vooral interessant voor Nederlandse huishoudens met:
 - Zonnepanelen
 - Warmtepompen  
 - Elektrische auto's
 - Flexibele verbruikspatronen
 
-**Wil je weten of een dynamisch contract voor jou voordelig is?** Gebruik onze energievergelijker om de kosten te berekenen voor jouw specifieke situatie.
+> **Wil je weten of een dynamisch contract voor jou voordelig is?** Gebruik onze energievergelijker om de kosten te berekenen voor jouw specifieke situatie.
     `,
     author: 'Energievergelijker Redactie',
     publishDate: '2025-01-20',
