@@ -96,8 +96,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         "url": "https://besteenergiecontract.nl/logo.png"
       }
     },
-    "datePublished": article.publishedAt,
-    "dateModified": article.publishedAt,
+    "datePublished": article.publishDate,
+    "dateModified": article.publishDate,
     "mainEntityOfPage": {
       "@type": "WebPage",
       "@id": `https://besteenergiecontract.nl/artikelen/${article.id}`
@@ -137,37 +137,239 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   };
 
   const formatContent = (content: string) => {
-    return content.split('\n').map((line, index) => {
-      if (line.startsWith('## ')) {
-        return (
-          <h2 key={index} className="text-2xl font-bold text-gray-900 mt-8 mb-4 first:mt-0">
-            {line.replace('## ', '')}
+    const lines = content.split('\n');
+    const elements: React.ReactElement[] = [];
+    let currentList: string[] = [];
+    let currentTable: string[][] = [];
+    let tableHeaders: string[] = [];
+    let inTable = false;
+    let inQuote = false;
+    let quoteContent: string[] = [];
+
+    const flushList = () => {
+      if (currentList.length > 0) {
+        elements.push(
+          <ul key={`list-${elements.length}`} className="space-y-3 mb-6">
+            {currentList.map((item, idx) => (
+              <li key={idx} className="flex items-start gap-3 text-gray-700 leading-relaxed">
+                <div className="w-2 h-2 bg-blue-500 rounded-full mt-3 flex-shrink-0"></div>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        );
+        currentList = [];
+      }
+    };
+
+    const flushTable = () => {
+      if (currentTable.length > 0) {
+        elements.push(
+          <div key={`table-${elements.length}`} className="overflow-x-auto mb-8">
+            <table className="w-full border-collapse bg-white rounded-xl shadow-lg overflow-hidden">
+              <thead className="bg-gradient-to-r from-blue-50 to-purple-50">
+                <tr>
+                  {tableHeaders.map((header, idx) => (
+                    <th key={idx} className="px-6 py-4 text-left font-semibold text-gray-800 border-b border-gray-200">
+                      {header}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {currentTable.map((row, rowIdx) => (
+                  <tr key={rowIdx} className={rowIdx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                    {row.map((cell, cellIdx) => (
+                      <td key={cellIdx} className="px-6 py-4 text-gray-700 border-b border-gray-100">
+                        {cell}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        );
+        currentTable = [];
+        tableHeaders = [];
+        inTable = false;
+      }
+    };
+
+    const flushQuote = () => {
+      if (quoteContent.length > 0) {
+        elements.push(
+          <div key={`quote-${elements.length}`} className="bg-gradient-to-r from-blue-50 to-purple-50 border-l-4 border-blue-500 p-6 mb-8 rounded-r-xl">
+            <div className="flex items-start gap-4">
+              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                <span className="text-white font-bold text-sm">"</span>
+              </div>
+              <div className="space-y-2">
+                {quoteContent.map((line, idx) => (
+                  <p key={idx} className="text-gray-800 font-medium leading-relaxed">
+                    {line}
+                  </p>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+        quoteContent = [];
+        inQuote = false;
+      }
+    };
+
+    lines.forEach((line, index) => {
+      const trimmedLine = line.trim();
+
+      // Handle horizontal dividers
+      if (trimmedLine === '---') {
+        flushList();
+        flushTable();
+        flushQuote();
+        elements.push(
+          <div key={`divider-${index}`} className="my-12 flex items-center">
+            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+            <div className="mx-4 w-3 h-3 bg-blue-500 rounded-full"></div>
+            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+          </div>
+        );
+        return;
+      }
+
+      // Handle H1 titles
+      if (trimmedLine.startsWith('# ')) {
+        flushList();
+        flushTable();
+        flushQuote();
+        elements.push(
+          <h1 key={`h1-${index}`} className="text-4xl font-bold text-gray-900 mb-6 mt-12 first:mt-0 leading-tight">
+            {trimmedLine.replace('# ', '')}
+          </h1>
+        );
+        return;
+      }
+
+      // Handle H2 titles
+      if (trimmedLine.startsWith('## ')) {
+        flushList();
+        flushTable();
+        flushQuote();
+        elements.push(
+          <h2 key={`h2-${index}`} className="text-3xl font-bold text-gray-900 mb-6 mt-12 first:mt-0 leading-tight">
+            {trimmedLine.replace('## ', '')}
           </h2>
         );
+        return;
       }
-      if (line.startsWith('### ')) {
-        return (
-          <h3 key={index} className="text-xl font-semibold text-gray-800 mt-6 mb-3">
-            {line.replace('### ', '')}
+
+      // Handle H3 titles
+      if (trimmedLine.startsWith('### ')) {
+        flushList();
+        flushTable();
+        flushQuote();
+        elements.push(
+          <h3 key={`h3-${index}`} className="text-2xl font-semibold text-gray-800 mb-4 mt-8 leading-tight">
+            {trimmedLine.replace('### ', '')}
           </h3>
         );
+        return;
       }
-      if (line.startsWith('- ')) {
-        return (
-          <li key={index} className="text-gray-700 mb-2 ml-4">
-            {line.replace('- ', '')}
-          </li>
+
+      // Handle H4 titles
+      if (trimmedLine.startsWith('#### ')) {
+        flushList();
+        flushTable();
+        flushQuote();
+        elements.push(
+          <h4 key={`h4-${index}`} className="text-xl font-semibold text-gray-800 mb-3 mt-6 leading-tight">
+            {trimmedLine.replace('#### ', '')}
+          </h4>
         );
+        return;
       }
-      if (line.trim() === '') {
-        return <br key={index} />;
+
+      // Handle blockquotes
+      if (trimmedLine.startsWith('> ')) {
+        if (!inQuote) {
+          flushList();
+          flushTable();
+          flushQuote();
+          inQuote = true;
+        }
+        quoteContent.push(trimmedLine.replace('> ', ''));
+        return;
       }
-      return (
-        <p key={index} className="text-gray-700 mb-4 leading-relaxed">
-          {line}
-        </p>
-      );
+
+      // Handle table headers
+      if (trimmedLine.startsWith('|') && trimmedLine.endsWith('|') && trimmedLine.includes('|')) {
+        if (!inTable) {
+          flushList();
+          flushQuote();
+          inTable = true;
+        }
+        
+        const cells = trimmedLine.split('|').slice(1, -1).map(cell => cell.trim());
+        
+        // Check if this is a header row (contains ---)
+        if (cells.some(cell => cell.includes('---'))) {
+          return; // Skip separator rows
+        }
+        
+        // Check if this looks like a header (first row or contains bold text)
+        if (tableHeaders.length === 0 || cells.some(cell => cell.includes('**'))) {
+          tableHeaders = cells.map(cell => cell.replace(/\*\*/g, ''));
+        } else {
+          currentTable.push(cells.map(cell => cell.replace(/\*\*/g, '')));
+        }
+        return;
+      }
+
+      // Handle list items
+      if (trimmedLine.startsWith('- ')) {
+        if (inTable) {
+          flushTable();
+        }
+        if (inQuote) {
+          flushQuote();
+        }
+        currentList.push(trimmedLine.replace('- ', ''));
+        return;
+      }
+
+      // Handle regular paragraphs
+      if (trimmedLine !== '') {
+        flushList();
+        flushTable();
+        flushQuote();
+        
+        // Check for bold text
+        const hasBold = trimmedLine.includes('**');
+        const processedLine = trimmedLine.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-gray-900">$1</strong>');
+        
+        elements.push(
+          <p key={`p-${index}`} className="text-gray-700 mb-6 leading-relaxed text-lg">
+            <span dangerouslySetInnerHTML={{ __html: processedLine }} />
+          </p>
+        );
+        return;
+      }
+
+      // Handle empty lines
+      if (trimmedLine === '') {
+        flushList();
+        flushTable();
+        flushQuote();
+        return;
+      }
     });
+
+    // Flush any remaining content
+    flushList();
+    flushTable();
+    flushQuote();
+
+    return elements;
   };
 
   return (
