@@ -407,143 +407,56 @@ Met deze tips kun je direct beginnen met besparen. Start met de gratis opties en
     summary: 'Een diepgaande analyse van de werkelijke kosten van dynamische energiecontracten in 2025. Ontdek wat je kunt verwachten aan kWh-prijzen en hoe je optimaal kunt besparen.',
     imageUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=400&fit=crop&crop=center',
     content: `
-## Wat is een dynamisch energiecontract?
+## Wat is een dynamisch contract?
 
-Bij een dynamisch energiecontract verandert de elektriciteitsprijs elk uur en de gasprijs elke dag. De prijs volgt de marktsituatie: als er veel wind en zon is, daalt de prijs; moet men gas- en kolencentrales inschakelen, dan stijgt de prijs. Wie een dynamisch contract heeft, betaalt direct de goedkope of dure uren en profiteert dus direct van prijsdalingen.
+Bij een dynamisch energiecontract verandert de elektriciteitsprijs **elk uur** en de gasprijs **elke dag**. De prijs volgt de marktsituatie: als er veel wind en zon is, daalt de prijs; moet men gas- en kolencentrales inschakelen, dan stijgt de prijs. Wie een dynamisch contract heeft, betaalt direct de goedkope of dure uren en profiteert dus direct van prijsdalingen.
 
-## All-in vs. kale prijs
+### All-in vs. kale prijs
 
 De uurprijzen uit de EPEX-spotmarkt zijn "kale" groothandelsprijzen. Ze worden in een dynamisch contract aangevuld met:
 
-- **Energiebelasting, btw en netbeheerkosten** – volgens aanbieder ± 12–15 ct/kWh (2025)
+- **Energy tax, btw en netbeheerkosten** – volgens aanbieder ± 12–15 ct/kWh (2025)
 - **Leveranciersopslag** (vaste marge en meetkosten)
 
-Deze kale prijs is de marktprijs inclusief profiel; belastingen en netkosten (± 12–15 ct/kWh) komen daar nog bovenop. All-in betaal je dus eerder 20–30 ct/kWh, afhankelijk van aanbieder en je verbruiksprofiel.
+Zonneplan schat de uiteindelijke all-in stroomtarieven voor consumenten (maart 2025) tussen **€ 0,10 en € 0,35 per kWh**. Wie slim stroom verplaatst naar goedkope uren, komt dichter bij de onderkant van die bandbreedte.
 
 ## Hoe duur was dynamische stroom in 2024?
 
-Een analyse van de dynamische prijzen in 2024 laat zien dat de gemiddelde kale stroomprijs rond **7,7 cent per kWh** lag. Dat is bijna 20% lager dan in 2023. De seizoensverschillen waren groot:
-
-- **Winter**: Gemiddeld iets onder het jaargemiddelde (ca. 7,2 ct)
-- **Lente**: Slechts 6,3 ct per kWh
-- **Herfst**: Met 10,1 ct per kWh de duurste periode
+Een analyse van de dynamische prijzen in 2024 laat zien dat de **gemiddelde kale stroomprijs rond 7,7 cent per kWh** lag. Dat is bijna 20% lager dan in 2023. De seizoensverschillen waren groot: in de winter lag de gemiddelde prijs iets onder het jaargemiddelde (ca. 7,2 ct), in de lente slechts 6,3 ct, terwijl de herfst met 10,1 ct per kWh de duurste periode was.
 
 Deze waarden zijn exclusief energiebelasting en btw; tel je die er bij op, dan komt de totale stroomprijs voor veel huishoudens op **20–30 ct/kWh**.
 
-## Piek- en daluren
+### Piek- en daluren
 
-De uurprijzen schommelen sterk:
-
-- **'s Nachts**: Gemiddeld rond € 0,06–0,07/kWh
-- **Vooravond (18–20 uur)**: Vaak boven € 0,11/kWh
-- **Extreme dalen**: In 2024 waren er bijna 900 uur waarin de prijs onder de 1 cent/kWh lag
-
-Dit maakt nachtverbruik ideaal voor het laden van een elektrische auto of het opwarmen van een boiler.
-
-## Waarom verschillen de prijzen per verbruiksprofiel?
-
-De kale prijs die je betaalt hangt af van je verbruiksprofiel - wanneer je precies stroom verbruikt:
-
-### Gasgestookt huis (8,3 ct/kWh)
-- **Verbruikspatroon**: Vooral in de avond
-- **Prijsimpact**: Stroom wordt tegen hogere prijzen ingekocht
-- **Gemiddelde kale prijs**: Rond 8,3 ct/kWh
-
-### Warmtepomp huis (8,5 ct/kWh)
-- **Verbruikspatroon**: Veel energie in winter en vroege ochtend
-- **Prijsimpact**: Wintermaanden zijn duurder
-- **Gemiddelde kale prijs**: Ca. 8,5 ct/kWh
-
-### EV huis (8,2 ct/kWh)
-- **Verbruikspatroon**: Meestal 's nachts laden
-- **Prijsimpact**: Nachtverbruik is goedkoper
-- **Gemiddelde kale prijs**: Circa 8,2 ct/kWh
+De uurprijzen schommelen sterk. 's Nachts liggen de tarieven gemiddeld rond **€ 0,06–0,07/kWh**, terwijl ze in de vooravond (18–20 uur) vaak boven **€ 0,11/kWh** uitkomen. In 2024 waren er bijna 900 uur waarin de prijs onder de 1 cent/kWh lag — ideaal voor laden van een elektrische auto of het opwarmen van een boiler.
 
 ## Wat betekent dit voor jouw kWh-prijs?
 
-Op basis van de uurlijkse prijzen uit 2024 en typische Nederlandse verbruiksprofielen is berekend wat een dynamisch contract kost voor drie type woningen:
+Op basis van de uurlijkse prijzen uit 2024 en typische Nederlandse verbruiksprofielen is berekend wat een dynamisch contract kost voor drie type woningen. De berekeningen gebruiken een jaarverbruik van 3.500 kWh voor een huishouden met gas, 8.000 kWh voor een all-electric huis met warmtepomp en 10.500 kWh voor een all-electric huis met EV.
 
-### Huishouden met gas (3.500 kWh/jaar)
-- **Gemiddelde kale prijs**: €0,077/kWh
-- **All-in prijs**: €0,20-€0,25/kWh
-- **Jaarlijkse kosten**: €700-€875
+| **Type woning** | **Jaarverbruik (kWh)** | **Gem. kale stroomprijs (ct/kWh)*** | **Geschatte stroomkosten per jaar (excl. belastingen)** |
+|---|---|---|---|
+| Huishouden met gas (apparaten + verlichting) | ~ 3.500 | **8,35 ct** | ± € 292 |
+| All-electric met warmtepomp | ~ 8.000 | **8,51 ct** | ± € 681 |
+| All-electric met warmtepomp + EV | ~ 10.500 | **8,22 ct** | ± € 863 |
 
-### All-electric huis met warmtepomp (8.000 kWh/jaar)
-- **Gemiddelde kale prijs**: €0,077/kWh
-- **All-in prijs**: €0,20-€0,25/kWh
-- **Jaarlijkse kosten**: €1.600-€2.000
+*Deze kale prijs is de marktprijs inclusief profiel; belastingen en netkosten (± 12–15 ct/kWh) komen daar nog bovenop. All-in betaal je dus eerder 20–30 ct/kWh, afhankelijk van aanbieder en je verbruiksprofiel.
 
-### All-electric huis met EV (10.500 kWh/jaar)
-- **Gemiddelde kale prijs**: €0,077/kWh
-- **All-in prijs**: €0,20-€0,25/kWh
-- **Jaarlijkse kosten**: €2.100-€2.625
+**Waarom verschillen de prijzen?**
 
-## Besparingsmogelijkheden
+- Bij een gasgestookt huis ligt het verbruik vooral in de avond. De stroom wordt dan tegen hogere prijzen ingekocht, waardoor de gemiddelde kale prijs rond 8,3 ct/kWh uitkomt.
+- Een warmtepomp verbruikt veel energie in de winter en de vroege ochtend; wintermaanden zijn duurder, daarom ligt de gemiddelde prijs iets hoger (ca. 8,5 ct/kWh).
+- Een EV wordt meestal 's nachts geladen, wanneer de stroom goedkoop is. Dat drukt de gemiddelde kWh-prijs iets naar beneden (circa 8,2 ct/kWh).
 
-### Slimme timing
-- **Nachtverbruik**: 30-40% goedkoper dan piekuren
-- **Weekend**: Consistente lagere prijzen
-- **Zomer**: Gemiddeld 20-30% goedkoper dan winter
+## Tips om te profiteren
 
-### Praktische tips
-1. **Schuif verbruik naar daluren** - Gebruik timers voor wasmachines, vaatwassers en boilers zodat ze draaien wanneer de prijs laag is
-2. **Laad je EV 's nachts** - Laden tussen middernacht en zes uur kan tientallen euro's per maand schelen
-3. **Combineer met zonnepanelen** - Dynamische contracten vergoeden teruggeleverde stroom tegen de kale marktprijs; op zonnige dagen krijg je dus de hoogste vergoeding
-4. **Gebruik een slimme thermostaat** - Automatiseer je besparingen
-
-## Vergelijking met vaste contracten
-
-### Voordelen dynamisch
-- **Lagere basisprijs**: Geen winstmarge leverancier
-- **Transparantie**: Je betaalt de werkelijke marktprijs
-- **Flexibiliteit**: Bespaar door slim te verbruiken
-- **Duurzaamheid**: Stimuleert gebruik van hernieuwbare energie
-
-### Nadelen dynamisch
-- **Onvoorspelbaarheid**: Prijzen kunnen sterk schommelen
-- **Piekprijzen**: Dure momenten kunnen duur uitpakken
-- **Complexiteit**: Vereist actief energiebeheer
-- **Risico**: Geen prijszekerheid
-
-## Voor wie zijn dynamische contracten geschikt?
-
-### Ideale kandidaten
-- **Warmtepomp eigenaren**: Hoog verbruik, flexibele timing
-- **EV eigenaren**: Nachtelijk laden mogelijk
-- **Zonnepaneel eigenaren**: Compensatie van eigen opwekking
-- **Flexibele gebruikers**: Kunnen verbruik aanpassen
-
-### Minder geschikt voor
-- **Vaste routines**: Mensen die altijd op dezelfde tijden verbruiken
-- **Hoog piekverbruik**: Huishoudens die veel verbruiken tijdens dure uren
-- **Prijszekerheid**: Mensen die voorspelbare kosten willen
-
-## Praktische implementatie
-
-### Stap 1: Analyseer je verbruik
-- Bekijk je huidige verbruikspatroon
-- Identificeer piek- en daluren
-- Bereken potentiële besparingen
-
-### Stap 2: Investeer in slimme apparaten
-- Slimme thermostaat
-- Timer voor wasmachine/droger
-- EV laadpaal met timer
-- Energiebeheersysteem
-
-### Stap 3: Monitor en optimaliseer
-- Gebruik energie-apps
-- Track je besparingen
-- Pas je gedrag aan
-- Optimaliseer continu
+- **Schuif verbruik naar daluren.** Gebruik timers voor wasmachines, vaatwassers en boilers zodat ze draaien wanneer de prijs laag is.
+- **Laden van je EV of thuisbatterij** in de uren met bijna gratis stroom (vaak tussen middernacht en zes uur) kan tientallen euro's per maand schelen.
+- **Combineer met zonnepanelen.** Dynamische contracten vergoeden teruggeleverde stroom tegen de kale marktprijs; op zonnige dagen krijg je dus de hoogste vergoeding.
 
 ## Conclusie
 
-Een dynamisch contract biedt de kans om je stroomprijs actief te sturen. Gemiddeld lag de kale stroomprijs in 2024 op zo'n **7,7 cent per kWh**. Tel je belastingen en netkosten mee, dan kom je uit op **20–30 cent per kWh**. Door slim te laden en apparaten te laten draaien op momenten dat stroom goedkoop is, kun je de all-in prijs richting de onderkant van die bandbreedte sturen.
-
-**De sleutel tot succes**: Flexibiliteit en slimme timing. Voor consumenten die bereid zijn hun verbruik aan te passen biedt een dynamisch contract dus een reële besparing ten opzichte van vaste tarieven.
-
-Voor de meeste Nederlandse huishoudens zijn dynamische contracten interessant, vooral in combinatie met zonnepanelen, warmtepompen of elektrische auto's.
+Een dynamisch contract biedt de kans om je stroomprijs actief te sturen. Gemiddeld lag de kale stroomprijs in 2024 op zo'n **7,7 cent per kWh**. Tel je belastingen en netkosten mee, dan kom je uit op **20–30 cent per kWh**. Door slim te laden en apparaten te laten draaien op momenten dat stroom goedkoop is, kun je de all-in prijs richting de onderkant van die bandbreedte sturen. Voor consumenten die bereid zijn hun verbruik aan te passen biedt een dynamisch contract dus een reële besparing ten opzichte van vaste tarieven.
     `,
     author: 'Energievergelijker Redactie',
     publishDate: '2025-01-20',
