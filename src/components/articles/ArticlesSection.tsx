@@ -37,16 +37,27 @@ export default function ArticlesSection() {
           </p>
         </div>
 
-        {/* All Articles */}
+        {/* Featured Articles */}
         <div className="mb-20">
           {/* Enhanced Articles Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mb-16">
-            {articles.map((article) => (
+            {articles.slice(0, 3).map((article) => (
               <ArticleCard 
                 key={article.id}
                 article={article} 
               />
             ))}
+          </div>
+
+          {/* View All Articles Button */}
+          <div className="text-center mb-16">
+            <Link
+              href="/artikelen"
+              className="inline-flex items-center gap-3 bg-white border-2 border-blue-600 text-blue-600 hover:bg-blue-50 px-8 py-4 rounded-xl font-bold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl group"
+            >
+              <span>Alle artikelen bekijken ({articles.length})</span>
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Link>
           </div>
 
           {/* Call to Action */}

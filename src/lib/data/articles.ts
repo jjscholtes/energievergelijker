@@ -45,7 +45,7 @@ Voor nieuwe PV-kopers wordt het business-case-breekpunt nu meestal berekend op 6
 De markt verschuift van hoge, variabele terugleververgoedingen naar lage vaste vergoedingen plus terugleverkosten. Dit dwingt zonnepaneelbezitters hun eigen opgewekte stroom in hoge mate zelf te benutten via slim energiebeheer en opslag.
     `,
     author: 'Energievergelijker Redactie',
-    publishDate: '2025-01-15',
+    publishDate: '2024-12-15',
     category: 'trends',
     readTime: 8,
     featured: true,
@@ -83,7 +83,7 @@ Dynamische contracten zijn ideaal voor:
 - Flexibele energiegebruikers
     `,
     author: 'Energievergelijker Redactie',
-    publishDate: '2025-01-10',
+    publishDate: '2024-12-10',
     category: 'tips',
     readTime: 5,
     featured: true,
@@ -119,7 +119,7 @@ De markt voor zonnepanelen ondergaat belangrijke veranderingen in 2025. Teruglev
 Na 2027 wordt zelfconsumptie nog belangrijker. Investeer nu in slimme oplossingen om toekomstbestendig te zijn.
     `,
     author: 'Energievergelijker Redactie',
-    publishDate: '2025-01-08',
+    publishDate: '2024-12-08',
     category: 'analyse',
     readTime: 6,
     featured: true,
@@ -167,7 +167,7 @@ Warmtepompen verbruiken veel elektriciteit, vooral tijdens koude periodes. Dit b
 Voor warmtepomp eigenaren zijn dynamische contracten vaak voordeliger, mits je flexibel kunt zijn met je verbruik.
     `,
     author: 'Energievergelijker Redactie',
-    publishDate: '2025-01-05',
+    publishDate: '2024-12-05',
     category: 'tips',
     readTime: 5,
     featured: false,
@@ -237,7 +237,7 @@ De energiemarkt blijft volatiel, maar er zijn duidelijke trends zichtbaar die de
 2025 wordt een jaar van stabilisatie met nieuwe kansen voor slimme energiegebruikers.
     `,
     author: 'Energievergelijker Redactie',
-    publishDate: '2025-01-03',
+    publishDate: '2024-12-03',
     category: 'analyse',
     readTime: 7,
     featured: false,
@@ -318,7 +318,7 @@ Een thuisbatterij slaat overtollige zonne-energie op voor later gebruik, meestal
 Thuisbatterijen worden steeds rendabeler door dalende prijzen en veranderende energiemarkt. Voor veel huishoudens met zonnepanelen is het nu interessant.
     `,
     author: 'Energievergelijker Redactie',
-    publishDate: '2025-01-01',
+    publishDate: '2024-12-01',
     category: 'tips',
     readTime: 6,
     featured: false,
@@ -591,7 +591,7 @@ Dynamische contracten zijn vooral interessant voor Nederlandse huishoudens met:
 > **Wil je weten of een dynamisch contract voor jou voordelig is?** Gebruik onze energievergelijker om de kosten te berekenen voor jouw specifieke situatie.
     `,
     author: 'Energievergelijker Redactie',
-    publishDate: '2025-01-20',
+    publishDate: '2024-12-20',
     category: 'analyse',
     readTime: 10,
     featured: true,
