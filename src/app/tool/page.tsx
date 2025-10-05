@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -165,6 +165,21 @@ export default function ToolPage() {
     const values = isDynamic ? dynamicInputValues : inputValues;
     return values[key] !== undefined ? values[key] : defaultValue.toString();
   };
+
+  // Effect om terugleververgoeding aan te passen bij contract type wijziging
+  useEffect(() => {
+    if (currentContract.type === 'dynamisch' && currentContract.tarieven?.terugleververgoeding === 0.01) {
+      setCurrentContract(prev => ({
+        ...prev,
+        tarieven: { ...prev.tarieven!, terugleververgoeding: 0.0595 }
+      }));
+    } else if (currentContract.type === 'vast' && currentContract.tarieven?.terugleververgoeding === 0.0595) {
+      setCurrentContract(prev => ({
+        ...prev,
+        tarieven: { ...prev.tarieven!, terugleververgoeding: 0.01 }
+      }));
+    }
+  }, [currentContract.type]);
 
   // Helper functie voor input change
   const handleInputChange = (key: string, value: string, setter: (value: number) => void, isDynamic: boolean = false) => {
@@ -797,25 +812,25 @@ export default function ToolPage() {
                             placeholder="Bijv. 1.200"
                           />
                         </div>
+                      </div>
 
-                        <div className="space-y-2">
-                          <Label htmlFor="terugleververgoeding" className="text-sm font-medium text-gray-700">
-                            Terugleververgoeding (€/kWh)
-                          </Label>
-                          <Input
-                            id="terugleververgoeding"
-                            type="number"
-                            step="0.001"
-                            value={getInputValue('terugleververgoeding', currentContract.tarieven?.terugleververgoeding || 0.0595, true)}
-                            onChange={(e) => handleInputChange('terugleververgoeding', e.target.value, (value) => setCurrentContract(prev => ({
-                              ...prev,
-                              tarieven: { ...prev.tarieven!, terugleververgoeding: value }
-                            })), true)}
-                            className="h-12"
-                            placeholder="Bijv. 0.0595"
-                          />
-                          <p className="text-xs text-gray-500">Gemiddelde terugleververgoeding voor dynamische contracten</p>
-                        </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="terugleververgoeding" className="text-sm font-medium text-gray-700">
+                          Terugleververgoeding (€/kWh)
+                        </Label>
+                        <Input
+                          id="terugleververgoeding"
+                          type="number"
+                          step="0.001"
+                          value={getInputValue('terugleververgoeding', currentContract.tarieven?.terugleververgoeding || 0.0595, true)}
+                          onChange={(e) => handleInputChange('terugleververgoeding', e.target.value, (value) => setCurrentContract(prev => ({
+                            ...prev,
+                            tarieven: { ...prev.tarieven!, terugleververgoeding: value }
+                          })), true)}
+                          className="h-12"
+                          placeholder="Bijv. 0.0595"
+                        />
+                        <p className="text-xs text-gray-500">Gemiddelde terugleververgoeding voor dynamische contracten</p>
                       </div>
 
                       {userProfile.heeftZonnepanelen && (
