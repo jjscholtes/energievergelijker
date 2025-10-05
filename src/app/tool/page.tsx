@@ -666,29 +666,49 @@ export default function ToolPage() {
                         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                           <h4 className="font-semibold text-blue-800 mb-2">⚡ Dynamisch Contract</h4>
                           <p className="text-sm text-blue-700">
-                            Dynamische contracten gebruiken spotmarktprijzen als basis. Je kunt de basisprijs aanpassen en opslagen toevoegen. 
-                            De terugleververgoeding is automatisch gelijk aan de basisprijs.
+                            Dynamische contracten gebruiken spotmarktprijzen als basis. Je kunt de basisprijs en terugleververgoeding aanpassen en opslagen toevoegen.
                           </p>
                         </div>
                         
                         <div className="space-y-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="basisprijs" className="text-sm font-medium text-gray-700">
-                              Basisprijs per kWh (€/kWh)
-                            </Label>
-                            <Input
-                              id="basisprijs"
-                              type="number"
-                              step="0.001"
-                              value={getInputValue('basisprijs', currentContract.tarieven?.stroomKalePrijs || 0.085)}
-                              onChange={(e) => handleContractInputChange('basisprijs', e.target.value, (value) => setCurrentContract(prev => ({
-                                ...prev,
-                                tarieven: { ...prev.tarieven!, stroomKalePrijs: value }
-                              })))}
-                              className="h-12"
-                              placeholder="Bijv. 0.085"
-                            />
-                            <p className="text-xs text-gray-500">Gemiddelde spotmarktprijs (wordt automatisch gebruikt)</p>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="basisprijs" className="text-sm font-medium text-gray-700">
+                                Basisprijs per kWh (€/kWh)
+                              </Label>
+                              <Input
+                                id="basisprijs"
+                                type="number"
+                                step="0.001"
+                                value={getInputValue('basisprijs', currentContract.tarieven?.stroomKalePrijs || 0.085)}
+                                onChange={(e) => handleContractInputChange('basisprijs', e.target.value, (value) => setCurrentContract(prev => ({
+                                  ...prev,
+                                  tarieven: { ...prev.tarieven!, stroomKalePrijs: value }
+                                })))}
+                                className="h-12"
+                                placeholder="Bijv. 0.085"
+                              />
+                              <p className="text-xs text-gray-500">Gemiddelde spotmarktprijs</p>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="terugleververgoeding" className="text-sm font-medium text-gray-700">
+                                Terugleververgoeding (€/kWh)
+                              </Label>
+                              <Input
+                                id="terugleververgoeding"
+                                type="number"
+                                step="0.001"
+                                value={getInputValue('terugleververgoeding', currentContract.tarieven?.terugleververgoeding || 0.0595, true)}
+                                onChange={(e) => handleInputChange('terugleververgoeding', e.target.value, (value) => setCurrentContract(prev => ({
+                                  ...prev,
+                                  tarieven: { ...prev.tarieven!, terugleververgoeding: value }
+                                })), true)}
+                                className="h-12"
+                                placeholder="Bijv. 0.0595"
+                              />
+                              <p className="text-xs text-gray-500">Gemiddelde terugleververgoeding</p>
+                            </div>
                           </div>
                           
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -812,25 +832,6 @@ export default function ToolPage() {
                             placeholder="Bijv. 1.200"
                           />
                         </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="terugleververgoeding" className="text-sm font-medium text-gray-700">
-                          Terugleververgoeding (€/kWh)
-                        </Label>
-                        <Input
-                          id="terugleververgoeding"
-                          type="number"
-                          step="0.001"
-                          value={getInputValue('terugleververgoeding', currentContract.tarieven?.terugleververgoeding || 0.0595, true)}
-                          onChange={(e) => handleInputChange('terugleververgoeding', e.target.value, (value) => setCurrentContract(prev => ({
-                            ...prev,
-                            tarieven: { ...prev.tarieven!, terugleververgoeding: value }
-                          })), true)}
-                          className="h-12"
-                          placeholder="Bijv. 0.0595"
-                        />
-                        <p className="text-xs text-gray-500">Gemiddelde terugleververgoeding voor dynamische contracten</p>
                       </div>
 
                       {userProfile.heeftZonnepanelen && (
