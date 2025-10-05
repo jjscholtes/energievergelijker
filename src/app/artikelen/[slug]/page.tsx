@@ -150,12 +150,19 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       if (currentList.length > 0) {
         elements.push(
           <ul key={`list-${elements.length}`} className="space-y-3 mb-6">
-            {currentList.map((item, idx) => (
-              <li key={idx} className="flex items-start gap-3 text-gray-700 leading-relaxed">
-                <div className="w-2 h-2 bg-blue-500 rounded-full mt-3 flex-shrink-0"></div>
-                <span>{item}</span>
-              </li>
-            ))}
+            {currentList.map((item, idx) => {
+              // Process bold text in list items
+              let processedItem = item;
+              processedItem = processedItem.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-gray-900">$1</strong>');
+              processedItem = processedItem.replace(/\*(.*?)\*/g, '<em class="italic text-gray-800">$1</em>');
+              
+              return (
+                <li key={idx} className="flex items-start gap-3 text-gray-700 leading-relaxed">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-3 flex-shrink-0"></div>
+                  <span dangerouslySetInnerHTML={{ __html: processedItem }} />
+                </li>
+              );
+            })}
           </ul>
         );
         currentList = [];
@@ -169,21 +176,35 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             <table className="w-full border-collapse bg-white rounded-xl shadow-lg overflow-hidden">
               <thead className="bg-gradient-to-r from-blue-50 to-purple-50">
                 <tr>
-                  {tableHeaders.map((header, idx) => (
-                    <th key={idx} className="px-6 py-4 text-left font-semibold text-gray-800 border-b border-gray-200">
-                      {header}
-                    </th>
-                  ))}
+                  {tableHeaders.map((header, idx) => {
+                    // Process bold text in table headers
+                    let processedHeader = header;
+                    processedHeader = processedHeader.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-gray-900">$1</strong>');
+                    processedHeader = processedHeader.replace(/\*(.*?)\*/g, '<em class="italic text-gray-800">$1</em>');
+                    
+                    return (
+                      <th key={idx} className="px-6 py-4 text-left font-semibold text-gray-800 border-b border-gray-200">
+                        <span dangerouslySetInnerHTML={{ __html: processedHeader }} />
+                      </th>
+                    );
+                  })}
                 </tr>
               </thead>
               <tbody>
                 {currentTable.map((row, rowIdx) => (
                   <tr key={rowIdx} className={rowIdx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                    {row.map((cell, cellIdx) => (
-                      <td key={cellIdx} className="px-6 py-4 text-gray-700 border-b border-gray-100">
-                        {cell}
-                      </td>
-                    ))}
+                    {row.map((cell, cellIdx) => {
+                      // Process bold text in table cells
+                      let processedCell = cell;
+                      processedCell = processedCell.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-gray-900">$1</strong>');
+                      processedCell = processedCell.replace(/\*(.*?)\*/g, '<em class="italic text-gray-800">$1</em>');
+                      
+                      return (
+                        <td key={cellIdx} className="px-6 py-4 text-gray-700 border-b border-gray-100">
+                          <span dangerouslySetInnerHTML={{ __html: processedCell }} />
+                        </td>
+                      );
+                    })}
                   </tr>
                 ))}
               </tbody>
@@ -205,11 +226,18 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 <span className="text-white font-bold text-sm">"</span>
               </div>
               <div className="space-y-2">
-                {quoteContent.map((line, idx) => (
-                  <p key={idx} className="text-gray-800 font-medium leading-relaxed">
-                    {line}
-                  </p>
-                ))}
+                {quoteContent.map((line, idx) => {
+                  // Process bold text in quotes
+                  let processedLine = line;
+                  processedLine = processedLine.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-gray-900">$1</strong>');
+                  processedLine = processedLine.replace(/\*(.*?)\*/g, '<em class="italic text-gray-800">$1</em>');
+                  
+                  return (
+                    <p key={idx} className="text-gray-800 font-medium leading-relaxed">
+                      <span dangerouslySetInnerHTML={{ __html: processedLine }} />
+                    </p>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -343,9 +371,14 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         flushTable();
         flushQuote();
         
-        // Check for bold text
-        const hasBold = trimmedLine.includes('**');
-        const processedLine = trimmedLine.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-gray-900">$1</strong>');
+        // Process bold text and other formatting
+        let processedLine = trimmedLine;
+        
+        // Handle bold text (**text**)
+        processedLine = processedLine.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-gray-900">$1</strong>');
+        
+        // Handle italic text (*text*)
+        processedLine = processedLine.replace(/\*(.*?)\*/g, '<em class="italic text-gray-800">$1</em>');
         
         elements.push(
           <p key={`p-${index}`} className="text-gray-700 mb-6 leading-relaxed text-lg">
