@@ -410,9 +410,17 @@ export default function ToolPage() {
                     
                     <div className="space-y-4">
                       <div className="space-y-2">
-                        <Label htmlFor="jaarverbruikStroom" className="text-sm font-medium text-gray-700">
-                          Totaal Jaarverbruik Stroom (kWh)
-                        </Label>
+                        <div className="flex items-center gap-2">
+                          <Label htmlFor="jaarverbruikStroom" className="text-sm font-medium text-gray-700">
+                            Totaal Jaarverbruik Stroom (kWh)
+                          </Label>
+                          <div className="group relative">
+                            <span className="text-blue-500 cursor-help text-sm">ℹ️</span>
+                            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                              Je totale jaarverbruik aan elektriciteit. Wordt automatisch verdeeld in 40% normaal en 60% dal verbruik.
+                            </div>
+                          </div>
+                        </div>
                         <Input
                           id="jaarverbruikStroom"
                           type="number"
@@ -432,16 +440,23 @@ export default function ToolPage() {
                           }}
                           className="h-12"
                           placeholder="Bijv. 2900"
-                          title="Je totale jaarverbruik aan elektriciteit. Dit wordt automatisch verdeeld in 40% normaal (dag) en 60% dal (nacht/weekend) verbruik. Je kunt deze verdeling handmatig aanpassen."
                         />
                         <p className="text-xs text-gray-500">Automatisch verdeeld: {userProfile.jaarverbruikStroomPiek} kWh normaal, {userProfile.jaarverbruikStroomDal} kWh dal</p>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="jaarverbruikStroomPiek" className="text-sm font-medium text-gray-700">
-                            Normaal Verbruik (kWh)
-                          </Label>
+                          <div className="flex items-center gap-2">
+                            <Label htmlFor="jaarverbruikStroomPiek" className="text-sm font-medium text-gray-700">
+                              Normaal Verbruik (kWh)
+                            </Label>
+                            <div className="group relative">
+                              <span className="text-blue-500 cursor-help text-sm">ℹ️</span>
+                              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                                Verbruik tijdens normale uren (werkdagen 7:00-23:00). Meestal duurder dan dal tarief.
+                              </div>
+                            </div>
+                          </div>
                           <Input
                             id="jaarverbruikStroomPiek"
                             type="number"
@@ -464,9 +479,17 @@ export default function ToolPage() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="jaarverbruikStroomDal" className="text-sm font-medium text-gray-700">
-                            Dal Verbruik (kWh)
-                          </Label>
+                          <div className="flex items-center gap-2">
+                            <Label htmlFor="jaarverbruikStroomDal" className="text-sm font-medium text-gray-700">
+                              Dal Verbruik (kWh)
+                            </Label>
+                            <div className="group relative">
+                              <span className="text-blue-500 cursor-help text-sm">ℹ️</span>
+                              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                                Verbruik tijdens daluren (nacht 23:00-7:00 en weekenden). Meestal goedkoper dan normaal tarief.
+                              </div>
+                            </div>
+                          </div>
                           <Input
                             id="jaarverbruikStroomDal"
                             type="number"
@@ -494,9 +517,17 @@ export default function ToolPage() {
 
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
-                          <Label htmlFor="jaarverbruikGas" className="text-sm font-medium text-gray-700">
-                            Jaarverbruik Gas (m³)
-                          </Label>
+                          <div className="flex items-center gap-2">
+                            <Label htmlFor="jaarverbruikGas" className="text-sm font-medium text-gray-700">
+                              Jaarverbruik Gas (m³)
+                            </Label>
+                            <div className="group relative">
+                              <span className="text-blue-500 cursor-help text-sm">ℹ️</span>
+                              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                                Jaarverbruik in kubieke meters voor verwarming, warm water en koken. Gemiddeld 1200-1500 m³/jaar.
+                              </div>
+                            </div>
+                          </div>
                           <div className="flex items-center space-x-2">
                             <input
                               type="checkbox"
@@ -553,10 +584,18 @@ export default function ToolPage() {
                       <div className="space-y-4 p-6 bg-green-50 rounded-xl border border-green-200">
                         <h4 className="font-semibold text-green-800">☀️ Zonnepanelen Details</h4>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="pvOpwek" className="text-sm font-medium text-green-700">
-                              Jaarproductie (kWh)
-                            </Label>
+                            <div className="space-y-2">
+                              <div className="flex items-center gap-2">
+                                <Label htmlFor="pvOpwek" className="text-sm font-medium text-green-700">
+                                  Jaarproductie (kWh)
+                                </Label>
+                                <div className="group relative">
+                                  <span className="text-blue-500 cursor-help text-sm">ℹ️</span>
+                                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                                    Totale kWh die je zonnepanelen per jaar opwekken. Gemiddeld 3000-4000 kWh voor 10 panelen.
+                                  </div>
+                                </div>
+                              </div>
                             <Input
                               id="pvOpwek"
                               type="number"
@@ -567,10 +606,18 @@ export default function ToolPage() {
                               title="De totale jaarproductie van je zonnepanelen in kWh. Een gemiddeld systeem van 10 panelen produceert ongeveer 3000-4000 kWh per jaar."
                             />
                           </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="percentageZelfverbruik" className="text-sm font-medium text-green-700">
-                              Zelfverbruik (%)
-                            </Label>
+                            <div className="space-y-2">
+                              <div className="flex items-center gap-2">
+                                <Label htmlFor="percentageZelfverbruik" className="text-sm font-medium text-green-700">
+                                  Zelfverbruik (%)
+                                </Label>
+                                <div className="group relative">
+                                  <span className="text-blue-500 cursor-help text-sm">ℹ️</span>
+                                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                                    Percentage dat je direct zelf gebruikt. Gemiddeld 30-40%. Rest wordt teruggeleverd.
+                                  </div>
+                                </div>
+                              </div>
                             <Input
                               id="percentageZelfverbruik"
                               type="number"
@@ -679,9 +726,17 @@ export default function ToolPage() {
                         <div className="space-y-4">
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
-                              <Label htmlFor="basisprijs" className="text-sm font-medium text-gray-700">
-                                Gemiddelde prijs kWh afname (€/kWh)
-                              </Label>
+                              <div className="flex items-center gap-2">
+                                <Label htmlFor="basisprijs" className="text-sm font-medium text-gray-700">
+                                  Gemiddelde prijs kWh afname (€/kWh)
+                                </Label>
+                                <div className="group relative">
+                                  <span className="text-blue-500 cursor-help text-sm">ℹ️</span>
+                                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                                    Berekend gemiddelde van spotmarktprijzen voor afname. 8,5 cent is een goed uitgangspunt.
+                                  </div>
+                                </div>
+                              </div>
                               <Input
                                 id="basisprijs"
                                 type="number"
@@ -699,9 +754,17 @@ export default function ToolPage() {
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor="terugleververgoeding" className="text-sm font-medium text-gray-700">
-                                Gemiddelde prijs kWh invoeding (€/kWh)
-                              </Label>
+                              <div className="flex items-center gap-2">
+                                <Label htmlFor="terugleververgoeding" className="text-sm font-medium text-gray-700">
+                                  Gemiddelde prijs kWh invoeding (€/kWh)
+                                </Label>
+                                <div className="group relative">
+                                  <span className="text-blue-500 cursor-help text-sm">ℹ️</span>
+                                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                                    Berekend gemiddelde van terugleververgoeding. 5,95 cent is een goed uitgangspunt.
+                                  </div>
+                                </div>
+                              </div>
                               <Input
                                 id="terugleververgoeding"
                                 type="number"
@@ -791,9 +854,17 @@ export default function ToolPage() {
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="stroomKalePrijsPiek" className="text-sm font-medium text-gray-700">
-                            Stroom Normaal Tarief (€/kWh)
-                          </Label>
+                          <div className="flex items-center gap-2">
+                            <Label htmlFor="stroomKalePrijsPiek" className="text-sm font-medium text-gray-700">
+                              Stroom Normaal Tarief (€/kWh)
+                            </Label>
+                            <div className="group relative">
+                              <span className="text-blue-500 cursor-help text-sm">ℹ️</span>
+                              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                                Kale energieprijs voor normaal verbruik (excl. energiebelasting en BTW). Werkdagen 7:00-23:00.
+                              </div>
+                            </div>
+                          </div>
                           <Input
                             id="stroomKalePrijsPiek"
                             type="number"
@@ -810,9 +881,17 @@ export default function ToolPage() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="stroomKalePrijsDal" className="text-sm font-medium text-gray-700">
-                            Stroom Dal Tarief (€/kWh)
-                          </Label>
+                          <div className="flex items-center gap-2">
+                            <Label htmlFor="stroomKalePrijsDal" className="text-sm font-medium text-gray-700">
+                              Stroom Dal Tarief (€/kWh)
+                            </Label>
+                            <div className="group relative">
+                              <span className="text-blue-500 cursor-help text-sm">ℹ️</span>
+                              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                                Kale energieprijs voor dal verbruik (excl. energiebelasting en BTW). Nacht en weekenden.
+                              </div>
+                            </div>
+                          </div>
                           <Input
                             id="stroomKalePrijsDal"
                             type="number"
@@ -968,49 +1047,6 @@ export default function ToolPage() {
                     </div>
                   </div>
 
-                  {/* Uitgebreide uitleg sectie */}
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                    <h4 className="font-semibold text-blue-800 mb-4">📚 Uitgebreide Uitleg</h4>
-                    <div className="text-sm text-blue-700 space-y-4">
-                      <div>
-                        <h5 className="font-semibold mb-2">⚡ Energieverbruik</h5>
-                        <ul className="list-disc list-inside space-y-1 ml-4">
-                          <li><strong>Totaal verbruik:</strong> Je totale jaarverbruik aan elektriciteit</li>
-                          <li><strong>Normaal verbruik:</strong> Verbruik tijdens werkdagen 7:00-23:00 (meestal duurder)</li>
-                          <li><strong>Dal verbruik:</strong> Verbruik tijdens nacht 23:00-7:00 en weekenden (meestal goedkoper)</li>
-                          <li><strong>Gas verbruik:</strong> Jaarverbruik in kubieke meters (m³) voor verwarming, warm water en koken</li>
-                        </ul>
-                      </div>
-                      
-                      <div>
-                        <h5 className="font-semibold mb-2">🏠 Zonnepanelen</h5>
-                        <ul className="list-disc list-inside space-y-1 ml-4">
-                          <li><strong>Jaarproductie:</strong> Totale kWh die je zonnepanelen per jaar opwekken</li>
-                          <li><strong>Zelfverbruik:</strong> Percentage dat je direct zelf gebruikt (rest wordt teruggeleverd)</li>
-                          <li><strong>Saldering:</strong> Teruggeleverde stroom wordt verrekend met je verbruik</li>
-                        </ul>
-                      </div>
-                      
-                      <div>
-                        <h5 className="font-semibold mb-2">💰 Tarieven Uitleg</h5>
-                        <ul className="list-disc list-inside space-y-1 ml-4">
-                          <li><strong>Kale energieprijs:</strong> Basisprijs excl. energiebelasting en BTW</li>
-                          <li><strong>Energiebelasting:</strong> €0.1316/kWh (inclusief 21% BTW) - officieel tarief</li>
-                          <li><strong>Vermindering Energiebelasting:</strong> €631.35/jaar korting op energiebelasting</li>
-                          <li><strong>Netbeheerkosten:</strong> Vaste kosten per netbeheerder voor netwerk</li>
-                        </ul>
-                      </div>
-                      
-                      <div>
-                        <h5 className="font-semibold mb-2">🔄 Contract Types</h5>
-                        <ul className="list-disc list-inside space-y-1 ml-4">
-                          <li><strong>Vast contract:</strong> Vaste tarieven voor normaal/dal verbruik</li>
-                          <li><strong>Dynamisch contract:</strong> Variabele tarieven gebaseerd op spotmarktprijzen</li>
-                          <li><strong>Opslag:</strong> Winstmarge van de energieleverancier bovenop spotmarktprijzen</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
 
                   {/* Add Button */}
                   <Button
