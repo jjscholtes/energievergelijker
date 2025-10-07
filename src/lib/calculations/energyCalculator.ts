@@ -114,8 +114,8 @@ function berekenStroomkosten(
 ): StroomKosten {
   // 1. Kale energie (inclusief BTW) - gebruik piek/dal als beschikbaar
   let kaleEnergie: number;
-  if (verbruikPiek && verbruikDal && kalePrijsPiek && kalePrijsDal) {
-    // Piek/dal tarieven
+  if (verbruikPiek && verbruikDal && kalePrijsPiek && kalePrijsDal && kalePrijsDal > 0) {
+    // Piek/dal tarieven - alleen als dal tarief > 0
     kaleEnergie = (verbruikPiek * kalePrijsPiek) + (verbruikDal * kalePrijsDal);
   } else {
     // Enkel tarief - gebruik de CALCULATED kalePrijs (zonder fallback naar 0.25)

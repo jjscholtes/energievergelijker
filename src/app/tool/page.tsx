@@ -888,7 +888,7 @@ export default function ToolPage() {
                             <div className="group relative">
                               <span className="text-blue-500 cursor-help text-sm">ℹ️</span>
                               <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
-                                Kale energieprijs voor dal verbruik (excl. energiebelasting en BTW). Nacht en weekenden.
+                                Kale energieprijs voor dal verbruik (excl. energiebelasting en BTW). Laat leeg voor enkeltarief contract.
                               </div>
                             </div>
                           </div>
@@ -902,7 +902,7 @@ export default function ToolPage() {
                               tarieven: { ...prev.tarieven!, stroomKalePrijsDal: value }
                             })))}
                             className="h-12"
-                            placeholder="Bijv. 0.100"
+                            placeholder="Bijv. 0.100 (laat leeg voor enkeltarief)"
                             title="De kale energieprijs voor dal verbruik (excl. energiebelasting en BTW). Dit is de basisprijs voor elektriciteit tijdens daluren (23:00-7:00 en weekenden). Meestal goedkoper dan normaal tarief."
                           />
                         </div>
