@@ -4,8 +4,8 @@
  */
 export const berekenGasbelasting = (verbruikM3: number): number => {
   const staffels = [
-    { vanaf: 0, tot: 1000, tarief: 0.70544 },
-    { vanaf: 1000, tot: 170000, tarief: 0.70544 },
+    { vanaf: 0, tot: 1000, tarief: 0.69957 },
+    { vanaf: 1000, tot: 170000, tarief: 0.69957 },
     { vanaf: 170000, tot: 1000000, tarief: 0.31573 },
     { vanaf: 1000000, tot: 10000000, tarief: 0.20347 },
     { vanaf: 10000000, tot: Infinity, tarief: 0.05385 }

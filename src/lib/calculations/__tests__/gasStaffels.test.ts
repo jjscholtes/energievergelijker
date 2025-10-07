@@ -5,16 +5,16 @@ describe('Gas Tax Calculations', () => {
     it('should calculate correct tax for consumption in first bracket', () => {
       const tax = berekenGasbelasting(500); // Below 1700 m³
       
-      // First 1000 m³: €0.70544/m³
-      expect(tax).toBeCloseTo(500 * 0.70544, 2);
+      // First 1000 m³: €0.69957/m³
+      expect(tax).toBeCloseTo(500 * 0.69957, 2);
     });
 
     it('should calculate correct tax for consumption in second bracket', () => {
       const tax = berekenGasbelasting(2000); // Above 1700 m³
       
-      // First 1700 m³: €0.4944/m³
-      // First 1000 m³: €0.70544/m³, next 1000 m³: €0.70544/m³
-      const expectedTax = (1000 * 0.70544) + (1000 * 0.70544);
+      // First 1700 m³: €0.69957/m³
+      // First 1000 m³: €0.69957/m³, next 1000 m³: €0.69957/m³
+      const expectedTax = (1000 * 0.69957) + (1000 * 0.69957);
       expect(tax).toBeCloseTo(expectedTax, 2);
     });
 
@@ -26,8 +26,8 @@ describe('Gas Tax Calculations', () => {
     it('should handle very high consumption', () => {
       const tax = berekenGasbelasting(10000);
       
-      // All consumption taxed at €0.70544/m³ (within first bracket)
-      const expectedTax = 10000 * 0.70544;
+      // All consumption taxed at €0.69957/m³ (within first bracket)
+      const expectedTax = 10000 * 0.69957;
       expect(tax).toBeCloseTo(expectedTax, 2);
     });
   });
@@ -77,12 +77,12 @@ describe('Gas Tax Calculations', () => {
 
     it('should handle very small consumption', () => {
       const tax = berekenGasbelasting(1);
-      expect(tax).toBeCloseTo(0.70544, 4);
+      expect(tax).toBeCloseTo(0.69957, 4);
     });
 
     it('should handle fractional consumption', () => {
       const tax = berekenGasbelasting(123.45);
-      expect(tax).toBeCloseTo(123.45 * 0.70544, 2);
+      expect(tax).toBeCloseTo(123.45 * 0.69957, 2);
     });
   });
 
@@ -100,10 +100,10 @@ describe('Gas Tax Calculations', () => {
       const totaal = kaleEnergie + energiebelasting + netbeheer + btw;
       
       expect(kaleEnergie).toBe(1440); // 1200 * 1.20
-      expect(energiebelasting).toBeCloseTo(846.53, 2); // 1200 * 0.70544
+      expect(energiebelasting).toBeCloseTo(839.48, 2); // 1200 * 0.69957
       expect(netbeheer).toBe(257); // Vast bedrag per jaar
-      expect(btw).toBeCloseTo(534.14, 2); // (1440 + 846.53 + 257) * 0.21
-      expect(totaal).toBeCloseTo(3077.67, 2);
+      expect(btw).toBeCloseTo(532.66, 2); // (1440 + 839.48 + 257) * 0.21
+      expect(totaal).toBeCloseTo(3069.15, 2);
     });
   });
 });
