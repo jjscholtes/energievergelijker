@@ -43,10 +43,10 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
     tarieven: {
       stroomKalePrijs: 0.10, // €0.10/kWh excl. belasting
       terugleververgoeding: 0.01, // €0.01/kWh
-      gasKalePrijs: 0.63, // €0.63/m³ excl. belasting
-      vasteTerugleverkosten: 389 // €389/jaar
+      gasKalePrijs: 0.63, // €0.63/m³ excl. belasting (realistische marktprijs)
+      vasteTerugleverkosten: 0 // €0/jaar (geen terugleverkosten voor moderne contracten)
     },
-    vasteLeveringskosten: 10, // €10/maand per product
+    vasteLeveringskosten: 7, // €7/maand (realistische marktprijs)
     kortingEenmalig: 200 // €200 korting
   };
 
@@ -63,14 +63,14 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
     maandelijkseVergoeding: 0, // Geen maandelijkse vergoeding
     opslagPerKwh: 0.025, // €0.025/kWh opslag
     opslagInvoeding: 0.025, // €0.025/kWh opslag voor invoeding
+    vasteLeveringskosten: 7, // €7/maand
+    kortingEenmalig: 0, // Geen korting voor dynamische contracten
     tarieven: {
       stroomKalePrijs: 0.085, // €0.085/kWh excl. belasting
       terugleververgoeding: 0.0595, // €0.0595/kWh (gemiddelde spotprijs)
       gasKalePrijs: 0.63, // €0.63/m³ excl. belasting
       vasteTerugleverkosten: 0 // Geen vaste terugleverkosten voor dynamisch
-    },
-    vasteLeveringskosten: 7, // €7/maand
-    kortingEenmalig: 0 // Geen korting
+    }
   };
 
   const fetchNetbeheerder = async (postcode: string) => {

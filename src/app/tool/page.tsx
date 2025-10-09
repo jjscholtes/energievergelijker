@@ -36,23 +36,23 @@ export default function ToolPage() {
     geenGas: false,
     heeftZonnepanelen: false,
     pvOpwek: 0,
-    percentageZelfverbruik: 35
+    percentageZelfverbruik: 0 // Geen zelfverbruik, alles wordt teruggeleverd (eenvoudiger)
   });
 
   const [currentContract, setCurrentContract] = useState<Partial<ContractData>>({
     type: 'vast',
     looptijdMaanden: 12,
-    vasteLeveringskosten: 0, // Wordt overschreven bij dynamische contracten
-    kortingEenmalig: 0,
+    vasteLeveringskosten: 7, // €7/maand (realistische marktprijs)
+    kortingEenmalig: 200, // €200 korting voor vaste contracten
     duurzaamheidsScore: 5,
     klanttevredenheid: 5,
     tarieven: {
       stroomKalePrijs: 0.085,     // Default voor dynamische contracten
       stroomKalePrijsPiek: 0.10,  // Default voor vaste contracten
       stroomKalePrijsDal: 0.10,   // Default voor vaste contracten
-      gasKalePrijs: 1.20,
+      gasKalePrijs: 0.63, // €0.63/m³ (realistische marktprijs)
       terugleververgoeding: 0.01, // Default voor vaste contracten (1 cent)
-      vasteTerugleverkosten: 0
+      vasteTerugleverkosten: 0 // €0/jaar (geen terugleverkosten voor moderne contracten)
     }
   });
 
@@ -67,8 +67,8 @@ export default function ToolPage() {
       productNaam: currentContract.productNaam || `${(currentContract.type || 'vast').charAt(0).toUpperCase() + (currentContract.type || 'vast').slice(1)} Contract`,
       type: currentContract.type as 'vast' | 'dynamisch',
       looptijdMaanden: currentContract.looptijdMaanden || 12,
-      vasteLeveringskosten: currentContract.vasteLeveringskosten || (currentContract.type === 'dynamisch' ? 5.99 : 0),
-      kortingEenmalig: currentContract.kortingEenmalig || 0,
+      vasteLeveringskosten: currentContract.vasteLeveringskosten || (currentContract.type === 'dynamisch' ? 7 : 7),
+      kortingEenmalig: currentContract.kortingEenmalig || (currentContract.type === 'vast' ? 200 : 0),
       duurzaamheidsScore: currentContract.duurzaamheidsScore || 5,
       klanttevredenheid: currentContract.klanttevredenheid || 5,
       tarieven: {
@@ -107,17 +107,17 @@ export default function ToolPage() {
     setCurrentContract({
       type: 'vast',
       looptijdMaanden: 12,
-      vasteLeveringskosten: 0,
-      kortingEenmalig: 0,
+      vasteLeveringskosten: 7, // €7/maand (realistische marktprijs)
+      kortingEenmalig: 200, // €200 korting voor vaste contracten
       duurzaamheidsScore: 5,
       klanttevredenheid: 5,
       tarieven: {
         stroomKalePrijs: 0.085,     // Default voor dynamische contracten
-        stroomKalePrijsPiek: 0.10,  // Nieuwe default
-        stroomKalePrijsDal: 0.10,   // Nieuwe default
-        gasKalePrijs: 1.20,
+        stroomKalePrijsPiek: 0.10,  // Default voor vaste contracten
+        stroomKalePrijsDal: 0.10,   // Default voor vaste contracten
+        gasKalePrijs: 0.63, // €0.63/m³ (realistische marktprijs)
         terugleververgoeding: 0.01, // Default voor vaste contracten (1 cent)
-        vasteTerugleverkosten: 0
+        vasteTerugleverkosten: 0 // €0/jaar (geen terugleverkosten voor moderne contracten)
       }
     });
   };

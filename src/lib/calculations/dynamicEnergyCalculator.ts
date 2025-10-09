@@ -84,7 +84,7 @@ export const berekenDynamischeEnergiekosten = async (
     const opslagKosten = userProfile.jaarverbruikStroom * contract.opslagPerKwh;
 
     // 9. Totale kosten zonder PV (met heffingskorting)
-    const totaleJaarkosten = totaleStroomKostenMetKorting + gasKosten.totaal + vasteKostenJaar + maandelijkseVergoedingJaar + opslagKosten - contract.kortingEenmalig;
+    const totaleJaarkosten = totaleStroomKostenMetKorting + gasKosten.totaal + vasteKostenJaar + maandelijkseVergoedingJaar + opslagKosten;
 
     // 8. PV opbrengsten berekenen (indien van toepassing)
     let pvOpbrengsten: PvOpbrengsten | undefined;
