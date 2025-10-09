@@ -105,11 +105,10 @@ export default function Home() {
                 <div className="space-y-6">
                   
                   <h2 className="text-5xl lg:text-7xl font-bold text-gray-900 leading-tight">
-                    Bespaar tot{' '}
+                    Bespaar op je{' '}
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 animate-gradient">
-                      €800
-                    </span>{' '}
-                    per jaar op je energierekening
+                      energierekening
+                    </span>
                   </h2>
                   
                   <p className="text-xl text-gray-600 leading-relaxed max-w-2xl">
@@ -142,8 +141,8 @@ export default function Home() {
                 {/* Enhanced Info Box */}
                 <div className="bg-gradient-to-r from-green-50 via-blue-50 to-purple-50 border border-green-200 rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
                   <p className="text-green-800 font-semibold text-xl">
-                    💡 <strong>Wist je dat?</strong> Zonnepanelen eigenaren kunnen tot €800 per jaar besparen 
-                    met het juiste energiecontract en optimale saldering.
+                    💡 <strong>Wist je dat?</strong> Het juiste energiecontract kan je honderden euro's per jaar besparen, 
+                    vooral als je zonnepanelen, warmtepomp of elektrische auto hebt.
                   </p>
                 </div>
                 
@@ -171,30 +170,33 @@ export default function Home() {
                 </div>
               </div>
             
-              {/* Right Column - Visual */}
+              {/* Right Column - Dynamic Pricing Info */}
               <div className="relative">
                 <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-white/40">
                   <div className="text-center mb-8">
-                    <div className="inline-flex items-center gap-3 bg-gradient-to-r from-green-600 to-blue-600 text-white px-6 py-3 rounded-full text-sm font-bold mb-6 shadow-lg">
-                      <span>🏆</span>
-                      <span>Gratis Vergelijking</span>
+                    <div className="inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-full text-sm font-bold mb-6 shadow-lg">
+                      <span>⚡</span>
+                      <span>Dynamische Prijzen</span>
                     </div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-4">Bespaar tot €800 per jaar</h3>
-                    <p className="text-gray-600 mb-6">Met het juiste energiecontract voor jouw situatie</p>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-4">Echte Marktdata 2024</h3>
+                    <p className="text-gray-600 mb-6">Gemiddelde kale stroomprijs: 7,7 cent per kWh</p>
                   </div>
                   
                   <div className="space-y-6">
-                    <div className="text-center p-6 bg-gradient-to-r from-green-50 to-green-100 rounded-xl border border-green-200">
-                      <div className="text-4xl font-bold text-green-600 mb-2">€800</div>
-                      <p className="text-green-800 font-semibold">Maximale besparing mogelijk</p>
-                    </div>
                     <div className="text-center p-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl border border-blue-200">
-                      <div className="text-4xl font-bold text-blue-600 mb-2">100%</div>
-                      <p className="text-blue-800 font-semibold">Gratis vergelijking</p>
+                      <div className="text-4xl font-bold text-blue-600 mb-2">€0,077</div>
+                      <p className="text-blue-800 font-semibold">Gemiddelde kale prijs/kWh</p>
+                      <p className="text-blue-600 text-sm mt-2">Exclusief energiebelasting</p>
+                    </div>
+                    <div className="text-center p-6 bg-gradient-to-r from-green-50 to-green-100 rounded-xl border border-green-200">
+                      <div className="text-4xl font-bold text-green-600 mb-2">-€0,005</div>
+                      <p className="text-green-800 font-semibold">Laagste prijs/kWh</p>
+                      <p className="text-green-600 text-sm mt-2">Negatieve prijzen mogelijk</p>
                     </div>
                     <div className="text-center p-6 bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl border border-purple-200">
-                      <div className="text-4xl font-bold text-purple-600 mb-2">2 min</div>
-                      <p className="text-purple-800 font-semibold">Gemiddelde invultijd</p>
+                      <div className="text-4xl font-bold text-purple-600 mb-2">€0,35</div>
+                      <p className="text-purple-800 font-semibold">Hoogste prijs/kWh</p>
+                      <p className="text-purple-600 text-sm mt-2">Inclusief alle kosten</p>
                     </div>
                   </div>
                 </div>
