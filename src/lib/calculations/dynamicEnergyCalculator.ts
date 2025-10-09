@@ -135,7 +135,7 @@ export const berekenDynamischeEnergiekosten = async (
       verschilMetGoedkoopste: 0, // Wordt later bepaald bij vergelijking
       contract: {
         leverancier: contract.leverancier,
-        productNaam: contract.productNaam,
+        productNaam: contract.productNaam || 'Dynamisch Contract',
         type: contract.type,
         kortingEenmalig: contract.kortingEenmalig,
         tarieven: {
@@ -189,7 +189,7 @@ const berekenGaskosten = (
 
 
 /**
- * Parse CSV data naar price map
+ * Parse CSV data naar price map - SYNCHRONOUS VERSION
  */
 function parseCSV(csv: string): Record<string, number> {
   const result: Record<string, number> = {};
@@ -199,44 +199,47 @@ function parseCSV(csv: string): Record<string, number> {
   }
 
   try {
-    Papa.parse(csv, {
+    // Gebruik Papa.parseSync voor synchrone parsing
+    const parsed = Papa.parse(csv, {
       header: true,
-      skipEmptyLines: true,
-      complete: ({ data }) => {
-        (data as any[]).forEach(row => {
-          // Probeer verschillende timestamp kolommen
-          const timestampKey = Object.keys(row).find(key => 
-            key.toLowerCase().includes('timestamp') || 
-            key.toLowerCase().includes('time') ||
-            key.toLowerCase().includes('datetime')
-          );
-          
-          const priceKey = Object.keys(row).find(key => 
-            key.toLowerCase().includes('price') || 
-            key.toLowerCase().includes('prijs') ||
-            key.toLowerCase().includes('tarief')
-          );
+      skipEmptyLines: true
+    });
 
-          if (timestampKey && priceKey) {
-            try {
-              const ts = parseISO(row[timestampKey]);
-              const price = parseFloat(row[priceKey]);
-              
-              if (!isNaN(price) && ts instanceof Date && !isNaN(ts.getTime())) {
-                result[ts.toISOString()] = price;
-              }
-            } catch (parseError) {
-              console.warn(`Fout bij parsen van rij: ${JSON.stringify(row)}`);
-            }
+    if (parsed.errors && parsed.errors.length > 0) {
+      console.warn('CSV parse errors:', parsed.errors);
+    }
+
+    (parsed.data as any[]).forEach(row => {
+      // Probeer verschillende timestamp kolommen
+      const timestampKey = Object.keys(row).find(key => 
+        key.toLowerCase().includes('timestamp') || 
+        key.toLowerCase().includes('time') ||
+        key.toLowerCase().includes('datetime')
+      );
+      
+      const priceKey = Object.keys(row).find(key => 
+        key.toLowerCase().includes('price') || 
+        key.toLowerCase().includes('prijs') ||
+        key.toLowerCase().includes('tarief')
+      );
+
+      if (timestampKey && priceKey) {
+        try {
+          const ts = parseISO(row[timestampKey]);
+          const price = parseFloat(row[priceKey]);
+          
+          if (!isNaN(price) && ts instanceof Date && !isNaN(ts.getTime())) {
+            result[ts.toISOString()] = price;
           }
-        });
-      },
-        error: (error: any) => {
-          throw new Error(`CSV parse fout: ${error.message}`);
+        } catch (parseError) {
+          console.warn(`Fout bij parsen van rij: ${JSON.stringify(row)}`);
         }
+      }
     });
   } catch (error) {
-    throw new Error(`CSV parsing gefaald: ${error instanceof Error ? error.message : 'Onbekende fout'}`);
+    console.error('CSV parsing gefaald:', error);
+    // Return empty result instead of throwing
+    return {};
   }
 
   return result;
