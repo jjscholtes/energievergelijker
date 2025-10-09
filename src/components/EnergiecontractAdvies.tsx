@@ -75,23 +75,40 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
   };
 
   const fetchNetbeheerder = async (postcode: string) => {
+    console.log('Fetching netbeheerder for postcode:', postcode);
+    
     try {
       // Gebruik de Polygon API om netbeheerder te bepalen
-      const response = await fetch(`https://opendata.polygonentool.nl/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=netbeheerders&cql_filter=postcode='${postcode}'&outputFormat=application/json`);
+      const apiUrl = `https://opendata.polygonentool.nl/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=netbeheerders&cql_filter=postcode='${postcode}'&outputFormat=application/json`;
+      console.log('API URL:', apiUrl);
+      
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+        },
+        // Add timeout
+        signal: AbortSignal.timeout(10000) // 10 second timeout
+      });
+      
+      console.log('API Response status:', response.status);
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       
       const data = await response.json();
+      console.log('API Response data:', data);
       
       if (data.features && data.features.length > 0) {
         const netbeheerderName = data.features[0].properties?.netbeheerder || data.features[0].properties?.naam;
+        console.log('Found netbeheerder from API:', netbeheerderName);
         
         if (netbeheerderName) {
           // Map netbeheerder naam naar lokale data voor kosten
           const netbeheerder = bepaalNetbeheerder(postcode);
           if (netbeheerder) {
+            console.log('Using local data for costs:', netbeheerder.naam);
             return {
               netbeheerder: netbeheerderName,
               stroomVastrecht: netbeheerder.kostenStroom,
@@ -103,9 +120,12 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
         }
       }
       
+      console.log('No netbeheerder found in API response, using local database');
+      
       // Fallback naar lokale database als API geen resultaat geeft
       const netbeheerder = bepaalNetbeheerder(postcode);
       if (netbeheerder) {
+        console.log('Using local database netbeheerder:', netbeheerder.naam);
         return {
           netbeheerder: netbeheerder.naam,
           stroomVastrecht: netbeheerder.kostenStroom,
@@ -121,6 +141,7 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
       // Fallback naar lokale database bij API fout
       const netbeheerder = bepaalNetbeheerder(postcode);
       if (netbeheerder) {
+        console.log('API failed, using local database netbeheerder:', netbeheerder.naam);
         return {
           netbeheerder: netbeheerder.naam,
           stroomVastrecht: netbeheerder.kostenStroom,
@@ -131,6 +152,7 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
       }
     }
     
+    console.log('Using final fallback: Enexis');
     // Final fallback naar Enexis
     return { 
       netbeheerder: 'Enexis', 
@@ -196,10 +218,26 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
       };
 
       // Calculate vast contract using exact same logic
-      const vastResult = berekenEnergiekosten(userProfile, vastContract);
+      console.log('Calculating vast contract...');
+      let vastResult;
+      try {
+        vastResult = berekenEnergiekosten(userProfile, vastContract);
+        console.log('Vast result:', vastResult);
+      } catch (calcError) {
+        console.error('Error calculating vast contract:', calcError);
+        throw new Error(`Vast contract berekening mislukt: ${calcError instanceof Error ? calcError.message : 'Onbekende fout'}`);
+      }
 
       // Calculate dynamisch contract using exact same logic
-      const dynamischResult = await berekenDynamischeEnergiekosten(userProfile, dynamischContract, sampleCSV2024, sampleCSV2025, '2025');
+      console.log('Calculating dynamisch contract...');
+      let dynamischResult;
+      try {
+        dynamischResult = await berekenDynamischeEnergiekosten(userProfile, dynamischContract, sampleCSV2024, sampleCSV2025, '2025');
+        console.log('Dynamisch result:', dynamischResult);
+      } catch (calcError) {
+        console.error('Error calculating dynamisch contract:', calcError);
+        throw new Error(`Dynamisch contract berekening mislukt: ${calcError instanceof Error ? calcError.message : 'Onbekende fout'}`);
+      }
 
       const besparing = Math.abs(vastResult.totaleJaarkostenMetPv - dynamischResult.totaleJaarkostenMetPv);
       const goedkoopsteContract = vastResult.totaleJaarkostenMetPv < dynamischResult.totaleJaarkostenMetPv ? 'vast' : 'dynamisch';
@@ -232,7 +270,19 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
 
     } catch (error) {
       console.error('Calculation error:', error);
-      setError(error instanceof Error ? error.message : 'Er is een fout opgetreden bij de berekening');
+      
+      // More specific error handling
+      if (error instanceof Error) {
+        if (error.message.includes('fetch')) {
+          setError('Netwerkfout: Kan netbeheerder niet ophalen. Probeer het opnieuw.');
+        } else if (error.message.includes('parse')) {
+          setError('Datafout: Ongeldige gegevens ontvangen. Controleer je invoer.');
+        } else {
+          setError(`Berekening fout: ${error.message}`);
+        }
+      } else {
+        setError('Er is een onverwachte fout opgetreden. Controleer je invoer en probeer opnieuw.');
+      }
     } finally {
       setIsLoading(false);
     }
