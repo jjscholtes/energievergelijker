@@ -117,11 +117,13 @@ export const berekenDynamischeEnergiekosten = async (
       energiebelasting: totaleEnergiebelasting,
       btw: 0, // Geen aparte BTW meer
       netbeheer: totaleNetbeheer,
+      vasteLeveringskosten: contract.vasteLeveringskosten * 12, // Jaarlijkse vaste leveringskosten
+      vasteLeveringskostenTarief: contract.vasteLeveringskosten, // Maandelijkse tarief
       maandelijkseVergoeding: maandelijkseVergoedingJaar,
       opslagPerKwh: opslagKosten,
       maandelijkseVergoedingTarief: contract.maandelijkseVergoeding,
       opslagPerKwhTarief: contract.opslagPerKwh,
-      totaal: totaleStroomKostenMetKorting + maandelijkseVergoedingJaar + opslagKosten
+      totaal: totaleStroomKostenMetKorting + maandelijkseVergoedingJaar + opslagKosten + (contract.vasteLeveringskosten * 12)
     };
 
     return {

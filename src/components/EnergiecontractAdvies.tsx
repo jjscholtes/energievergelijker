@@ -533,14 +533,14 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
                   </div>
                   <div className="flex justify-between">
                     <span>Vaste leveringskosten:</span>
-                    <span>€{result.dynamisch.stroomKosten.vasteLeveringskosten.toFixed(2)}</span>
+                    <span>€{(result.dynamisch.stroomKosten.vasteLeveringskosten || 0).toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Opslag per kWh:</span>
-                    <span>€{(result.userProfile.totaalStroomVerbruik * result.dynamisch.opslagPerKwh).toFixed(2)}</span>
+                    <span>€{((result.userProfile.totaalStroomVerbruik * (result.dynamisch.opslagPerKwh || 0))).toFixed(2)}</span>
                   </div>
                   <div className="text-xs text-gray-500">
-                    {result.userProfile.totaalStroomVerbruik} kWh × €{result.dynamisch.opslagPerKwh.toFixed(3)}
+                    {result.userProfile.totaalStroomVerbruik} kWh × €{(result.dynamisch.opslagPerKwh || 0).toFixed(3)}
                   </div>
                   <div className="flex justify-between text-green-600">
                     <span>Heffingskorting:</span>
