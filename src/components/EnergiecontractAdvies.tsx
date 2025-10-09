@@ -143,7 +143,8 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
         jaarverbruikStroomDal: dal,
         jaarverbruikGas: gas,
         heeftZonnepanelen: pv > 0,
-        pvOpwek: pv,
+        pvOpwek: pv, // Dit is nu alleen teruglevering
+        percentageZelfverbruik: 0, // Geen zelfverbruik, alles wordt teruggeleverd
         heeftWarmtepomp: false,
         heeftElektrischeAuto: false,
         geenGas: geenGas,
@@ -199,7 +200,8 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
         userProfile: {
           jaarverbruikStroom: totaalStroomVerbruik,
           jaarverbruikGas: gas,
-          pvOpwek: pv,
+          pvOpwek: pv, // Dit is nu alleen teruglevering
+          percentageZelfverbruik: 0, // Geen zelfverbruik, alles wordt teruggeleverd
           geenGas: gas === 0
         }
       });
@@ -334,6 +336,7 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
               placeholder="2500"
               className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
+            <p className="text-xs text-gray-500 mt-1">Hoeveel kWh lever je jaarlijks terug aan het net?</p>
           </div>
 
           {/* Percentage zelfverbruik */}
