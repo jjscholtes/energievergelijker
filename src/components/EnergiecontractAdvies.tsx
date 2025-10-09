@@ -27,7 +27,6 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
   const [gasVerbruik, setGasVerbruik] = useState('');
   const [geenGas, setGeenGas] = useState(false);
   const [pvTeruglevering, setPvTeruglevering] = useState('');
-  const [percentageZelfverbruik, setPercentageZelfverbruik] = useState('30');
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [netbeheerderData, setNetbeheerderData] = useState<NetbeheerderData | null>(null);
@@ -121,15 +120,14 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
       const normaal = parseFloat(normaalVerbruik);
       const gas = geenGas ? 0 : parseFloat(gasVerbruik);
       const pv = parseFloat(pvTeruglevering);
-      const zelfverbruikPercentage = parseFloat(percentageZelfverbruik);
 
       // Validate inputs
-      if (isNaN(dal) || isNaN(normaal) || isNaN(gas) || isNaN(pv) || isNaN(zelfverbruikPercentage)) {
+      if (isNaN(dal) || isNaN(normaal) || isNaN(gas) || isNaN(pv)) {
         throw new Error('Ongeldige invoer. Controleer of alle velden correct zijn ingevuld.');
       }
 
-      if (dal < 0 || normaal < 0 || gas < 0 || pv < 0 || zelfverbruikPercentage < 0 || zelfverbruikPercentage > 100) {
-        throw new Error('Alle waarden moeten positief zijn. Percentage zelfverbruik moet tussen 0 en 100 liggen.');
+      if (dal < 0 || normaal < 0 || gas < 0 || pv < 0) {
+        throw new Error('Alle waarden moeten positief zijn.');
       }
 
       const totaalStroomVerbruik = dal + normaal;
@@ -146,7 +144,6 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
         jaarverbruikGas: gas,
         heeftZonnepanelen: pv > 0,
         pvOpwek: pv,
-        percentageZelfverbruik: zelfverbruikPercentage,
         heeftWarmtepomp: false,
         heeftElektrischeAuto: false,
         geenGas: geenGas,
@@ -200,10 +197,10 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
         goedkoopsteContract,
         netbeheerder: netbeheerder.netbeheerder,
         userProfile: {
-          totaalStroomVerbruik,
-          gasVerbruik: gas,
+          jaarverbruikStroom: totaalStroomVerbruik,
+          jaarverbruikGas: gas,
           pvOpwek: pv,
-          percentageZelfverbruik: zelfverbruikPercentage
+          geenGas: gas === 0
         }
       });
 
@@ -340,22 +337,6 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
           </div>
 
           {/* Percentage zelfverbruik */}
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              <Sun className="w-4 h-4 inline mr-2" />
-              Percentage zelfverbruik (%)
-            </label>
-            <input
-              type="number"
-              value={percentageZelfverbruik}
-              onChange={(e) => setPercentageZelfverbruik(e.target.value)}
-              placeholder="30"
-              min="0"
-              max="100"
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-            <p className="text-xs text-gray-500 mt-1">Hoeveel procent van je zonnepanelen opbrengst gebruik je direct zelf?</p>
-          </div>
 
           {/* Calculate Button */}
           <button
@@ -544,9 +525,7 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
                     <span>€{(() => {
                       const verbruik = result.userProfile?.jaarverbruikStroom || 0;
                       const tarief = result.dynamisch?.stroomKosten?.opslagPerKwhTarief || dynamischContract.opslagPerKwh || 0;
-                      const berekening = verbruik * tarief;
-                      console.log('Opslag debug:', { verbruik, tarief, berekening });
-                      return berekening.toFixed(2);
+                      return (verbruik * tarief).toFixed(2);
                     })()}</span>
                   </div>
                   <div className="text-xs text-gray-500">
