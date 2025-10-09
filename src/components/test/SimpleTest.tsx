@@ -60,8 +60,14 @@ export function SimpleTest() {
       setTestResult(prev => prev + `Vast contract created successfully\n`);
 
       // Test 4: Vast Calculation
-      const vastResult = berekenEnergiekosten(userProfile, vastContract);
-      setTestResult(prev => prev + `Vast calculation successful: €${vastResult.totaleJaarkostenMetPv.toFixed(2)}\n`);
+      try {
+        const vastResult = berekenEnergiekosten(userProfile, vastContract);
+        setTestResult(prev => prev + `Vast calculation successful: €${vastResult.totaleJaarkostenMetPv.toFixed(2)}\n`);
+      } catch (calcError) {
+        setTestResult(prev => prev + `Vast calculation failed: ${calcError}\n`);
+        console.error('Vast calculation error:', calcError);
+        return;
+      }
 
       // Test 5: Dynamisch Contract
       const dynamischContract = {
@@ -89,14 +95,20 @@ export function SimpleTest() {
       setTestResult(prev => prev + `Dynamisch contract created successfully\n`);
 
       // Test 6: Dynamisch Calculation
-      const dynamischResult = await berekenDynamischeEnergiekosten(
-        userProfile, 
-        dynamischContract, 
-        sampleCSV2024, 
-        sampleCSV2025, 
-        '2025'
-      );
-      setTestResult(prev => prev + `Dynamisch calculation successful: €${dynamischResult.totaleJaarkostenMetPv.toFixed(2)}\n`);
+      try {
+        const dynamischResult = await berekenDynamischeEnergiekosten(
+          userProfile, 
+          dynamischContract, 
+          sampleCSV2024, 
+          sampleCSV2025, 
+          '2025'
+        );
+        setTestResult(prev => prev + `Dynamisch calculation successful: €${dynamischResult.totaleJaarkostenMetPv.toFixed(2)}\n`);
+      } catch (calcError) {
+        setTestResult(prev => prev + `Dynamisch calculation failed: ${calcError}\n`);
+        console.error('Dynamisch calculation error:', calcError);
+        return;
+      }
 
       setTestResult(prev => prev + `All tests completed successfully!\n`);
 
