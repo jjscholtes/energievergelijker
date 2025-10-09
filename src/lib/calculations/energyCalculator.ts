@@ -53,7 +53,7 @@ export const berekenEnergiekosten = (
   let pvOpbrengsten: PvOpbrengsten | undefined;
   let totaleJaarkostenMetPv = totaleJaarkosten;
 
-  if (userProfile.heeftZonnepanelen && userProfile.pvOpwek && userProfile.percentageZelfverbruik) {
+  if (userProfile.heeftZonnepanelen && userProfile.pvOpwek && userProfile.percentageZelfverbruik !== undefined) {
     pvOpbrengsten = berekenSaldering(
       userProfile.pvOpwek,
       userProfile.jaarverbruikStroom,
@@ -83,7 +83,7 @@ export const berekenEnergiekosten = (
     verschilMetGoedkoopste: 0, // Wordt later bepaald bij vergelijking
     contract: {
       leverancier: contract.leverancier,
-      productNaam: contract.productNaam,
+      productNaam: contract.productNaam || 'Energiecontract',
       type: contract.type,
       kortingEenmalig: contract.kortingEenmalig,
       tarieven: contract.tarieven
