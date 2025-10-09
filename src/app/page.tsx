@@ -157,65 +157,20 @@ export default function Home() {
 
 
 
-        {/* Input Form Section */}
+        {/* Input Form Section - Hidden for now */}
+        {/* 
         <section id="calculation-form" className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <UserInputForm />
           </div>
         </section>
 
-        {/* Results Section */}
         <section className="py-20 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <ResultsSection />
           </div>
         </section>
-
-        {/* Trust Section */}
-        <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h3 className="text-3xl font-bold text-gray-900 mb-4">
-                Waarom Vertrouwen Gebruikers Ons?
-              </h3>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Wij zijn de specialistische energievergelijker voor zonnepanelen eigenaren. 
-                Onze gebruikers besparen gemiddeld €400 per jaar op hun energierekening.
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-              <div className="text-center group">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                  <span className="text-blue-600 font-bold text-2xl">🔒</span>
-                </div>
-                <h4 className="font-semibold text-gray-900 mb-3 text-lg">100% Veilig</h4>
-                <p className="text-sm text-gray-600">Je gegevens worden veilig opgeslagen en niet gedeeld</p>
-              </div>
-              <div className="text-center group">
-                <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                  <span className="text-green-600 font-bold text-2xl">⚡</span>
-                </div>
-                <h4 className="font-semibold text-gray-900 mb-3 text-lg">Real-time Data</h4>
-                <p className="text-sm text-gray-600">Altijd de nieuwste tarieven en contracten</p>
-              </div>
-              <div className="text-center group">
-                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                  <span className="text-purple-600 font-bold text-2xl">🎯</span>
-                </div>
-                <h4 className="font-semibold text-gray-900 mb-3 text-lg">Accurate Berekeningen</h4>
-                <p className="text-sm text-gray-600">Gebaseerd op officiële Nederlandse wetgeving</p>
-              </div>
-              <div className="text-center group">
-                <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                  <span className="text-orange-600 font-bold text-2xl">💯</span>
-                </div>
-                <h4 className="font-semibold text-gray-900 mb-3 text-lg">Geen Verborgen Kosten</h4>
-                <p className="text-sm text-gray-600">Volledig gratis, geen commissies of kosten</p>
-              </div>
-            </div>
-          </div>
-        </section>
+        */}
 
         {/* Calculator Tool Section */}
         <section className="py-20 bg-gradient-to-br from-green-50 via-white to-blue-50">
@@ -321,6 +276,52 @@ export default function Home() {
         {/* FAQ Section */}
         <FAQ />
       </main>
+
+      {/* Trust Section */}
+      <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h3 className="text-3xl font-bold text-gray-900 mb-4">
+              Waarom Vertrouwen Gebruikers Ons?
+            </h3>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Wij zijn de specialistische energievergelijker voor zonnepanelen eigenaren. 
+              Onze gebruikers besparen gemiddeld €400 per jaar op hun energierekening.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="text-center group">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <span className="text-blue-600 font-bold text-2xl">🔒</span>
+              </div>
+              <h4 className="font-semibold text-gray-900 mb-3 text-lg">100% Veilig</h4>
+              <p className="text-sm text-gray-600">Je gegevens worden veilig opgeslagen en niet gedeeld</p>
+            </div>
+            <div className="text-center group">
+              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <span className="text-green-600 font-bold text-2xl">⚡</span>
+              </div>
+              <h4 className="font-semibold text-gray-900 mb-3 text-lg">Real-time Data</h4>
+              <p className="text-sm text-gray-600">Altijd de nieuwste tarieven en contracten</p>
+            </div>
+            <div className="text-center group">
+              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <span className="text-purple-600 font-bold text-2xl">🎯</span>
+              </div>
+              <h4 className="font-semibold text-gray-900 mb-3 text-lg">Accurate Berekeningen</h4>
+              <p className="text-sm text-gray-600">Gebaseerd op officiële Nederlandse wetgeving</p>
+            </div>
+            <div className="text-center group">
+              <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <span className="text-orange-600 font-bold text-2xl">💯</span>
+              </div>
+              <h4 className="font-semibold text-gray-900 mb-3 text-lg">Geen Verborgen Kosten</h4>
+              <p className="text-sm text-gray-600">Volledig gratis, geen commissies of kosten</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white">
