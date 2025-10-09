@@ -144,20 +144,6 @@ export function FAQ() {
             ))}
           </div>
         </div>
-
-        <div className="text-center mt-12">
-          <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-8 border border-green-200">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">
-              Nog meer vragen?
-            </h3>
-            <p className="text-gray-600 mb-6">
-              Gebruik onze gratis energievergelijker om direct te zien welk contract het beste bij jouw situatie past.
-            </p>
-            <button className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white py-4 px-8 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl">
-              Start Gratis Vergelijking
-            </button>
-          </div>
-        </div>
       </div>
     </section>
     </>
