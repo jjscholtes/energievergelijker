@@ -178,15 +178,20 @@ export default function Home() {
                       <span>⚡</span>
                       <span>Dynamische Prijzen</span>
                     </div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-4">Echte Marktdata 2024</h3>
-                    <p className="text-gray-600 mb-6">Gemiddelde kale stroomprijs: 7,7 cent per kWh</p>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-4">Echte Marktdata 2025</h3>
+                    <p className="text-gray-600 mb-6">Gemiddelde kale stroomprijs: 8,7 cent per kWh</p>
                   </div>
                   
                   <div className="space-y-6">
                     <div className="text-center p-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl border border-blue-200">
-                      <div className="text-4xl font-bold text-blue-600 mb-2">€0,077</div>
+                      <div className="text-4xl font-bold text-blue-600 mb-2">€0,087</div>
                       <p className="text-blue-800 font-semibold">Gemiddelde kale prijs/kWh</p>
                       <p className="text-blue-600 text-sm mt-2">Exclusief energiebelasting</p>
+                    </div>
+                    <div className="text-center p-6 bg-gradient-to-r from-emerald-50 to-emerald-100 rounded-xl border border-emerald-200">
+                      <div className="text-4xl font-bold text-emerald-600 mb-2">€0,0845</div>
+                      <p className="text-emerald-800 font-semibold">Realistische prijs/kWh</p>
+                      <p className="text-emerald-600 text-sm mt-2">Gebaseerd op verbruiksprofiel</p>
                     </div>
                     <div className="text-center p-6 bg-gradient-to-r from-green-50 to-green-100 rounded-xl border border-green-200">
                       <div className="text-4xl font-bold text-green-600 mb-2">-€0,005</div>
@@ -194,10 +199,21 @@ export default function Home() {
                       <p className="text-green-600 text-sm mt-2">Negatieve prijzen mogelijk</p>
                     </div>
                     <div className="text-center p-6 bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl border border-purple-200">
-                      <div className="text-4xl font-bold text-purple-600 mb-2">€0,35</div>
+                      <div className="text-4xl font-bold text-purple-600 mb-2">€0,30</div>
                       <p className="text-purple-800 font-semibold">Hoogste prijs/kWh</p>
                       <p className="text-purple-600 text-sm mt-2">Inclusief alle kosten</p>
                     </div>
+                  </div>
+                  
+                  {/* Link to Dynamic Pricing Page */}
+                  <div className="mt-8 text-center">
+                    <a 
+                      href="/dynamische-prijzen"
+                      className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                    >
+                      <span>📊</span>
+                      <span>Bekijk Gedetailleerde Analyse</span>
+                    </a>
                   </div>
                 </div>
               </div>
