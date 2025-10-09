@@ -2,6 +2,10 @@
 
 import { useState } from 'react';
 import { Calculator, MapPin, Zap, Sun, Car, Flame } from 'lucide-react';
+import { berekenEnergiekosten } from '@/lib/calculations/energyCalculator';
+import { berekenDynamischeEnergiekosten } from '@/lib/calculations/dynamicEnergyCalculator';
+import { getNetbeheerderKosten } from '@/lib/calculations/netbeheerderKosten';
+import { sampleCSV2024, sampleCSV2025 } from '@/lib/data/sampleDynamicData';
 
 interface ContractAdviesProps {
   className?: string;
@@ -20,28 +24,52 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
   const [dalVerbruik, setDalVerbruik] = useState('');
   const [normaalVerbruik, setNormaalVerbruik] = useState('');
   const [gasVerbruik, setGasVerbruik] = useState('');
+  const [geenGas, setGeenGas] = useState(false);
   const [pvTeruglevering, setPvTeruglevering] = useState('');
+  const [percentageZelfverbruik, setPercentageZelfverbruik] = useState('30');
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [netbeheerderData, setNetbeheerderData] = useState<NetbeheerderData | null>(null);
 
-  // Prefilled contract data
+  // Prefilled contract data - exact zoals opgegeven
   const vastContract = {
-    stroomPrijs: 0.10, // €0.10/kWh excl. belasting
-    terugleverVergoeding: 0.01, // €0.01/kWh
-    vasteKosten: 10, // €10/maand per product
-    gasPrijs: 0.63, // €0.63/m³ excl. belasting
-    terugleverkosten: 389, // €389/jaar
-    eenmaligeKorting: 200 // €200 korting
+    leverancier: 'Gemiddeld Vast Contract',
+    productNaam: 'Standaard Vast',
+    type: 'vast' as const,
+    looptijdMaanden: 12,
+    duurzaamheidsScore: 3,
+    klanttevredenheid: 3,
+    tarieven: {
+      stroomKalePrijs: 0.10, // €0.10/kWh excl. belasting
+      terugleververgoeding: 0.01, // €0.01/kWh
+      gasKalePrijs: 0.63, // €0.63/m³ excl. belasting
+      vasteTerugleverkosten: 389 // €389/jaar
+    },
+    vasteLeveringskosten: 10, // €10/maand per product
+    kortingEenmalig: 200 // €200 korting
   };
 
   const dynamischContract = {
-    stroomPrijs: 0.085, // €0.085/kWh excl. belasting
-    terugleverVergoeding: 0.0595, // €0.0595/kWh (gemiddelde spotprijs)
-    vasteKosten: 7, // €7/maand
-    opslag: 0.025, // €0.025/kWh opslag
-    gasPrijs: 0.63, // €0.63/m³ excl. belasting
-    eenmaligeKorting: 0 // Geen korting
+    leverancier: 'Gemiddeld Flexibel Contract',
+    productNaam: 'Standaard Flexibel',
+    type: 'dynamisch' as const,
+    looptijdMaanden: 12,
+    duurzaamheidsScore: 3,
+    klanttevredenheid: 3,
+    csvData2024: sampleCSV2024,
+    csvData2025: sampleCSV2025,
+    terugleververgoeding: 0.0595, // €0.0595/kWh (gemiddelde spotprijs)
+    maandelijkseVergoeding: 0, // Geen maandelijkse vergoeding
+    opslagPerKwh: 0.025, // €0.025/kWh opslag
+    opslagInvoeding: 0.025, // €0.025/kWh opslag voor invoeding
+    tarieven: {
+      stroomKalePrijs: 0.085, // €0.085/kWh excl. belasting
+      terugleververgoeding: 0.0595, // €0.0595/kWh (gemiddelde spotprijs)
+      gasKalePrijs: 0.63, // €0.63/m³ excl. belasting
+      vasteTerugleverkosten: 0 // Geen vaste terugleverkosten voor dynamisch
+    },
+    vasteLeveringskosten: 7, // €7/maand
+    kortingEenmalig: 0 // Geen korting
   };
 
   const fetchNetbeheerder = async (postcode: string) => {
@@ -76,8 +104,8 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
   };
 
   const calculateCosts = async () => {
-    if (!postcode || !dalVerbruik || !normaalVerbruik || !gasVerbruik || !pvTeruglevering) {
-      alert('Vul alle velden in');
+    if (!postcode || !dalVerbruik || !normaalVerbruik || (!gasVerbruik && !geenGas) || !pvTeruglevering) {
+      alert('Vul alle verplichte velden in');
       return;
     }
 
@@ -91,67 +119,67 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
       // Parse inputs
       const dal = parseFloat(dalVerbruik);
       const normaal = parseFloat(normaalVerbruik);
-      const gas = parseFloat(gasVerbruik);
+      const gas = geenGas ? 0 : parseFloat(gasVerbruik);
       const pv = parseFloat(pvTeruglevering);
+      const zelfverbruikPercentage = parseFloat(percentageZelfverbruik);
 
       const totaalStroomVerbruik = dal + normaal;
-      const energiebelasting = 0.1316; // €0.1316/kWh incl. BTW
-      const gasBelasting = 0.45; // €0.45/m³ incl. BTW
-      const btw = 0.21;
 
-      // Calculate netbeheerder costs
-      const netbeheerderStroomKosten = (totaalStroomVerbruik * netbeheerder.stroomVariabel) + netbeheerder.stroomVastrecht;
-      const netbeheerderGasKosten = (gas * netbeheerder.gasVariabel) + netbeheerder.gasVastrecht;
+      // Create user profile exactly like in zelf vergelijken tool
+      const userProfile = {
+        postcode: postcode,
+        netbeheerder: netbeheerder.netbeheerder,
+        aansluitingElektriciteit: '1x25A' as const,
+        aansluitingGas: 'G4' as const,
+        jaarverbruikStroom: totaalStroomVerbruik,
+        jaarverbruikStroomPiek: normaal,
+        jaarverbruikStroomDal: dal,
+        jaarverbruikGas: gas,
+        heeftZonnepanelen: pv > 0,
+        pvOpwek: pv,
+        percentageZelfverbruik: zelfverbruikPercentage,
+        heeftWarmtepomp: false,
+        heeftElektrischeAuto: false,
+        geenGas: geenGas,
+        piekDalVerdeling: {
+          piek: normaal / totaalStroomVerbruik,
+          dal: dal / totaalStroomVerbruik
+        }
+      };
 
-      // Calculate vast contract costs
-      const vastStroomKosten = totaalStroomVerbruik * vastContract.stroomPrijs;
-      const vastStroomBelasting = totaalStroomVerbruik * energiebelasting;
-      const vastGasKosten = gas * vastContract.gasPrijs;
-      const vastGasBelasting = gas * gasBelasting;
-      const vastVasteKosten = vastContract.vasteKosten * 12; // Per jaar
-      const vastTeruglevering = Math.min(pv, totaalStroomVerbruik) * vastContract.terugleverVergoeding;
-      const vastTerugleverkosten = vastContract.terugleverkosten;
-      const vastTotaal = vastStroomKosten + vastStroomBelasting + vastGasKosten + vastGasBelasting + vastVasteKosten + netbeheerderStroomKosten + netbeheerderGasKosten - vastTeruglevering + vastTerugleverkosten - vastContract.eenmaligeKorting;
+      // Calculate vast contract using exact same logic
+      const vastResult = berekenEnergiekosten(userProfile, vastContract);
 
-      // Calculate dynamisch contract costs
-      const dynamischStroomKosten = totaalStroomVerbruik * (dynamischContract.stroomPrijs + dynamischContract.opslag);
-      const dynamischStroomBelasting = totaalStroomVerbruik * energiebelasting;
-      const dynamischGasKosten = gas * dynamischContract.gasPrijs;
-      const dynamischGasBelasting = gas * gasBelasting;
-      const dynamischVasteKosten = dynamischContract.vasteKosten * 12; // Per jaar
-      const dynamischTeruglevering = Math.min(pv, totaalStroomVerbruik) * dynamischContract.terugleverVergoeding;
-      const dynamischTotaal = dynamischStroomKosten + dynamischStroomBelasting + dynamischGasKosten + dynamischGasBelasting + dynamischVasteKosten + netbeheerderStroomKosten + netbeheerderGasKosten - dynamischTeruglevering;
+      // Calculate dynamisch contract using exact same logic
+      const dynamischResult = await berekenDynamischeEnergiekosten(userProfile, dynamischContract, sampleCSV2024, sampleCSV2025, '2025');
 
-      const besparing = Math.abs(vastTotaal - dynamischTotaal);
-      const goedkoopsteContract = vastTotaal < dynamischTotaal ? 'vast' : 'dynamisch';
+      const besparing = Math.abs(vastResult.totaleJaarkostenMetPv - dynamischResult.totaleJaarkostenMetPv);
+      const goedkoopsteContract = vastResult.totaleJaarkostenMetPv < dynamischResult.totaleJaarkostenMetPv ? 'vast' : 'dynamisch';
 
       setResult({
         vast: {
-          totaal: vastTotaal,
-          stroomKosten: vastStroomKosten,
-          stroomBelasting: vastStroomBelasting,
-          gasKosten: vastGasKosten,
-          gasBelasting: vastGasBelasting,
-          vasteKosten: vastVasteKosten,
-          netbeheerderKosten: netbeheerderStroomKosten + netbeheerderGasKosten,
-          teruglevering: vastTeruglevering,
-          terugleverkosten: vastTerugleverkosten,
-          korting: vastContract.eenmaligeKorting
+          totaal: vastResult.totaleJaarkostenMetPv,
+          stroomKosten: vastResult.stroomKosten,
+          gasKosten: vastResult.gasKosten,
+          pvOpbrengsten: vastResult.pvOpbrengsten,
+          korting: vastContract.kortingEenmalig
         },
         dynamisch: {
-          totaal: dynamischTotaal,
-          stroomKosten: dynamischStroomKosten,
-          stroomBelasting: dynamischStroomBelasting,
-          gasKosten: dynamischGasKosten,
-          gasBelasting: dynamischGasBelasting,
-          vasteKosten: dynamischVasteKosten,
-          netbeheerderKosten: netbeheerderStroomKosten + netbeheerderGasKosten,
-          teruglevering: dynamischTeruglevering,
-          opslag: dynamischContract.opslag
+          totaal: dynamischResult.totaleJaarkostenMetPv,
+          stroomKosten: dynamischResult.stroomKosten,
+          gasKosten: dynamischResult.gasKosten,
+          pvOpbrengsten: dynamischResult.pvOpbrengsten,
+          opslagPerKwh: dynamischContract.opslagPerKwh
         },
         besparing,
         goedkoopsteContract,
-        netbeheerder: netbeheerder.netbeheerder
+        netbeheerder: netbeheerder.netbeheerder,
+        userProfile: {
+          totaalStroomVerbruik,
+          gasVerbruik: gas,
+          pvOpwek: pv,
+          percentageZelfverbruik: zelfverbruikPercentage
+        }
       });
 
     } catch (error) {
@@ -183,7 +211,7 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               <MapPin className="w-4 h-4 inline mr-2" />
-              Postcode
+              Postcode *
             </label>
             <input
               type="text"
@@ -199,7 +227,7 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 <Zap className="w-4 h-4 inline mr-2" />
-                Dal verbruik (kWh/jaar)
+                Dal verbruik (kWh/jaar) *
               </label>
               <input
                 type="number"
@@ -212,7 +240,7 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 <Zap className="w-4 h-4 inline mr-2" />
-                Normaal verbruik (kWh/jaar)
+                Normaal verbruik (kWh/jaar) *
               </label>
               <input
                 type="number"
@@ -224,26 +252,37 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
             </div>
           </div>
 
-          {/* Gasverbruik */}
+          {/* Gasverbruik met checkbox */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              <Flame className="w-4 h-4 inline mr-2" />
-              Gasverbruik (m³/jaar)
-            </label>
-            <input
-              type="number"
-              value={gasVerbruik}
-              onChange={(e) => setGasVerbruik(e.target.value)}
-              placeholder="1200"
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
+            <div className="flex items-center mb-2">
+              <input
+                type="checkbox"
+                id="geenGas"
+                checked={geenGas}
+                onChange={(e) => setGeenGas(e.target.checked)}
+                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+              />
+              <label htmlFor="geenGas" className="ml-2 text-sm font-semibold text-gray-700">
+                <Flame className="w-4 h-4 inline mr-2" />
+                Geen gasverbruik
+              </label>
+            </div>
+            {!geenGas && (
+              <input
+                type="number"
+                value={gasVerbruik}
+                onChange={(e) => setGasVerbruik(e.target.value)}
+                placeholder="1200"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            )}
           </div>
 
           {/* PV Teruglevering */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               <Sun className="w-4 h-4 inline mr-2" />
-              Zonnepanelen teruglevering (kWh/jaar)
+              Zonnepanelen teruglevering (kWh/jaar) *
             </label>
             <input
               type="number"
@@ -252,6 +291,24 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
               placeholder="2500"
               className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
+          </div>
+
+          {/* Percentage zelfverbruik */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <Sun className="w-4 h-4 inline mr-2" />
+              Percentage zelfverbruik (%)
+            </label>
+            <input
+              type="number"
+              value={percentageZelfverbruik}
+              onChange={(e) => setPercentageZelfverbruik(e.target.value)}
+              placeholder="30"
+              min="0"
+              max="100"
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+            <p className="text-xs text-gray-500 mt-1">Hoeveel procent van je zonnepanelen opbrengst gebruik je direct zelf?</p>
           </div>
 
           {/* Calculate Button */}
@@ -301,12 +358,24 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
                   <span className="font-semibold">€{result.vast.totaal.toFixed(0)}</span>
                 </div>
                 <div className="flex justify-between text-xs text-gray-600">
-                  <span>Teruglevering:</span>
-                  <span>€{result.vast.teruglevering.toFixed(0)}</span>
+                  <span>Stroomkosten:</span>
+                  <span>€{result.vast.stroomKosten.totaal.toFixed(0)}</span>
                 </div>
-                <div className="flex justify-between text-xs text-gray-600">
+                {!result.userProfile.gasVerbruik || result.userProfile.gasVerbruik === 0 ? null : (
+                  <div className="flex justify-between text-xs text-gray-600">
+                    <span>Gaskosten:</span>
+                    <span>€{result.vast.gasKosten.totaal.toFixed(0)}</span>
+                  </div>
+                )}
+                {result.vast.pvOpbrengsten && (
+                  <div className="flex justify-between text-xs text-green-600">
+                    <span>PV besparing:</span>
+                    <span>-€{result.vast.pvOpbrengsten.totaleOpbrengst.toFixed(0)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between text-xs text-green-600">
                   <span>Korting:</span>
-                  <span>€{result.vast.korting}</span>
+                  <span>-€{result.vast.korting}</span>
                 </div>
               </div>
             </div>
@@ -324,12 +393,24 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
                   <span className="font-semibold">€{result.dynamisch.totaal.toFixed(0)}</span>
                 </div>
                 <div className="flex justify-between text-xs text-gray-600">
-                  <span>Teruglevering:</span>
-                  <span>€{result.dynamisch.teruglevering.toFixed(0)}</span>
+                  <span>Stroomkosten:</span>
+                  <span>€{result.dynamisch.stroomKosten.totaal.toFixed(0)}</span>
                 </div>
+                {!result.userProfile.gasVerbruik || result.userProfile.gasVerbruik === 0 ? null : (
+                  <div className="flex justify-between text-xs text-gray-600">
+                    <span>Gaskosten:</span>
+                    <span>€{result.dynamisch.gasKosten.totaal.toFixed(0)}</span>
+                  </div>
+                )}
+                {result.dynamisch.pvOpbrengsten && (
+                  <div className="flex justify-between text-xs text-green-600">
+                    <span>PV besparing:</span>
+                    <span>-€{result.dynamisch.pvOpbrengsten.totaleOpbrengst.toFixed(0)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between text-xs text-gray-600">
                   <span>Opslag:</span>
-                  <span>€{((result.dynamisch.stroomKosten / (parseFloat(dalVerbruik) + parseFloat(normaalVerbruik))) * result.dynamisch.opslag).toFixed(0)}</span>
+                  <span>€{(result.userProfile.totaalStroomVerbruik * result.dynamisch.opslagPerKwh).toFixed(0)}</span>
                 </div>
               </div>
             </div>
