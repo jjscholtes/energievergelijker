@@ -32,13 +32,12 @@ export function DynamicPricingHero({ year }: DynamicPricingHeroProps) {
   const weightedAverage = totalDataPoints > 0 ? totalWeightedSum / totalDataPoints : 0;
   
   // Calculate all-in prices (kale prijs + energy tax + BTW)
-  const energyTax = 0.1088; // €0.1088/kWh
-  const btw = 0.21; // 21% BTW
+  const energyTax = 0.1316; // €0.1316/kWh (inclusief BTW)
   
   // Calculate total prices for each category
-  const averageTotal = (weightedAverage + energyTax) * (1 + btw);
-  const minTotal = (minPrice + energyTax) * (1 + btw);
-  const maxTotal = (maxPrice + energyTax) * (1 + btw);
+  const averageTotal = weightedAverage + energyTax;
+  const minTotal = minPrice + energyTax;
+  const maxTotal = maxPrice + energyTax;
 
   return (
     <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-6 lg:p-8 shadow-2xl border border-white/40">
@@ -64,7 +63,7 @@ export function DynamicPricingHero({ year }: DynamicPricingHeroProps) {
           </div>
           <p className="text-blue-600 text-xs lg:text-sm mb-2">Exclusief energiebelasting</p>
           <p className="text-blue-800 font-semibold text-sm lg:text-base">
-            Totaal: €{(averageTotal).toFixed(3)}/kWh
+            Totaal: €{(averageTotal).toFixed(3)}/kWh (inclusief belasting)
           </p>
         </div>
 
@@ -76,7 +75,7 @@ export function DynamicPricingHero({ year }: DynamicPricingHeroProps) {
           </div>
           <p className="text-green-600 text-xs lg:text-sm mb-2">Exclusief energiebelasting</p>
           <p className="text-green-800 font-semibold text-sm lg:text-base">
-            Totaal: €{(minTotal).toFixed(3)}/kWh
+            Totaal: €{(minTotal).toFixed(3)}/kWh (inclusief belasting)
           </p>
         </div>
 
@@ -88,7 +87,7 @@ export function DynamicPricingHero({ year }: DynamicPricingHeroProps) {
           </div>
           <p className="text-purple-600 text-xs lg:text-sm mb-2">Exclusief energiebelasting</p>
           <p className="text-purple-800 font-semibold text-sm lg:text-base">
-            Totaal: €{(maxTotal).toFixed(3)}/kWh
+            Totaal: €{(maxTotal).toFixed(3)}/kWh (inclusief belasting)
           </p>
         </div>
       </div>
