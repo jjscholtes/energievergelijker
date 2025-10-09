@@ -31,6 +31,7 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [netbeheerderData, setNetbeheerderData] = useState<NetbeheerderData | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   // Prefilled contract data - exact zoals opgegeven
   const vastContract = {
@@ -73,21 +74,64 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
     kortingEenmalig: 0 // Geen korting
   };
 
-  const fetchNetbeheerder = (postcode: string) => {
-    // Gebruik dezelfde logica als zelf vergelijken tool
-    const netbeheerder = bepaalNetbeheerder(postcode);
-    
-    if (netbeheerder) {
-      return {
-        netbeheerder: netbeheerder.naam,
-        stroomVastrecht: netbeheerder.kostenStroom,
-        gasVastrecht: netbeheerder.kostenGas,
-        stroomVariabel: netbeheerder.kostenStroom,
-        gasVariabel: netbeheerder.kostenGas
-      };
+  const fetchNetbeheerder = async (postcode: string) => {
+    try {
+      // Gebruik de Polygon API om netbeheerder te bepalen
+      const response = await fetch(`https://opendata.polygonentool.nl/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=netbeheerders&cql_filter=postcode='${postcode}'&outputFormat=application/json`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      if (data.features && data.features.length > 0) {
+        const netbeheerderName = data.features[0].properties?.netbeheerder || data.features[0].properties?.naam;
+        
+        if (netbeheerderName) {
+          // Map netbeheerder naam naar lokale data voor kosten
+          const netbeheerder = bepaalNetbeheerder(postcode);
+          if (netbeheerder) {
+            return {
+              netbeheerder: netbeheerderName,
+              stroomVastrecht: netbeheerder.kostenStroom,
+              gasVastrecht: netbeheerder.kostenGas,
+              stroomVariabel: netbeheerder.kostenStroom,
+              gasVariabel: netbeheerder.kostenGas
+            };
+          }
+        }
+      }
+      
+      // Fallback naar lokale database als API geen resultaat geeft
+      const netbeheerder = bepaalNetbeheerder(postcode);
+      if (netbeheerder) {
+        return {
+          netbeheerder: netbeheerder.naam,
+          stroomVastrecht: netbeheerder.kostenStroom,
+          gasVastrecht: netbeheerder.kostenGas,
+          stroomVariabel: netbeheerder.kostenStroom,
+          gasVariabel: netbeheerder.kostenGas
+        };
+      }
+      
+    } catch (error) {
+      console.error('Error fetching netbeheerder from API:', error);
+      
+      // Fallback naar lokale database bij API fout
+      const netbeheerder = bepaalNetbeheerder(postcode);
+      if (netbeheerder) {
+        return {
+          netbeheerder: netbeheerder.naam,
+          stroomVastrecht: netbeheerder.kostenStroom,
+          gasVastrecht: netbeheerder.kostenGas,
+          stroomVariabel: netbeheerder.kostenStroom,
+          gasVariabel: netbeheerder.kostenGas
+        };
+      }
     }
     
-    // Fallback naar Enexis als geen netbeheerder gevonden
+    // Final fallback naar Enexis
     return { 
       netbeheerder: 'Enexis', 
       stroomVastrecht: 492, 
@@ -99,15 +143,16 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
 
   const calculateCosts = async () => {
     if (!postcode || !dalVerbruik || !normaalVerbruik || (!gasVerbruik && !geenGas) || !pvTeruglevering) {
-      alert('Vul alle verplichte velden in');
+      setError('Vul alle verplichte velden in');
       return;
     }
 
     setIsLoading(true);
+    setError(null);
 
     try {
       // Fetch netbeheerder data
-      const netbeheerder = fetchNetbeheerder(postcode);
+      const netbeheerder = await fetchNetbeheerder(postcode);
       setNetbeheerderData(netbeheerder);
 
       // Parse inputs
@@ -116,6 +161,15 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
       const gas = geenGas ? 0 : parseFloat(gasVerbruik);
       const pv = parseFloat(pvTeruglevering);
       const zelfverbruikPercentage = parseFloat(percentageZelfverbruik);
+
+      // Validate inputs
+      if (isNaN(dal) || isNaN(normaal) || isNaN(gas) || isNaN(pv) || isNaN(zelfverbruikPercentage)) {
+        throw new Error('Ongeldige invoer. Controleer of alle velden correct zijn ingevuld.');
+      }
+
+      if (dal < 0 || normaal < 0 || gas < 0 || pv < 0 || zelfverbruikPercentage < 0 || zelfverbruikPercentage > 100) {
+        throw new Error('Alle waarden moeten positief zijn. Percentage zelfverbruik moet tussen 0 en 100 liggen.');
+      }
 
       const totaalStroomVerbruik = dal + normaal;
 
@@ -178,7 +232,7 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
 
     } catch (error) {
       console.error('Calculation error:', error);
-      alert('Er is een fout opgetreden bij de berekening');
+      setError(error instanceof Error ? error.message : 'Er is een fout opgetreden bij de berekening');
     } finally {
       setIsLoading(false);
     }
@@ -201,6 +255,15 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
 
       {!result ? (
         <div className="space-y-4 lg:space-y-6">
+          {/* Error Display */}
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+              <div className="flex items-center gap-2">
+                <span className="text-red-600 text-xl">⚠️</span>
+                <p className="text-red-800 font-semibold">{error}</p>
+              </div>
+            </div>
+          )}
           {/* Postcode */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -562,6 +625,7 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
             onClick={() => {
               setResult(null);
               setNetbeheerderData(null);
+              setError(null);
             }}
             className="w-full bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300"
           >
