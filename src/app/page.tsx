@@ -9,6 +9,7 @@ import { DynamicPricingHero } from '@/components/DynamicPricingHero';
 import { EnergiecontractAdvies } from '@/components/EnergiecontractAdvies';
 import { EnergiecontractAdviesTest } from '@/components/test/EnergiecontractAdviesTest';
 import { SimpleTest } from '@/components/test/SimpleTest';
+import { CalculationTest } from '@/components/test/CalculationTest';
 
 export default function Home() {
   return (
@@ -289,6 +290,13 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+            {/* Calculation Test Section - Temporary for debugging */}
+            <section className="py-20 bg-green-50">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <CalculationTest />
+              </div>
+            </section>
 
             {/* Simple Test Section - Temporary for debugging */}
             <section className="py-20 bg-yellow-50">

@@ -123,7 +123,7 @@ export const berekenDynamischeEnergiekosten = async (
       opslagPerKwh: opslagKosten,
       maandelijkseVergoedingTarief: contract.maandelijkseVergoeding,
       opslagPerKwhTarief: contract.opslagPerKwh,
-      totaal: totaleStroomKostenMetKorting + maandelijkseVergoedingJaar + opslagKosten + (contract.vasteLeveringskosten * 12)
+      totaal: totaleStroomKostenMetKorting + maandelijkseVergoedingJaar + opslagKosten // Zonder vaste leveringskosten
     };
 
     return {
