@@ -5,7 +5,6 @@ import { ResultsSection } from '@/components/results/ResultsSection';
 import ArticlesSection from '@/components/articles/ArticlesSection';
 import { FAQ } from '@/components/FAQ';
 import { HowToGuide } from '@/components/HowToGuide';
-import { DynamicPricingSummary } from '@/components/DynamicPricingSummary';
 import { DynamicPricingHero } from '@/components/DynamicPricingHero';
 
 export default function Home() {
@@ -100,7 +99,7 @@ export default function Home() {
           </div>
 
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start lg:items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
               {/* Left Column - Content */}
               <div className="space-y-6 lg:space-y-8">
                 <div className="space-y-4 lg:space-y-6">
@@ -169,13 +168,6 @@ export default function Home() {
         <section className="py-20 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <ResultsSection />
-          </div>
-        </section>
-
-        {/* Dynamic Pricing Summary */}
-        <section className="py-20 bg-gradient-to-br from-blue-50 to-purple-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <DynamicPricingSummary />
           </div>
         </section>
 
