@@ -39,17 +39,16 @@ export const berekenDynamischeEnergiekosten = async (
     const basisprijs = contract.tarieven?.stroomKalePrijs || gemiddeldeSpotPrijs;
     const totaleKaleEnergie = userProfile.jaarverbruikStroom * basisprijs;
     const totaleEnergiebelasting = userProfile.jaarverbruikStroom * 0.1316; // €/kWh (€0,1088 * 1,21)
-    const totaleStroomKosten = totaleKaleEnergie + totaleEnergiebelasting;
+    
+    // Haal netbeheerder kosten op
+    const netbeheerderKosten = getNetbeheerderKosten(userProfile);
+    const totaleNetbeheer = netbeheerderKosten.stroom;
+    
+    const totaleStroomKosten = totaleKaleEnergie + totaleEnergiebelasting + totaleNetbeheer;
 
     // Constantes voor berekeningen (2025 tarieven)
     const HEFFINGSKORTING = 631.35; // €/jaar vermindering energiebelasting
     
-    // Haal netbeheerder kosten op (wordt later gebruikt)
-    const netbeheerderKosten = getNetbeheerderKosten(userProfile);
-
-    // Netbeheerkosten zijn jaarlijks vast
-    const totaleNetbeheer = netbeheerderKosten.stroom;
-
     // Pas heffingskorting toe op totale stroomkosten
     const totaleStroomKostenMetKorting = totaleStroomKosten - HEFFINGSKORTING;
 

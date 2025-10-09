@@ -42,7 +42,7 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
     klanttevredenheid: 3,
     tarieven: {
       stroomKalePrijs: 0.10, // €0.10/kWh excl. belasting
-      terugleververgoeding: 0.01, // €0.01/kWh
+      terugleververgoeding: 0, // €0/kWh voor vaste contracten
       gasKalePrijs: 0.63, // €0.63/m³ excl. belasting (realistische marktprijs)
       vasteTerugleverkosten: 0 // €0/jaar (geen terugleverkosten voor moderne contracten)
     },
@@ -62,7 +62,6 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
     terugleververgoeding: 0.0595, // €0.0595/kWh (gemiddelde spotprijs)
     maandelijkseVergoeding: 0, // Geen maandelijkse vergoeding
     opslagPerKwh: 0.025, // €0.025/kWh opslag
-    opslagInvoeding: 0.025, // €0.025/kWh opslag voor invoeding
     vasteLeveringskosten: 7, // €7/maand
     kortingEenmalig: 0, // Geen korting voor dynamische contracten
     tarieven: {
@@ -518,10 +517,6 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
                   <div className="flex justify-between">
                     <span>Vaste leveringskosten:</span>
                     <span>€{(result.dynamisch.stroomKosten.vasteLeveringskosten || 0).toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Maandelijkse vergoeding:</span>
-                    <span>€{(result.dynamisch.stroomKosten.maandelijkseVergoeding || 0).toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Opslag per kWh:</span>
