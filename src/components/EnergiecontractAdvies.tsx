@@ -418,7 +418,7 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
                     <span>€{result.vast.stroomKosten.energiebelasting.toFixed(2)}</span>
                   </div>
                   <div className="text-xs text-gray-500">
-                    {result.userProfile.totaalStroomVerbruik} kWh × €0.1316
+                    {result.userProfile.jaarverbruikStroom} kWh × €0.1316
                   </div>
                   <div className="flex justify-between">
                     <span>Netbeheerder:</span>
@@ -436,7 +436,7 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
               </div>
 
               {/* Gaskosten Breakdown */}
-              {!result.userProfile.geenGas && result.userProfile.gasVerbruik > 0 && (
+              {!result.userProfile.geenGas && result.userProfile.jaarverbruikGas > 0 && (
                 <div className="space-y-3 mb-4">
                   <h6 className="font-semibold text-gray-800">🔥 Gaskosten</h6>
                   <div className="space-y-1 text-sm ml-4">
@@ -518,14 +518,14 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
                     <span>€{result.dynamisch.stroomKosten.kaleEnergie.toFixed(2)}</span>
                   </div>
                   <div className="text-xs text-gray-500">
-                    {result.userProfile.totaalStroomVerbruik} kWh × €{dynamischContract.tarieven.stroomKalePrijs.toFixed(3)}
+                    {result.userProfile.jaarverbruikStroom} kWh × €{dynamischContract.tarieven.stroomKalePrijs.toFixed(3)}
                   </div>
                   <div className="flex justify-between">
                     <span>Energiebelasting:</span>
                     <span>€{result.dynamisch.stroomKosten.energiebelasting.toFixed(2)}</span>
                   </div>
                   <div className="text-xs text-gray-500">
-                    {result.userProfile.totaalStroomVerbruik} kWh × €0.1316
+                    {result.userProfile.jaarverbruikStroom} kWh × €0.1316
                   </div>
                   <div className="flex justify-between">
                     <span>Netbeheerder:</span>
@@ -537,10 +537,10 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
                   </div>
                   <div className="flex justify-between">
                     <span>Opslag per kWh:</span>
-                    <span>€{((result.userProfile.totaalStroomVerbruik * (result.dynamisch.opslagPerKwh || 0))).toFixed(2)}</span>
+                    <span>€{((result.userProfile.jaarverbruikStroom * (result.dynamisch.opslagPerKwh || 0))).toFixed(2)}</span>
                   </div>
                   <div className="text-xs text-gray-500">
-                    {result.userProfile.totaalStroomVerbruik} kWh × €{(result.dynamisch.opslagPerKwh || 0).toFixed(3)}
+                    {result.userProfile.jaarverbruikStroom} kWh × €{(result.dynamisch.opslagPerKwh || 0).toFixed(3)}
                   </div>
                   <div className="flex justify-between text-green-600">
                     <span>Heffingskorting:</span>
@@ -550,7 +550,7 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
               </div>
 
               {/* Gaskosten Breakdown */}
-              {!result.userProfile.geenGas && result.userProfile.gasVerbruik > 0 && (
+              {!result.userProfile.geenGas && result.userProfile.jaarverbruikGas > 0 && (
                 <div className="space-y-3 mb-4">
                   <h6 className="font-semibold text-gray-800">🔥 Gaskosten</h6>
                   <div className="space-y-1 text-sm ml-4">
@@ -559,7 +559,7 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
                       <span>€{result.dynamisch.gasKosten.kaleEnergie.toFixed(2)}</span>
                     </div>
                     <div className="text-xs text-gray-500">
-                      {result.userProfile.gasVerbruik} m³ × €{dynamischContract.tarieven.gasKalePrijs.toFixed(3)}
+                      {result.userProfile.jaarverbruikGas} m³ × €{dynamischContract.tarieven.gasKalePrijs.toFixed(3)}
                     </div>
                     <div className="flex justify-between">
                       <span>Energiebelasting:</span>
