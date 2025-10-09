@@ -71,20 +71,16 @@ export default function ArticlesSection() {
                 Blijf op de hoogte van de laatste ontwikkelingen
               </h4>
               <p className="text-gray-600 mb-8 text-lg max-w-2xl mx-auto leading-relaxed">
-                Schrijf je in voor onze nieuwsbrief en krijg de nieuwste artikelen direct in je inbox.
+                Ontdek de nieuwste artikelen en diepgaande analyses over energie, zonnepanelen en besparen.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <div className="flex justify-center">
                 <Link
-                  href="/#user-input-form"
+                  href="/tool"
                   className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-xl font-bold transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl flex items-center gap-3 group"
                 >
                   <BookOpen className="w-5 h-5" />
-                  <span>Start Energievergelijking</span>
+                  <span>Start Vergelijking</span>
                 </Link>
-                <button className="bg-white border-2 border-blue-600 text-blue-600 hover:bg-blue-50 px-8 py-4 rounded-xl font-bold transition-all duration-300 flex items-center gap-3 group">
-                  <span>Nieuwsbrief</span>
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </button>
               </div>
             </div>
           </div>
