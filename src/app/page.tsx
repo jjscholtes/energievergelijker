@@ -181,10 +181,10 @@ export default function Home() {
                 <span>Nieuwe Tool</span>
               </div>
               <h3 className="text-3xl font-bold text-gray-900 mb-4">
-                Energiecontract Calculator Tool
+                Energiecontract Hulp
               </h3>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-                Wil je je eigen energiecontracten vergelijken? Gebruik onze nieuwe calculator tool 
+                Wil je je eigen energiecontracten vergelijken? Onze hulp tool helpt je 
                 om zelf contracten toe te voegen en de kosten te berekenen.
               </p>
             </div>
@@ -235,7 +235,7 @@ export default function Home() {
                     <div className="w-16 h-16 bg-gradient-to-r from-green-600 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
                       <span className="text-white text-3xl">🛠️</span>
                     </div>
-                    <h4 className="text-xl font-bold text-gray-900 mb-2">Calculator Tool</h4>
+                    <h4 className="text-xl font-bold text-gray-900 mb-2">Energiecontract Hulp</h4>
                     <p className="text-gray-600">Vergelijk je eigen energiecontracten</p>
                   </div>
                   
