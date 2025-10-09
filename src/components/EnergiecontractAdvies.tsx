@@ -44,7 +44,7 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
       stroomKalePrijs: 0.10, // €0.10/kWh excl. belasting
       terugleververgoeding: 0, // €0/kWh voor vaste contracten
       gasKalePrijs: 0.63, // €0.63/m³ excl. belasting (realistische marktprijs)
-      vasteTerugleverkosten: 0 // €0/jaar (geen terugleverkosten voor moderne contracten)
+      vasteTerugleverkosten: 389 // €389/jaar terugleverkosten voor vaste contracten
     },
     vasteLeveringskosten: 7, // €7/maand (realistische marktprijs)
     kortingEenmalig: 200 // €200 korting
