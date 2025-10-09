@@ -5,6 +5,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { CookieBanner } from '@/components/CookieBanner';
+import { TradeTrackerScript } from '@/components/TradeTrackerScript';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -169,29 +170,7 @@ export default function RootLayout({
         <Analytics />
         <SpeedInsights />
         <CookieBanner />
-        
-        {/* TradeTracker SuperTag Code */}
-        <script
-          type="text/javascript"
-          dangerouslySetInnerHTML={{
-            __html: `
-              var _TradeTrackerTagOptions = {
-                t: 'a',
-                s: '496928',
-                chk: '23e07d1fcad6a064ade95056582d48e5',
-                overrideOptions: {}
-              };
-
-              (function() {
-                var tt = document.createElement('script'), 
-                    s = document.getElementsByTagName('script')[0]; 
-                tt.setAttribute('type', 'text/javascript'); 
-                tt.setAttribute('src', (document.location.protocol == 'https:' ? 'https' : 'http') + '://tm.tradetracker.net/tag?t=' + _TradeTrackerTagOptions.t + '&s=' + _TradeTrackerTagOptions.s + '&chk=' + _TradeTrackerTagOptions.chk); 
-                s.parentNode.insertBefore(tt, s);
-              })();
-            `
-          }}
-        />
+        <TradeTrackerScript />
       </body>
     </html>
   );
