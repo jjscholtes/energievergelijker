@@ -77,83 +77,22 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
   const fetchNetbeheerder = async (postcode: string) => {
     console.log('Fetching netbeheerder for postcode:', postcode);
     
-    try {
-      // Gebruik de Polygon API om netbeheerder te bepalen
-      const apiUrl = `https://opendata.polygonentool.nl/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=netbeheerders&cql_filter=postcode='${postcode}'&outputFormat=application/json`;
-      console.log('API URL:', apiUrl);
-      
-      const response = await fetch(apiUrl, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-        },
-        // Add timeout
-        signal: AbortSignal.timeout(10000) // 10 second timeout
-      });
-      
-      console.log('API Response status:', response.status);
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      console.log('API Response data:', data);
-      
-      if (data.features && data.features.length > 0) {
-        const netbeheerderName = data.features[0].properties?.netbeheerder || data.features[0].properties?.naam;
-        console.log('Found netbeheerder from API:', netbeheerderName);
-        
-        if (netbeheerderName) {
-          // Map netbeheerder naam naar lokale data voor kosten
-          const netbeheerder = bepaalNetbeheerder(postcode);
-          if (netbeheerder) {
-            console.log('Using local data for costs:', netbeheerder.naam);
-            return {
-              netbeheerder: netbeheerderName,
-              stroomVastrecht: netbeheerder.kostenStroom,
-              gasVastrecht: netbeheerder.kostenGas,
-              stroomVariabel: netbeheerder.kostenStroom,
-              gasVariabel: netbeheerder.kostenGas
-            };
-          }
-        }
-      }
-      
-      console.log('No netbeheerder found in API response, using local database');
-      
-      // Fallback naar lokale database als API geen resultaat geeft
-      const netbeheerder = bepaalNetbeheerder(postcode);
-      if (netbeheerder) {
-        console.log('Using local database netbeheerder:', netbeheerder.naam);
-        return {
-          netbeheerder: netbeheerder.naam,
-          stroomVastrecht: netbeheerder.kostenStroom,
-          gasVastrecht: netbeheerder.kostenGas,
-          stroomVariabel: netbeheerder.kostenStroom,
-          gasVariabel: netbeheerder.kostenGas
-        };
-      }
-      
-    } catch (error) {
-      console.error('Error fetching netbeheerder from API:', error);
-      
-      // Fallback naar lokale database bij API fout
-      const netbeheerder = bepaalNetbeheerder(postcode);
-      if (netbeheerder) {
-        console.log('API failed, using local database netbeheerder:', netbeheerder.naam);
-        return {
-          netbeheerder: netbeheerder.naam,
-          stroomVastrecht: netbeheerder.kostenStroom,
-          gasVastrecht: netbeheerder.kostenGas,
-          stroomVariabel: netbeheerder.kostenStroom,
-          gasVariabel: netbeheerder.kostenGas
-        };
-      }
+    // Gebruik direct de lokale database - veel betrouwbaarder dan externe API
+    const netbeheerder = bepaalNetbeheerder(postcode);
+    
+    if (netbeheerder) {
+      console.log('Found netbeheerder from local database:', netbeheerder.naam);
+      return {
+        netbeheerder: netbeheerder.naam,
+        stroomVastrecht: netbeheerder.kostenStroom,
+        gasVastrecht: netbeheerder.kostenGas,
+        stroomVariabel: netbeheerder.kostenStroom,
+        gasVariabel: netbeheerder.kostenGas
+      };
     }
     
-    console.log('Using final fallback: Enexis');
-    // Final fallback naar Enexis
+    console.log('No netbeheerder found for postcode, using Enexis fallback');
+    // Fallback naar Enexis als geen netbeheerder gevonden
     return { 
       netbeheerder: 'Enexis', 
       stroomVastrecht: 492, 
