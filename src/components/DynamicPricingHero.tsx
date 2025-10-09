@@ -47,7 +47,7 @@ export function DynamicPricingHero({ year }: DynamicPricingHeroProps) {
           <span>Dynamische Prijzen</span>
         </div>
         <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-3 lg:mb-4">
-          Echte Marktdata {Object.keys(monthlyData).length > 0 ? targetYear : 2024}
+          Live Energieprijzen {Object.keys(monthlyData).length > 0 ? targetYear : 2024}
         </h3>
         <p className="text-gray-600 mb-4 lg:mb-6 text-sm lg:text-base">
           Gemiddelde kale stroomprijs: {(weightedAverage * 100).toFixed(1)} cent per kWh
