@@ -173,7 +173,7 @@ export default function Home() {
             
               {/* Right Column - Dynamic Pricing Info */}
               <div className="relative lg:sticky lg:top-24">
-                <DynamicPricingHero year={2024} />
+                <DynamicPricingHero />
               </div>
             </div>
           </div>
