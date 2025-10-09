@@ -418,7 +418,7 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
                     <span>€{result.vast.stroomKosten.energiebelasting.toFixed(2)}</span>
                   </div>
                   <div className="text-xs text-gray-500">
-                    {result.userProfile.jaarverbruikStroom} kWh × €0.1316
+                    {result.userProfile?.jaarverbruikStroom || 0} kWh × €0.1316
                   </div>
                   <div className="flex justify-between">
                     <span>Netbeheerder:</span>
@@ -518,14 +518,14 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
                     <span>€{result.dynamisch.stroomKosten.kaleEnergie.toFixed(2)}</span>
                   </div>
                   <div className="text-xs text-gray-500">
-                    {result.userProfile.jaarverbruikStroom} kWh × €{dynamischContract.tarieven.stroomKalePrijs.toFixed(3)}
+                    {result.userProfile?.jaarverbruikStroom || 0} kWh × €{dynamischContract.tarieven.stroomKalePrijs.toFixed(3)}
                   </div>
                   <div className="flex justify-between">
                     <span>Energiebelasting:</span>
                     <span>€{result.dynamisch.stroomKosten.energiebelasting.toFixed(2)}</span>
                   </div>
                   <div className="text-xs text-gray-500">
-                    {result.userProfile.jaarverbruikStroom} kWh × €0.1316
+                    {result.userProfile?.jaarverbruikStroom || 0} kWh × €0.1316
                   </div>
                   <div className="flex justify-between">
                     <span>Netbeheerder:</span>
@@ -541,10 +541,16 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
                   </div>
                   <div className="flex justify-between">
                     <span>Opslag per kWh:</span>
-                    <span>€{((result.userProfile.jaarverbruikStroom * (result.dynamisch.stroomKosten.opslagPerKwhTarief || dynamischContract.opslagPerKwh || 0))).toFixed(2)}</span>
+                    <span>€{(() => {
+                      const verbruik = result.userProfile?.jaarverbruikStroom || 0;
+                      const tarief = result.dynamisch?.stroomKosten?.opslagPerKwhTarief || dynamischContract.opslagPerKwh || 0;
+                      const berekening = verbruik * tarief;
+                      console.log('Opslag debug:', { verbruik, tarief, berekening });
+                      return berekening.toFixed(2);
+                    })()}</span>
                   </div>
                   <div className="text-xs text-gray-500">
-                    {result.userProfile.jaarverbruikStroom} kWh × €{(result.dynamisch.stroomKosten.opslagPerKwhTarief || dynamischContract.opslagPerKwh || 0).toFixed(3)}
+                    {result.userProfile?.jaarverbruikStroom || 0} kWh × €{(result.dynamisch?.stroomKosten?.opslagPerKwhTarief || dynamischContract.opslagPerKwh || 0).toFixed(3)}
                   </div>
                   <div className="flex justify-between text-green-600">
                     <span>Heffingskorting:</span>
@@ -563,7 +569,7 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
                       <span>€{result.dynamisch.gasKosten.kaleEnergie.toFixed(2)}</span>
                     </div>
                     <div className="text-xs text-gray-500">
-                      {result.userProfile.jaarverbruikGas} m³ × €{dynamischContract.tarieven.gasKalePrijs.toFixed(3)}
+                      {result.userProfile?.jaarverbruikGas || 0} m³ × €{dynamischContract.tarieven.gasKalePrijs.toFixed(3)}
                     </div>
                     <div className="flex justify-between">
                       <span>Energiebelasting:</span>
