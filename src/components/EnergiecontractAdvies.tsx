@@ -6,6 +6,7 @@ import { berekenEnergiekosten } from '@/lib/calculations/energyCalculator';
 import { berekenDynamischeEnergiekosten } from '@/lib/calculations/dynamicEnergyCalculator';
 import { getNetbeheerderKosten } from '@/lib/calculations/netbeheerderKosten';
 import { sampleCSV2024, sampleCSV2025 } from '@/lib/data/sampleDynamicData';
+import { bepaalNetbeheerder } from '@/lib/data/netbeheerders';
 
 interface ContractAdviesProps {
   className?: string;
@@ -72,35 +73,28 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
     kortingEenmalig: 0 // Geen korting
   };
 
-  const fetchNetbeheerder = async (postcode: string) => {
-    try {
-      const response = await fetch(`https://opendata.polygonentool.nl/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=netbeheerders&cql_filter=postcode='${postcode}'`);
-      const data = await response.text();
-      
-      // Parse XML response (simplified)
-      const parser = new DOMParser();
-      const xmlDoc = parser.parseFromString(data, 'text/xml');
-      const netbeheerderElement = xmlDoc.querySelector('netbeheerder');
-      
-      if (netbeheerderElement) {
-        const netbeheerder = netbeheerderElement.textContent || '';
-        
-        // Map netbeheerder to known data (using existing netbeheerder data)
-        const netbeheerderMap: { [key: string]: NetbeheerderData } = {
-          'Enexis': { netbeheerder: 'Enexis', stroomVastrecht: 0.1024, gasVastrecht: 0.1024, stroomVariabel: 0.1024, gasVariabel: 0.1024 },
-          'Liander': { netbeheerder: 'Liander', stroomVastrecht: 0.1024, gasVastrecht: 0.1024, stroomVariabel: 0.1024, gasVariabel: 0.1024 },
-          'Stedin': { netbeheerder: 'Stedin', stroomVastrecht: 0.1024, gasVastrecht: 0.1024, stroomVariabel: 0.1024, gasVariabel: 0.1024 },
-          'Westland Infra': { netbeheerder: 'Westland Infra', stroomVastrecht: 0.1024, gasVastrecht: 0.1024, stroomVariabel: 0.1024, gasVariabel: 0.1024 }
-        };
-        
-        return netbeheerderMap[netbeheerder] || netbeheerderMap['Enexis'];
-      }
-    } catch (error) {
-      console.error('Error fetching netbeheerder:', error);
+  const fetchNetbeheerder = (postcode: string) => {
+    // Gebruik dezelfde logica als zelf vergelijken tool
+    const netbeheerder = bepaalNetbeheerder(postcode);
+    
+    if (netbeheerder) {
+      return {
+        netbeheerder: netbeheerder.naam,
+        stroomVastrecht: netbeheerder.kostenStroom,
+        gasVastrecht: netbeheerder.kostenGas,
+        stroomVariabel: netbeheerder.kostenStroom,
+        gasVariabel: netbeheerder.kostenGas
+      };
     }
     
-    // Fallback to Enexis
-    return { netbeheerder: 'Enexis', stroomVastrecht: 0.1024, gasVastrecht: 0.1024, stroomVariabel: 0.1024, gasVariabel: 0.1024 };
+    // Fallback naar Enexis als geen netbeheerder gevonden
+    return { 
+      netbeheerder: 'Enexis', 
+      stroomVastrecht: 492, 
+      gasVastrecht: 254, 
+      stroomVariabel: 492, 
+      gasVariabel: 254 
+    };
   };
 
   const calculateCosts = async () => {
@@ -113,7 +107,7 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
 
     try {
       // Fetch netbeheerder data
-      const netbeheerder = await fetchNetbeheerder(postcode);
+      const netbeheerder = fetchNetbeheerder(postcode);
       setNetbeheerderData(netbeheerder);
 
       // Parse inputs
@@ -343,76 +337,212 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
             </p>
           </div>
 
-          {/* Cost Comparison */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Vast Contract */}
-            <div className={`p-4 rounded-xl border-2 ${
+          {/* Detailed Cost Breakdown */}
+          <div className="space-y-6">
+            {/* Vast Contract Details */}
+            <div className={`p-6 rounded-xl border-2 ${
               result.goedkoopsteContract === 'vast' 
                 ? 'border-green-500 bg-green-50' 
                 : 'border-gray-200 bg-gray-50'
             }`}>
-              <h5 className="font-bold text-lg mb-3">Vast Contract</h5>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span>Jaarlijkse kosten:</span>
-                  <span className="font-semibold">€{result.vast.totaal.toFixed(0)}</span>
-                </div>
-                <div className="flex justify-between text-xs text-gray-600">
-                  <span>Stroomkosten:</span>
-                  <span>€{result.vast.stroomKosten.totaal.toFixed(0)}</span>
-                </div>
-                {!result.userProfile.gasVerbruik || result.userProfile.gasVerbruik === 0 ? null : (
-                  <div className="flex justify-between text-xs text-gray-600">
-                    <span>Gaskosten:</span>
-                    <span>€{result.vast.gasKosten.totaal.toFixed(0)}</span>
+              <h5 className="font-bold text-xl mb-4 flex items-center gap-2">
+                <span>🏠</span>
+                Vast Contract - €{result.vast.totaal.toFixed(0)}/jaar
+              </h5>
+              
+              {/* Stroomkosten Breakdown */}
+              <div className="space-y-3 mb-4">
+                <h6 className="font-semibold text-gray-800">⚡ Stroomkosten</h6>
+                <div className="space-y-1 text-sm ml-4">
+                  <div className="flex justify-between">
+                    <span>Kale energie:</span>
+                    <span>€{result.vast.stroomKosten.kaleEnergie.toFixed(2)}</span>
                   </div>
-                )}
-                {result.vast.pvOpbrengsten && (
-                  <div className="flex justify-between text-xs text-green-600">
-                    <span>PV besparing:</span>
-                    <span>-€{result.vast.pvOpbrengsten.totaleOpbrengst.toFixed(0)}</span>
+                  <div className="text-xs text-gray-500">
+                    {result.userProfile.totaalStroomVerbruik} kWh × €{vastContract.tarieven.stroomKalePrijs.toFixed(3)}
                   </div>
-                )}
-                <div className="flex justify-between text-xs text-green-600">
-                  <span>Korting:</span>
+                  <div className="flex justify-between">
+                    <span>Energiebelasting:</span>
+                    <span>€{result.vast.stroomKosten.energiebelasting.toFixed(2)}</span>
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    {result.userProfile.totaalStroomVerbruik} kWh × €0.1316
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Netbeheerder:</span>
+                    <span>€{result.vast.stroomKosten.netbeheer.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Vaste leveringskosten:</span>
+                    <span>€{result.vast.stroomKosten.vasteLeveringskosten.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between text-green-600">
+                    <span>Heffingskorting:</span>
+                    <span>-€631.35</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Gaskosten Breakdown */}
+              {!result.userProfile.geenGas && result.userProfile.gasVerbruik > 0 && (
+                <div className="space-y-3 mb-4">
+                  <h6 className="font-semibold text-gray-800">🔥 Gaskosten</h6>
+                  <div className="space-y-1 text-sm ml-4">
+                    <div className="flex justify-between">
+                      <span>Kale energie:</span>
+                      <span>€{result.vast.gasKosten.kaleEnergie.toFixed(2)}</span>
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {result.userProfile.gasVerbruik} m³ × €{vastContract.tarieven.gasKalePrijs.toFixed(3)}
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Energiebelasting:</span>
+                      <span>€{result.vast.gasKosten.energiebelasting.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Netbeheerder:</span>
+                      <span>€{result.vast.gasKosten.netbeheer.toFixed(2)}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* PV Opbrengsten */}
+              {result.vast.pvOpbrengsten && (
+                <div className="space-y-3 mb-4">
+                  <h6 className="font-semibold text-gray-800">☀️ Zonnepanelen Opbrengsten</h6>
+                  <div className="space-y-1 text-sm ml-4">
+                    <div className="flex justify-between text-green-600">
+                      <span>Saldering besparing:</span>
+                      <span>-€{result.vast.pvOpbrengsten.salderingsBesparing.toFixed(2)}</span>
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {result.vast.pvOpbrengsten.gesaldeerdKwh.toFixed(0)} kWh × €0.1316
+                    </div>
+                    <div className="flex justify-between text-green-600">
+                      <span>Terugleververgoeding:</span>
+                      <span>-€{result.vast.pvOpbrengsten.terugleververgoedingBedrag.toFixed(2)}</span>
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {(result.vast.pvOpbrengsten.nettoTerugleveringKwh + result.vast.pvOpbrengsten.gesaldeerdKwh).toFixed(0)} kWh × €{vastContract.tarieven.terugleververgoeding.toFixed(4)}
+                    </div>
+                    <div className="flex justify-between text-red-600">
+                      <span>Terugleverkosten:</span>
+                      <span>€{result.vast.pvOpbrengsten.terugleverkosten.toFixed(2)}</span>
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      Staffel op basis van {(result.vast.pvOpbrengsten.nettoTerugleveringKwh + result.vast.pvOpbrengsten.gesaldeerdKwh).toFixed(0)} kWh jaarlijkse teruglevering
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Korting */}
+              <div className="space-y-1 text-sm">
+                <div className="flex justify-between text-green-600">
+                  <span>Eenmalige korting:</span>
                   <span>-€{result.vast.korting}</span>
                 </div>
               </div>
             </div>
 
-            {/* Dynamisch Contract */}
-            <div className={`p-4 rounded-xl border-2 ${
+            {/* Dynamisch Contract Details */}
+            <div className={`p-6 rounded-xl border-2 ${
               result.goedkoopsteContract === 'dynamisch' 
                 ? 'border-blue-500 bg-blue-50' 
                 : 'border-gray-200 bg-gray-50'
             }`}>
-              <h5 className="font-bold text-lg mb-3">Flexibel Contract</h5>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span>Jaarlijkse kosten:</span>
-                  <span className="font-semibold">€{result.dynamisch.totaal.toFixed(0)}</span>
-                </div>
-                <div className="flex justify-between text-xs text-gray-600">
-                  <span>Stroomkosten:</span>
-                  <span>€{result.dynamisch.stroomKosten.totaal.toFixed(0)}</span>
-                </div>
-                {!result.userProfile.gasVerbruik || result.userProfile.gasVerbruik === 0 ? null : (
-                  <div className="flex justify-between text-xs text-gray-600">
-                    <span>Gaskosten:</span>
-                    <span>€{result.dynamisch.gasKosten.totaal.toFixed(0)}</span>
+              <h5 className="font-bold text-xl mb-4 flex items-center gap-2">
+                <span>⚡</span>
+                Flexibel Contract - €{result.dynamisch.totaal.toFixed(0)}/jaar
+              </h5>
+              
+              {/* Stroomkosten Breakdown */}
+              <div className="space-y-3 mb-4">
+                <h6 className="font-semibold text-gray-800">⚡ Stroomkosten</h6>
+                <div className="space-y-1 text-sm ml-4">
+                  <div className="flex justify-between">
+                    <span>Kale energie:</span>
+                    <span>€{result.dynamisch.stroomKosten.kaleEnergie.toFixed(2)}</span>
                   </div>
-                )}
-                {result.dynamisch.pvOpbrengsten && (
-                  <div className="flex justify-between text-xs text-green-600">
-                    <span>PV besparing:</span>
-                    <span>-€{result.dynamisch.pvOpbrengsten.totaleOpbrengst.toFixed(0)}</span>
+                  <div className="text-xs text-gray-500">
+                    {result.userProfile.totaalStroomVerbruik} kWh × €{dynamischContract.tarieven.stroomKalePrijs.toFixed(3)}
                   </div>
-                )}
-                <div className="flex justify-between text-xs text-gray-600">
-                  <span>Opslag:</span>
-                  <span>€{(result.userProfile.totaalStroomVerbruik * result.dynamisch.opslagPerKwh).toFixed(0)}</span>
+                  <div className="flex justify-between">
+                    <span>Energiebelasting:</span>
+                    <span>€{result.dynamisch.stroomKosten.energiebelasting.toFixed(2)}</span>
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    {result.userProfile.totaalStroomVerbruik} kWh × €0.1316
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Netbeheerder:</span>
+                    <span>€{result.dynamisch.stroomKosten.netbeheer.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Vaste leveringskosten:</span>
+                    <span>€{result.dynamisch.stroomKosten.vasteLeveringskosten.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Opslag per kWh:</span>
+                    <span>€{(result.userProfile.totaalStroomVerbruik * result.dynamisch.opslagPerKwh).toFixed(2)}</span>
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    {result.userProfile.totaalStroomVerbruik} kWh × €{result.dynamisch.opslagPerKwh.toFixed(3)}
+                  </div>
+                  <div className="flex justify-between text-green-600">
+                    <span>Heffingskorting:</span>
+                    <span>-€631.35</span>
+                  </div>
                 </div>
               </div>
+
+              {/* Gaskosten Breakdown */}
+              {!result.userProfile.geenGas && result.userProfile.gasVerbruik > 0 && (
+                <div className="space-y-3 mb-4">
+                  <h6 className="font-semibold text-gray-800">🔥 Gaskosten</h6>
+                  <div className="space-y-1 text-sm ml-4">
+                    <div className="flex justify-between">
+                      <span>Kale energie:</span>
+                      <span>€{result.dynamisch.gasKosten.kaleEnergie.toFixed(2)}</span>
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {result.userProfile.gasVerbruik} m³ × €{dynamischContract.tarieven.gasKalePrijs.toFixed(3)}
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Energiebelasting:</span>
+                      <span>€{result.dynamisch.gasKosten.energiebelasting.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Netbeheerder:</span>
+                      <span>€{result.dynamisch.gasKosten.netbeheer.toFixed(2)}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* PV Opbrengsten */}
+              {result.dynamisch.pvOpbrengsten && (
+                <div className="space-y-3 mb-4">
+                  <h6 className="font-semibold text-gray-800">☀️ Zonnepanelen Opbrengsten</h6>
+                  <div className="space-y-1 text-sm ml-4">
+                    <div className="flex justify-between text-green-600">
+                      <span>Saldering besparing:</span>
+                      <span>-€{result.dynamisch.pvOpbrengsten.salderingsBesparing.toFixed(2)}</span>
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {result.dynamisch.pvOpbrengsten.gesaldeerdKwh.toFixed(0)} kWh × €0.1316
+                    </div>
+                    <div className="flex justify-between text-green-600">
+                      <span>Terugleververgoeding:</span>
+                      <span>-€{result.dynamisch.pvOpbrengsten.terugleververgoedingBedrag.toFixed(2)}</span>
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {(result.dynamisch.pvOpbrengsten.nettoTerugleveringKwh + result.dynamisch.pvOpbrengsten.gesaldeerdKwh).toFixed(0)} kWh × €{dynamischContract.tarieven.terugleververgoeding.toFixed(4)}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
