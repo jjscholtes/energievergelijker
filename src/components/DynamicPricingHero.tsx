@@ -54,7 +54,7 @@ export function DynamicPricingHero({ year }: DynamicPricingHeroProps) {
         </p>
       </div>
       
-      <div className="space-y-4 lg:space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
         {/* Gemiddelde Prijs */}
         <div className="text-center p-4 lg:p-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl border border-blue-200">
           <h4 className="text-lg font-bold text-blue-800 mb-3">Gemiddelde Prijs</h4>
