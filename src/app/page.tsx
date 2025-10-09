@@ -146,29 +146,6 @@ export default function Home() {
                     vooral als je zonnepanelen, warmtepomp of elektrische auto hebt.
                   </p>
                 </div>
-                
-                {/* Enhanced CTA Buttons */}
-                <div className="flex flex-col sm:flex-row gap-6">
-                  <button 
-                    onClick={() => document.getElementById('calculation-form')?.scrollIntoView({ behavior: 'smooth' })}
-                    className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white px-10 py-5 rounded-3xl font-bold text-xl transition-all duration-300 transform hover:scale-110 shadow-2xl hover:shadow-3xl flex items-center gap-4 group"
-                  >
-                    <span>🚀 Start Gratis Vergelijking</span>
-                    <span className="group-hover:translate-x-2 transition-transform text-2xl">→</span>
-                  </button>
-                  <a 
-                    href="/tool"
-                    className="bg-white/95 backdrop-blur-md border-2 border-green-600 text-green-600 hover:bg-green-50 px-10 py-5 rounded-3xl font-bold text-xl transition-all duration-300 transform hover:scale-110 shadow-xl hover:shadow-2xl text-center"
-                  >
-                    🛠️ Zelf Vergelijken
-                  </a>
-                  <button 
-                    onClick={() => document.getElementById('benefits-section')?.scrollIntoView({ behavior: 'smooth' })}
-                    className="bg-white/95 backdrop-blur-md border-2 border-blue-600 text-blue-600 hover:bg-blue-50 px-10 py-5 rounded-3xl font-bold text-xl transition-all duration-300 transform hover:scale-110 shadow-xl hover:shadow-2xl"
-                  >
-                    📊 Bekijk Voordelen
-                  </button>
-                </div>
               </div>
             
               {/* Right Column - Dynamic Pricing Info */}
