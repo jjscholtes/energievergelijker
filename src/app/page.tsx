@@ -7,6 +7,7 @@ import { FAQ } from '@/components/FAQ';
 import { HowToGuide } from '@/components/HowToGuide';
 import { DynamicPricingHero } from '@/components/DynamicPricingHero';
 import { EnergiecontractAdvies } from '@/components/EnergiecontractAdvies';
+import { EnergiecontractAdviesTest } from '@/components/test/EnergiecontractAdviesTest';
 
 export default function Home() {
   return (
@@ -288,8 +289,15 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Articles Section */}
-        <ArticlesSection />
+            {/* Test Section - Temporary for debugging */}
+            <section className="py-20 bg-red-50">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <EnergiecontractAdviesTest />
+              </div>
+            </section>
+
+            {/* Articles Section */}
+            <ArticlesSection />
 
         {/* HowTo Guide Section */}
         <HowToGuide />
