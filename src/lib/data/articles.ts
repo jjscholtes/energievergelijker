@@ -3,19 +3,19 @@ import { Article } from '@/types/articles';
 export const articles: Article[] = [
   {
     id: 'terugleververgoeding-trends-2025',
-    title: 'Samenvatting terugleververgoeding & trends (2025)',
-    summary: 'De markt voor terugleververgoedingen verschuift van hoge, variabele vergoedingen naar lage vaste vergoedingen plus terugleverkosten. Dit dwingt zonnepaneelbezitters hun eigen opgewekte stroom in hoge mate zelf te benutten.',
+    title: 'Teruglevering vergoedingen & trends (2025)',
+    summary: 'De markt voor teruglevering vergoedingen verschuift van hoge, variabele vergoedingen naar lage vaste vergoedingen plus teruglevering kosten. Dit dwingt zonnepaneelbezitters hun eigen opgewekte stroom in hoge mate zelf te benutten.',
     imageUrl: 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=800&h=400&fit=crop&crop=center',
     content: `
 ## Hoogte van de vergoeding
 
 Anno september 2025 ligt de vaste (na-salder) vergoeding bij de meeste grote leveranciers tussen € 0,02 en € 0,06 per kWh. Essent voert momenteel de lijst aan met ± € 0,055 /kWh.
 
-Dynamische contracten keren het actuele uurspottarief uit. In 2025 schommelt dat ruwweg € 0,01–€ 0,10 /kWh maar gemiddeld rond € 0,02.
+Flexibele contracten keren het actuele uurprijs uit. In 2025 schommelt dat ruwweg € 0,01–€ 0,10 /kWh maar gemiddeld rond € 0,02.
 
-## Terugleverkosten ('feed-in fee')
+## Teruglevering kosten ('feed-in fee')
 
-Sinds 2024 rekenen steeds meer leveranciers een vaste terugleverkost of staffelbedrag voor klanten die netto terugleveren. Tarieven variëren grofweg € 0,02–€ 0,18 per kWh of via staffels (€ 15–€ 275/jaar afhankelijk van kWh-overschot).
+Sinds 2024 rekenen steeds meer leveranciers een vaste teruglevering kost of staffelbedrag voor klanten die netto terugleveren. Tarieven variëren grofweg € 0,02–€ 0,18 per kWh of via staffels (€ 15–€ 275/jaar afhankelijk van kWh-overschot).
 
 Vattenfall hanteert sinds 1 juli 2024 een staffel die effectief ≈ € 0,112 /kWh kost boven 500 kWh jaarlijkse teruglevering.
 
@@ -25,24 +25,24 @@ De wettelijke salderingsregeling blijft tot 1 jan 2027 ongewijzigd: opgewekte kW
 
 ## Trend & impact
 
-Vergoedingen dalen structureel, terugleverkosten nemen toe. Resultaat: rendement verschuift van "voeden aan het net" naar "zelf verbruiken".
+Vergoedingen dalen structureel, teruglevering kosten nemen toe. Resultaat: rendement verschuift van "voeden aan het net" naar "zelf verbruiken".
 
 Huiseigenaren investeren in:
 - Slimme sturing (laden EV/boiler bij zon-overschot)
 - Thuisbatterijen om avondverbruik te dekken en piektarieven te mijden
-- Dynamische contracten of energiecoöperaties om toch hogere marktprijzen te vangen
+- Flexibele contracten of energiecoöperaties om toch hogere marktprijzen te vangen
 
 Voor nieuwe PV-kopers wordt het business-case-breekpunt nu meestal berekend op 60-70% zelfconsumptie; dit aandeel moet naar verwachting > 80% na 2027 om dezelfde terugverdientijd te halen.
 
 ## Wat dit concreet betekent
 
 - Kleinverbruikers die < 500 kWh netto terugleveren merken weinig
-- Gezinnen met 8-10 panelensets (≈ 2.600 kWh overschot) betalen bij sommige leveranciers nu € 200–€ 300 extra per jaar aan terugleverkosten; de vaste vergoeding van ± € 0,05 levert nog maar ~€ 130 op. Netto-opbrengst krimpt dus sterk
-- Investeringen in batterijen (3–10 kWh) worden versneld rendabel, zeker in combinatie met dynamische tarieven
+- Gezinnen met 8-10 panelensets (≈ 2.600 kWh overschot) betalen bij sommige leveranciers nu € 200–€ 300 extra per jaar aan teruglevering kosten; de vaste vergoeding van ± € 0,05 levert nog maar ~€ 130 op. Netto-opbrengst krimpt dus sterk
+- Investeringen in batterijen (3–10 kWh) worden versneld rendabel, zeker in combinatie met flexibele tarieven
 
 ## Kort samengevat
 
-De markt verschuift van hoge, variabele terugleververgoedingen naar lage vaste vergoedingen plus terugleverkosten. Dit dwingt zonnepaneelbezitters hun eigen opgewekte stroom in hoge mate zelf te benutten via slim energiebeheer en opslag.
+De markt verschuift van hoge, variabele teruglevering vergoedingen naar lage vaste vergoedingen plus teruglevering kosten. Dit dwingt zonnepaneelbezitters hun eigen opgewekte stroom in hoge mate zelf te benutten via slim energiebeheer en opslag.
     `,
     author: 'Energievergelijker Redactie',
     publishDate: '2024-12-15',

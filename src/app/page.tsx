@@ -122,19 +122,19 @@ export default function Home() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div className="flex items-center space-x-4 p-6 bg-white/90 backdrop-blur-md rounded-2xl border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
                     <div className="w-4 h-4 bg-gradient-to-r from-green-400 to-green-600 rounded-full animate-pulse shadow-lg"></div>
-                    <span className="text-gray-700 font-semibold text-lg">Accurate salderingsberekeningen</span>
+                    <span className="text-gray-700 font-semibold text-lg">Nauwkeurige zonnepanelen berekeningen</span>
                   </div>
                   <div className="flex items-center space-x-4 p-6 bg-white/90 backdrop-blur-md rounded-2xl border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
                     <div className="w-4 h-4 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full animate-pulse shadow-lg"></div>
-                    <span className="text-gray-700 font-semibold text-lg">Terugleververgoedingen vergelijken</span>
+                    <span className="text-gray-700 font-semibold text-lg">Teruglevering vergoedingen</span>
                   </div>
                   <div className="flex items-center space-x-4 p-6 bg-white/90 backdrop-blur-md rounded-2xl border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
                     <div className="w-4 h-4 bg-gradient-to-r from-purple-400 to-purple-600 rounded-full animate-pulse shadow-lg"></div>
-                    <span className="text-gray-700 font-semibold text-lg">Dynamische contracten</span>
+                    <span className="text-gray-700 font-semibold text-lg">Flexibele contracten</span>
                   </div>
                   <div className="flex items-center space-x-4 p-6 bg-white/90 backdrop-blur-md rounded-2xl border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
                     <div className="w-4 h-4 bg-gradient-to-r from-pink-400 to-pink-600 rounded-full animate-pulse shadow-lg"></div>
-                    <span className="text-gray-700 font-semibold text-lg">Persoonlijke berekening</span>
+                    <span className="text-gray-700 font-semibold text-lg">Persoonlijke besparing</span>
                   </div>
                 </div>
 
@@ -205,7 +205,7 @@ export default function Home() {
                       <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-sm">2</div>
                       <div>
                         <h5 className="font-semibold text-gray-900">Automatisch Berekenen</h5>
-                        <p className="text-gray-600 text-sm">Onze calculator berekent automatisch alle kosten inclusief belastingen en netbeheerkosten</p>
+                        <p className="text-gray-600 text-sm">Onze hulp tool berekent automatisch alle kosten inclusief belastingen en netwerk kosten</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-4 p-4 bg-white rounded-xl shadow-lg">
@@ -222,9 +222,9 @@ export default function Home() {
                   <h5 className="font-bold text-green-800 mb-2">💡 Perfect voor:</h5>
                   <ul className="text-sm text-green-700 space-y-1">
                     <li>• Het vergelijken van verschillende tarieven</li>
-                    <li>• Het testen van verschillende scenario's</li>
-                    <li>• Het berekenen van de impact van zonnepanelen</li>
-                    <li>• Het vergelijken van vaste vs dynamische contracten</li>
+                    <li>• Het testen van verschillende situaties</li>
+                    <li>• Het berekenen van de besparing van zonnepanelen</li>
+                    <li>• Het vergelijken van vaste vs flexibele contracten</li>
                   </ul>
                 </div>
               </div>
@@ -302,14 +302,14 @@ export default function Home() {
               <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
                 <span className="text-green-600 font-bold text-2xl">⚡</span>
               </div>
-              <h4 className="font-semibold text-gray-900 mb-3 text-lg">Real-time Data</h4>
+              <h4 className="font-semibold text-gray-900 mb-3 text-lg">Actuele Prijzen</h4>
               <p className="text-sm text-gray-600">Altijd de nieuwste tarieven en contracten</p>
             </div>
             <div className="text-center group">
               <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
                 <span className="text-purple-600 font-bold text-2xl">🎯</span>
               </div>
-              <h4 className="font-semibold text-gray-900 mb-3 text-lg">Accurate Berekeningen</h4>
+              <h4 className="font-semibold text-gray-900 mb-3 text-lg">Nauwkeurige Berekeningen</h4>
               <p className="text-sm text-gray-600">Gebaseerd op officiële Nederlandse wetgeving</p>
             </div>
             <div className="text-center group">

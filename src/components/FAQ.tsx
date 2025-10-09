@@ -10,12 +10,12 @@ interface FAQItem {
 const faqData: FAQItem[] = [
   {
     question: "Wat is het beste energiecontract voor zonnepanelen eigenaren?",
-    answer: "Het beste energiecontract voor zonnepanelen eigenaren heeft een hoge terugleververgoeding en lage terugleverkosten. Dynamische contracten zijn vaak voordeliger omdat je de werkelijke spotmarktprijs krijgt voor je teruggeleverde stroom. Vaste contracten bieden meer zekerheid maar hebben vaak lagere terugleververgoedingen.",
+    answer: "Het beste energiecontract voor zonnepanelen eigenaren heeft een hoge vergoeding voor teruglevering en lage kosten voor teruglevering. Flexibele contracten zijn vaak voordeliger omdat je de werkelijke marktprijs krijgt voor je teruggeleverde stroom. Vaste contracten bieden meer zekerheid maar hebben vaak lagere vergoedingen voor teruglevering.",
     keywords: ["beste energiecontract zonnepanelen", "terugleververgoeding", "dynamisch contract zonnepanelen"]
   },
   {
     question: "Hoe werkt saldering bij zonnepanelen?",
-    answer: "Saldering betekent dat je teruggeleverde stroom wordt verrekend met je verbruikte stroom. Je betaalt alleen energiebelasting over het netto verbruik. Bij een jaarverbruik van 3000 kWh en 2500 kWh teruglevering betaal je energiebelasting over slechts 500 kWh. Dit kan je honderden euro's per jaar besparen.",
+    answer: "Saldering betekent dat je teruggeleverde stroom wordt verrekend met je verbruikte stroom. Je betaalt alleen energiebelasting over het verschil. Bij een jaarverbruik van 3000 kWh en 2500 kWh teruglevering betaal je energiebelasting over slechts 500 kWh. Dit kan je honderden euro's per jaar besparen.",
     keywords: ["saldering zonnepanelen", "energiebelasting besparen", "teruglevering stroom"]
   },
   {
@@ -25,27 +25,27 @@ const faqData: FAQItem[] = [
   },
   {
     question: "Is een dynamisch energiecontract voordeliger dan een vast contract?",
-    answer: "Dynamische contracten kunnen voordeliger zijn omdat je de werkelijke spotmarktprijzen betaalt. Gemiddeld zijn ze 10-20% goedkoper dan vaste contracten. Voor zonnepanelen eigenaren zijn ze extra interessant omdat je ook de werkelijke prijs krijgt voor je teruggeleverde stroom.",
+    answer: "Flexibele contracten kunnen voordeliger zijn omdat je de werkelijke marktprijzen betaalt. Gemiddeld zijn ze 10-20% goedkoper dan vaste contracten. Voor zonnepanelen eigenaren zijn ze extra interessant omdat je ook de werkelijke prijs krijgt voor je teruggeleverde stroom.",
     keywords: ["dynamisch vs vast contract", "spotmarktprijzen", "energiecontract vergelijking"]
   },
   {
     question: "Wat zijn netbeheerkosten en kan ik deze besparen?",
-    answer: "Netbeheerkosten zijn vaste kosten voor het gebruik van het energienetwerk. Deze kosten zijn wettelijk vastgesteld en kun je niet besparen door van leverancier te wisselen. Ze bedragen ongeveer €490 per jaar voor een gemiddeld huishouden. Alleen door minder energie te verbruiken kun je deze kosten verlagen.",
+    answer: "Netwerk kosten zijn vaste kosten voor het gebruik van het energienetwerk. Deze kosten zijn wettelijk vastgesteld en kun je niet besparen door van leverancier te wisselen. Ze bedragen ongeveer €490 per jaar voor een gemiddeld huishouden. Alleen door minder energie te verbruiken kun je deze kosten verlagen.",
     keywords: ["netbeheerkosten", "energienetwerk kosten", "netbeheerder"]
   },
   {
     question: "Hoeveel kan ik besparen met zonnepanelen en het juiste energiecontract?",
-    answer: "Met zonnepanelen en het juiste energiecontract kun je tot €800 per jaar besparen. Dit komt door lagere energiekosten, saldering van energiebelasting, en een goede terugleververgoeding. De besparing hangt af van je zonnepanelen opbrengst, energieverbruik, en gekozen contract.",
+    answer: "Met zonnepanelen en het juiste energiecontract kun je tot €800 per jaar besparen. Dit komt door lagere energiekosten, saldering van energiebelasting, en een goede vergoeding voor teruglevering. De besparing hangt af van je zonnepanelen opbrengst, energieverbruik, en gekozen contract.",
     keywords: ["besparen zonnepanelen", "energiecontract besparing", "terugleververgoeding"]
   },
   {
     question: "Wat is energiebelasting en hoe wordt dit berekend?",
-    answer: "Energiebelasting is een belasting op elektriciteit en gas. Voor stroom bedraagt dit €0,1088 per kWh (exclusief BTW). Met 21% BTW wordt dit €0,1316 per kWh. Je betaalt energiebelasting over je netto verbruik na saldering. Dit kan je honderden euro's per jaar kosten.",
+    answer: "Energiebelasting is een belasting op elektriciteit en gas. Voor stroom bedraagt dit €0,1088 per kWh (exclusief BTW). Met 21% BTW wordt dit €0,1316 per kWh. Je betaalt energiebelasting over het verschil tussen je verbruik en teruglevering. Dit kan je honderden euro's per jaar kosten.",
     keywords: ["energiebelasting", "energiebelasting berekening", "BTW energie"]
   },
   {
     question: "Welke energieleveranciers bieden de beste contracten voor zonnepanelen?",
-    answer: "De beste energieleveranciers voor zonnepanelen eigenaren bieden hoge terugleververgoedingen en lage terugleverkosten. Dit zijn vaak kleinere, duurzame leveranciers zoals Vandebron, Pure Energie, of Frank Energie. Grote leveranciers hebben vaak lagere terugleververgoedingen maar meer zekerheid.",
+    answer: "De beste energieleveranciers voor zonnepanelen eigenaren bieden hoge vergoedingen voor teruglevering en lage kosten voor teruglevering. Dit zijn vaak kleinere, duurzame leveranciers zoals Vandebron, Pure Energie, of Frank Energie. Grote leveranciers hebben vaak lagere vergoedingen voor teruglevering maar meer zekerheid.",
     keywords: ["beste energieleveranciers zonnepanelen", "terugleververgoeding vergelijking", "duurzame energieleveranciers"]
   }
 ];
