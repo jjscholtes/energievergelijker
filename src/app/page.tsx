@@ -4,7 +4,6 @@ import { UserInputForm } from '@/components/forms/UserInputForm';
 import { ResultsSection } from '@/components/results/ResultsSection';
 import ArticlesSection from '@/components/articles/ArticlesSection';
 import { FAQ } from '@/components/FAQ';
-import { HowToGuide } from '@/components/HowToGuide';
 import { DynamicPricingHero } from '@/components/DynamicPricingHero';
 import { EnergiecontractAdvies } from '@/components/EnergiecontractAdvies';
 
@@ -25,23 +24,12 @@ export default function Home() {
               </div>
             </div>
             <nav className="hidden md:flex items-center space-x-6">
-              <button 
-                onClick={() => {
-                  const formSection = document.getElementById('calculation-form');
-                  if (formSection) {
-                    formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  }
-                }}
+              <a 
+                href="/tool"
                 className="text-gray-700 hover:text-blue-600 font-medium transition-colors px-4 py-2 rounded-lg hover:bg-blue-50"
               >
-                Vergelijken
-              </button>
-      <a 
-        href="/tool"
-        className="text-gray-700 hover:text-blue-600 font-medium transition-colors px-4 py-2 rounded-lg hover:bg-blue-50"
-      >
-        Zelf Vergelijken
-      </a>
+                Zelf Vergelijken
+              </a>
               <a 
                 href="/dynamische-prijzen"
                 className="text-gray-700 hover:text-blue-600 font-medium transition-colors px-4 py-2 rounded-lg hover:bg-blue-50"
@@ -58,28 +46,6 @@ export default function Home() {
                 className="text-gray-700 hover:text-blue-600 font-medium transition-colors px-4 py-2 rounded-lg hover:bg-blue-50"
               >
                 Artikelen
-              </button>
-              <button 
-                onClick={() => {
-                  const trustSection = document.querySelector('[class*="py-20"][class*="bg-gradient-to-br"]');
-                  if (trustSection) {
-                    trustSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  }
-                }}
-                className="text-gray-700 hover:text-blue-600 font-medium transition-colors px-4 py-2 rounded-lg hover:bg-blue-50"
-              >
-                Voordelen
-              </button>
-              <button 
-                onClick={() => {
-                  const formSection = document.getElementById('calculation-form');
-                  if (formSection) {
-                    formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  }
-                }}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-              >
-                Start Nu
               </button>
             </nav>
           </div>
@@ -193,157 +159,15 @@ export default function Home() {
         </section>
         */}
 
-        {/* Calculator Tool Section */}
-        <section className="py-20 bg-gradient-to-br from-green-50 via-white to-blue-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <div className="inline-flex items-center gap-3 bg-gradient-to-r from-green-500 to-blue-500 text-white px-6 py-3 rounded-full text-sm font-bold mb-6 shadow-lg">
-                <span>🛠️</span>
-                <span>Nieuwe Tool</span>
-              </div>
-              <h3 className="text-3xl font-bold text-gray-900 mb-4">
-                Energiecontract Hulp
-              </h3>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-                Wil je je eigen energiecontracten vergelijken? Onze hulp tool helpt je 
-                om zelf contracten toe te voegen en de kosten te berekenen.
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <div className="space-y-6">
-                <div className="space-y-4">
-                  <h4 className="text-2xl font-bold text-gray-900">Wat kun je doen?</h4>
-                  <div className="space-y-4">
-                    <div className="flex items-start gap-4 p-4 bg-white rounded-xl shadow-lg">
-                      <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-sm">1</div>
-                      <div>
-                        <h5 className="font-semibold text-gray-900">Contracten Toevoegen</h5>
-                        <p className="text-gray-600 text-sm">Voeg je eigen energiecontracten toe met alle tarieven en voorwaarden</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-4 p-4 bg-white rounded-xl shadow-lg">
-                      <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-sm">2</div>
-                      <div>
-                        <h5 className="font-semibold text-gray-900">Automatisch Berekenen</h5>
-                        <p className="text-gray-600 text-sm">Onze hulp tool berekent automatisch alle kosten inclusief belastingen en netwerk kosten</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-4 p-4 bg-white rounded-xl shadow-lg">
-                      <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold text-sm">3</div>
-                      <div>
-                        <h5 className="font-semibold text-gray-900">Vergelijken</h5>
-                        <p className="text-gray-600 text-sm">Zie direct welk contract het goedkoopst is en hoeveel je kunt besparen</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-xl p-6">
-                  <h5 className="font-bold text-green-800 mb-2">💡 Perfect voor:</h5>
-                  <ul className="text-sm text-green-700 space-y-1">
-                    <li>• Het vergelijken van verschillende tarieven</li>
-                    <li>• Het testen van verschillende situaties</li>
-                    <li>• Het berekenen van de besparing van zonnepanelen</li>
-                    <li>• Het vergelijken van vaste vs flexibele contracten</li>
-                  </ul>
-                </div>
-              </div>
-              
-              <div className="relative">
-                <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-white/40">
-                  <div className="text-center mb-6">
-                    <div className="w-16 h-16 bg-gradient-to-r from-green-600 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                      <span className="text-white text-3xl">🛠️</span>
-                    </div>
-                    <h4 className="text-xl font-bold text-gray-900 mb-2">Energiecontract Hulp</h4>
-                    <p className="text-gray-600">Vergelijk je eigen energiecontracten</p>
-                  </div>
-                  
-                  <div className="space-y-4">
-                    <div className="text-center p-4 bg-gradient-to-r from-green-50 to-green-100 rounded-xl border border-green-200">
-                      <div className="text-2xl font-bold text-green-600 mb-1">100%</div>
-                      <p className="text-green-800 font-semibold text-sm">Gratis te gebruiken</p>
-                    </div>
-                    <div className="text-center p-4 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl border border-blue-200">
-                      <div className="text-2xl font-bold text-blue-600 mb-1">∞</div>
-                      <p className="text-blue-800 font-semibold text-sm">Onbeperkt contracten</p>
-                    </div>
-                    <div className="text-center p-4 bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl border border-purple-200">
-                      <div className="text-2xl font-bold text-purple-600 mb-1">⚡</div>
-                      <p className="text-purple-800 font-semibold text-sm">Real-time berekening</p>
-                    </div>
-                  </div>
-                  
-                  <a 
-                    href="/tool"
-                    className="w-full mt-6 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white px-6 py-4 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl flex items-center justify-center gap-3"
-                  >
-                    <span>🚀</span>
-                    <span>Start Vergelijking</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
 
 
             {/* Articles Section */}
             <ArticlesSection />
 
-        {/* HowTo Guide Section */}
-        <HowToGuide />
-
         {/* FAQ Section */}
         <FAQ />
       </main>
 
-      {/* Trust Section */}
-      <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h3 className="text-3xl font-bold text-gray-900 mb-4">
-              Waarom Vertrouwen Gebruikers Ons?
-            </h3>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Wij zijn de specialistische energievergelijker voor zonnepanelen eigenaren. 
-              Onze gebruikers besparen gemiddeld €400 per jaar op hun energierekening.
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="text-center group">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                <span className="text-blue-600 font-bold text-2xl">🔒</span>
-              </div>
-              <h4 className="font-semibold text-gray-900 mb-3 text-lg">100% Veilig</h4>
-              <p className="text-sm text-gray-600">Je gegevens worden veilig opgeslagen en niet gedeeld</p>
-            </div>
-            <div className="text-center group">
-              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                <span className="text-green-600 font-bold text-2xl">⚡</span>
-              </div>
-              <h4 className="font-semibold text-gray-900 mb-3 text-lg">Actuele Prijzen</h4>
-              <p className="text-sm text-gray-600">Altijd de nieuwste tarieven en contracten</p>
-            </div>
-            <div className="text-center group">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                <span className="text-purple-600 font-bold text-2xl">🎯</span>
-              </div>
-              <h4 className="font-semibold text-gray-900 mb-3 text-lg">Nauwkeurige Berekeningen</h4>
-              <p className="text-sm text-gray-600">Gebaseerd op officiële Nederlandse wetgeving</p>
-            </div>
-            <div className="text-center group">
-              <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                <span className="text-orange-600 font-bold text-2xl">💯</span>
-              </div>
-              <h4 className="font-semibold text-gray-900 mb-3 text-lg">Geen Verborgen Kosten</h4>
-              <p className="text-sm text-gray-600">Volledig gratis, geen commissies of kosten</p>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white">

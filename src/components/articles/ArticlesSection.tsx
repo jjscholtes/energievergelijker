@@ -24,17 +24,8 @@ export default function ArticlesSection() {
             <span>Artikelen & Nieuws</span>
           </div>
           <h2 className="text-5xl lg:text-6xl font-bold text-gray-900 mb-10 leading-tight">
-            Blijf op de hoogte van de{' '}
-            <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-gradient">
-              laatste ontwikkelingen
-            </span>
+            Artikelen & Nieuws
           </h2>
-          <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-            Ontdek de nieuwste trends, tips en analyses in de energiewereld. 
-            Van terugleververgoedingen tot dynamische contracten - wij houden je op de hoogte met{' '}
-            <span className="font-semibold text-blue-600">data-gedreven inzichten</span> en{' '}
-            <span className="font-semibold text-purple-600">praktische tips</span>.
-          </p>
         </div>
 
         {/* Featured Articles */}
@@ -60,30 +51,6 @@ export default function ArticlesSection() {
             </Link>
           </div>
 
-          {/* Call to Action */}
-          <div className="text-center">
-            <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-12 shadow-2xl border border-white/40">
-              <div className="inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-full text-sm font-bold mb-8 shadow-lg">
-                <TrendingUp className="w-5 h-5" />
-                <span>Meer Inzichten</span>
-              </div>
-              <h4 className="text-2xl font-bold text-gray-900 mb-6">
-                Blijf op de hoogte van de laatste ontwikkelingen
-              </h4>
-              <p className="text-gray-600 mb-8 text-lg max-w-2xl mx-auto leading-relaxed">
-                Ontdek de nieuwste artikelen en diepgaande analyses over energie, zonnepanelen en besparen.
-              </p>
-              <div className="flex justify-center">
-                <Link
-                  href="/tool"
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-xl font-bold transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl flex items-center gap-3 group"
-                >
-                  <BookOpen className="w-5 h-5" />
-                  <span>Start Vergelijking</span>
-                </Link>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Trust Indicators */}
