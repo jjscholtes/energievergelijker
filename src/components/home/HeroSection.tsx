@@ -19,14 +19,14 @@ export function HeroSection({ onResultChange }: HeroSectionProps) {
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-stretch">
           {/* Left Column - Content */}
-          <div className="space-y-6 lg:space-y-8">
-            <div className="space-y-4 lg:space-y-6">
+          <div className="space-y-3 lg:space-y-4 flex flex-col justify-between">
+            <div className="space-y-3 lg:space-y-4">
               
               <h2 className="text-5xl lg:text-7xl font-bold text-gray-900 leading-tight">
                 Bespaar op je{' '}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-green-600 animate-gradient">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-800 via-emerald-700 via-teal-600 to-green-500 animate-gradient">
                   energierekening
                 </span>
               </h2>
@@ -39,7 +39,7 @@ export function HeroSection({ onResultChange }: HeroSectionProps) {
             </div>
 
             {/* Enhanced Feature Pills */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex items-center space-x-4 p-6 bg-white/90 backdrop-blur-md rounded-2xl border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
                 <div className="w-4 h-4 bg-gradient-to-r from-green-400 to-green-600 rounded-full animate-pulse shadow-lg"></div>
                 <span className="text-gray-700 font-semibold text-lg">Nauwkeurige zonnepanelen berekeningen</span>
@@ -58,7 +58,7 @@ export function HeroSection({ onResultChange }: HeroSectionProps) {
               </div>
             </div>
 
-            {/* Enhanced Info Box */}
+            {/* Enhanced Info Box - moved to bottom */}
             <div className="bg-gradient-to-r from-green-50 via-emerald-50 to-teal-50 border border-emerald-200 rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
               <p className="text-green-800 font-semibold text-xl">
                 💡 <strong>Wist je dat?</strong> Het juiste energiecontract kan je honderden euro's per jaar besparen, 

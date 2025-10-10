@@ -33,7 +33,7 @@ interface ContractAdviesResultsProps {
 
 export function ContractAdviesResults({ result }: ContractAdviesResultsProps) {
   return (
-    <div className="mt-8 p-6 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl border border-emerald-200">
+    <div className="mt-8 mb-8 p-6 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl border border-emerald-200">
       {/* Simple Results Header */}
       <div className="text-center mb-6">
         <div className={`inline-flex items-center gap-3 px-6 py-3 rounded-full text-sm font-bold mb-4 shadow-lg ${

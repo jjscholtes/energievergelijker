@@ -3,7 +3,7 @@
 import { Suspense, lazy } from 'react';
 import { Header } from '@/components/home/Header';
 import { HeroSectionWithResults } from '@/components/home/HeroSectionWithResults';
-import { LivePrijzenSection } from '@/components/home/LivePrijzenSection';
+import { DynamicPricingHero } from '@/components/DynamicPricingHero';
 import { Footer } from '@/components/home/Footer';
 
 // Lazy load components that are below the fold
@@ -26,7 +26,13 @@ export default function Home() {
       
       <main>
         <HeroSectionWithResults />
-        <LivePrijzenSection />
+        
+        {/* Prijs Informatie */}
+        <section className="py-16 bg-gradient-to-br from-emerald-50 via-white to-teal-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <DynamicPricingHero />
+          </div>
+        </section>
         
         {/* Lazy loaded sections */}
         <Suspense fallback={<LoadingSpinner />}>

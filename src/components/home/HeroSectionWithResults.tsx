@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { HeroSection } from './HeroSection';
 import { ContractAdviesResults } from '@/components/energie-advies/ContractAdviesResults';
+import { AffiliateComparison } from '@/components/energie-advies/AffiliateComparison';
 import { ContractAdviesResult } from '@/components/EnergiecontractAdvies';
 
 export function HeroSectionWithResults() {
@@ -29,14 +30,19 @@ export function HeroSectionWithResults() {
       
       {/* Results Section - Full width below hero */}
       {result && (
-        <section 
-          ref={resultsRef}
-          className="relative bg-gradient-to-br from-gray-50 via-white to-teal-50 py-12"
-        >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <ContractAdviesResults result={result} />
-          </div>
-        </section>
+        <>
+          <section 
+            ref={resultsRef}
+            className="relative bg-gradient-to-br from-gray-50 via-white to-teal-50 py-12"
+          >
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <ContractAdviesResults result={result} />
+            </div>
+          </section>
+          
+          {/* Affiliate Comparison Section - Separate section */}
+          <AffiliateComparison />
+        </>
       )}
     </>
   );
