@@ -12,8 +12,7 @@ export const berekenSaldering = (
   stroomKalePrijs: number,
   terugleververgoeding: number,
   contractType: 'vast' | 'dynamisch',
-  salderingsPercentage: number = 1.0,  // 1.0 t/m 2026
-  vasteTerugleverkosten: number = 0    // Ingevulde terugleverkosten
+  salderingsPercentage: number = 1.0  // 1.0 t/m 2026
 ): PvOpbrengsten => {
   // Stap 1: Verdeel PV opwek
   const zelfVerbruikKwh = pvOpwek * (percentageZelfverbruik / 100);
@@ -39,9 +38,9 @@ export const berekenSaldering = (
     terugleververgoeding // Gebruik ingevulde waarde
   );
 
-  // Berekent terugleverkosten op basis van ingevulde waarde
+  // Berekent terugleverkosten dynamisch op basis van teruglevering kWh
   // Alleen voor vaste contracten - dynamische contracten hebben geen terugleverkosten
-  const terugleverkosten = contractType === 'vast' ? vasteTerugleverkosten : 0;
+  const terugleverkosten = contractType === 'vast' ? berekenTerugleverkosten(terugleveringKwh) : 0;
 
   // Informatieve waarde van zelfverbruik
   const zelfVerbruikWaarde = zelfVerbruikKwh * (stroomKalePrijs + ENERGIEBELASTING_STROOM) * (1 + BTW);

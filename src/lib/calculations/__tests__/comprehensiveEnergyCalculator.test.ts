@@ -165,25 +165,25 @@ describe('Comprehensive Energy Calculator Tests', () => {
       expect(result.pvOpbrengsten).toBeDefined();
       expect(result.pvOpbrengsten?.zelfVerbruikKwh).toBe(1400); // 4000 * 0.35
       expect(result.pvOpbrengsten?.terugleveringKwh).toBe(2600); // 4000 - 1400
-      expect(result.totaleJaarkostenMetPv).toBeLessThan(result.totaleJaarkosten);
+      
+      // With the new dynamic return delivery costs staffel, PV may not always be beneficial
+      // In this case: saldering (€210.61) + return compensation (€26) - return costs (€348) = -€111.39
+      // So total costs with PV are higher than without PV
+      expect(result.totaleJaarkostenMetPv).toBeGreaterThan(result.totaleJaarkosten);
     });
 
-    it('should handle PV with terugleverkosten', () => {
-      const contractWithTerugleverkosten: ContractData = {
-        ...baseContract,
-        tarieven: {
-          ...baseContract.tarieven,
-          vasteTerugleverkosten: 100
-        }
-      };
-
-      const result = berekenEnergiekosten(pvUserProfile, contractWithTerugleverkosten);
+    it('should handle PV with dynamic terugleverkosten', () => {
+      const result = berekenEnergiekosten(pvUserProfile, baseContract);
       
-      console.log('PV with terugleverkosten result:', {
+      console.log('PV with dynamic terugleverkosten result:', {
         pvOpbrengsten: result.pvOpbrengsten
       });
 
-      expect(result.pvOpbrengsten?.terugleverkosten).toBe(100);
+      // With 4000 kWh PV and 35% self-consumption:
+      // - Self-consumption: 1400 kWh
+      // - Return delivery: 2600 kWh
+      // - According to new staffel: 2500-3000 kWh range = €348/year
+      expect(result.pvOpbrengsten?.terugleverkosten).toBe(348);
     });
   });
 

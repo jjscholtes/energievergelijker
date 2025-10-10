@@ -72,10 +72,13 @@ describe('Saldering Calculations', () => {
     });
 
     it('should apply terugleverkosten only for fixed contracts', () => {
-      const fixedResult = berekenSaldering(4000, 3000, 35, 0.25, 0.01, 'vast', 1.0, 100);
-      const dynamicResult = berekenSaldering(4000, 3000, 35, 0.25, 0.15, 'dynamisch', 1.0, 0);
+      const fixedResult = berekenSaldering(4000, 3000, 35, 0.25, 0.01, 'vast', 1.0);
+      const dynamicResult = berekenSaldering(4000, 3000, 35, 0.25, 0.15, 'dynamisch', 1.0);
 
-      expect(fixedResult.terugleverkosten).toBe(100);
+      // Fixed contracts now calculate terugleverkosten dynamically based on terugleveringKwh (2600 kWh)
+      // According to new staffel: 2000-2500 kWh = €276/year, 2500-3000 kWh = €348/year
+      // 2600 kWh falls in the 2500-3000 range, so €348/year
+      expect(fixedResult.terugleverkosten).toBe(348);
       expect(dynamicResult.terugleverkosten).toBe(0);
     });
   });
