@@ -38,7 +38,7 @@ export function AffiliateComparison() {
         
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-500">
-            * Deze vergelijker wordt aangeboden door onze partner Daisycon
+            * Deze vergelijker wordt aangeboden door onze partner
           </p>
         </div>
       </div>
