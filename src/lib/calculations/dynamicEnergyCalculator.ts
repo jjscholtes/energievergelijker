@@ -60,7 +60,7 @@ export const berekenDynamischeEnergiekosten = async (
       netbeheer: 0,
       totaal: 0
     } : {
-      kaleEnergie: userProfile.jaarverbruikGas * 0.30, // Gemiddelde gasprijs voor dynamische contracten
+      kaleEnergie: userProfile.jaarverbruikGas * (contract.tarieven?.gasKalePrijs || 0.63), // Gebruik contract gasprijs
       energiebelasting: berekenGasbelasting(userProfile.jaarverbruikGas) * 1.21, // Inclusief BTW
       btw: 0, // Geen aparte BTW meer
       netbeheer: netbeheerderKosten.gas, // Vaste jaarlijkse kosten
@@ -99,8 +99,7 @@ export const berekenDynamischeEnergiekosten = async (
         basisprijs, // Gebruik basisprijs (gebruiker input)
         contract.tarieven?.terugleververgoeding || basisprijs, // Gebruik terugleververgoeding of fallback naar basisprijs
         'dynamisch', // Dynamische contracten gebruiken basisprijs
-        1.0, // salderingsPercentage
-        0 // Dynamische contracten hebben geen terugleverkosten
+        1.0 // salderingsPercentage
       );
 
       // Trek PV opbrengsten af van totale kosten
@@ -176,7 +175,7 @@ const berekenGaskosten = (
   const btw = (kaleEnergie + energiebelasting) * 0.21;
 
   // Netbeheerkosten
-  const netbeheer = berekenGasNetbeheer(verbruikM3, aansluiting);
+  const netbeheer = berekenGasNetbeheer(verbruikM3, aansluiting || 'G4');
 
   const totaal = kaleEnergie + energiebelasting + btw + netbeheer;
 

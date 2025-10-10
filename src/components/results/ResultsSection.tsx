@@ -443,7 +443,7 @@ export function ResultsSection() {
                       <div>
                         <span className="text-gray-600">Dynamisch:</span>
                         <span className="font-medium ml-2">€{cheapestDynamic.gasKosten.totaal.toFixed(0)}</span>
-                        <div className="text-xs text-gray-500">€0.30/m³ gemiddeld</div>
+                        <div className="text-xs text-gray-500">€0.63/m³ gemiddeld</div>
                       </div>
                     </div>
                   </div>
