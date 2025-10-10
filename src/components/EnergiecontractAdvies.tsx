@@ -258,61 +258,42 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
   }, []);
 
   return (
-    <div className={`w-full ${className}`}>
-      {/* Header Section */}
-      <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-6 lg:p-8 shadow-2xl border border-white/40 mb-6">
-        <div className="text-center">
-          <div className="inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-full text-sm font-bold mb-4 lg:mb-6 shadow-lg">
-            <Calculator className="w-5 h-5" />
-            <span>Energiecontract Advies</span>
-          </div>
-          <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-3 lg:mb-4">
-            Ontdek welk contract voor jou voordeliger is
-          </h3>
-          <p className="text-gray-600 mb-4 lg:mb-6 text-sm lg:text-base">
-            Vul je gegevens in en krijg direct advies over het beste energiecontract
-          </p>
+    <div className={`bg-white/90 backdrop-blur-sm rounded-3xl p-6 lg:p-8 shadow-2xl border border-white/40 ${className}`}>
+      <div className="text-center mb-6 lg:mb-8">
+        <div className="inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-full text-sm font-bold mb-4 lg:mb-6 shadow-lg">
+          <Calculator className="w-5 h-5" />
+          <span>Energiecontract Advies</span>
         </div>
+        <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-3 lg:mb-4">
+          Ontdek welk contract voor jou voordeliger is
+        </h3>
+        <p className="text-gray-600 mb-4 lg:mb-6 text-sm lg:text-base">
+          Vul je gegevens in en krijg direct advies over het beste energiecontract
+        </p>
       </div>
 
-      {/* Main Content - Side by Side Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Form Section */}
-        <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-6 lg:p-8 shadow-2xl border border-white/40">
-          <ContractAdviesForm
-            netbeheerder={netbeheerder}
-            setNetbeheerder={setNetbeheerder}
-            dalVerbruik={dalVerbruik}
-            setDalVerbruik={setDalVerbruik}
-            normaalVerbruik={normaalVerbruik}
-            setNormaalVerbruik={setNormaalVerbruik}
-            gasVerbruik={gasVerbruik}
-            setGasVerbruik={setGasVerbruik}
-            geenGas={geenGas}
-            setGeenGas={setGeenGas}
-            pvTeruglevering={pvTeruglevering}
-            setPvTeruglevering={setPvTeruglevering}
-            isLoading={isLoading}
-            onCalculate={calculateCosts}
-            error={error}
-          />
-        </div>
+      <ContractAdviesForm
+        netbeheerder={netbeheerder}
+        setNetbeheerder={setNetbeheerder}
+        dalVerbruik={dalVerbruik}
+        setDalVerbruik={setDalVerbruik}
+        normaalVerbruik={normaalVerbruik}
+        setNormaalVerbruik={setNormaalVerbruik}
+        gasVerbruik={gasVerbruik}
+        setGasVerbruik={setGasVerbruik}
+        geenGas={geenGas}
+        setGeenGas={setGeenGas}
+        pvTeruglevering={pvTeruglevering}
+        setPvTeruglevering={setPvTeruglevering}
+        isLoading={isLoading}
+        onCalculate={calculateCosts}
+        error={error}
+      />
 
-        {/* Results Section */}
-        <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-6 lg:p-8 shadow-2xl border border-white/40">
-          {result ? (
-            <ContractAdviesResults result={result} onReset={handleReset} />
-          ) : (
-            <div className="flex items-center justify-center h-full min-h-[400px]">
-              <div className="text-center text-gray-500">
-                <Calculator className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                <p className="text-lg font-medium">Vul het formulier in</p>
-                <p className="text-sm">om je advies te krijgen</p>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
+      {/* Results Section - Always show below form */}
+      {result && (
+        <ContractAdviesResults result={result} onReset={handleReset} />
+      )}
     </div>
   );
 }
