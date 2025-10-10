@@ -67,7 +67,7 @@ export function ContractAdviesForm({
           <select
             value={netbeheerder}
             onChange={(e) => setNetbeheerder(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white"
+            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent appearance-none bg-white"
           >
             <option value="">Selecteer je netbeheerder</option>
             {netbeheerders.map((nb) => (
@@ -92,7 +92,7 @@ export function ContractAdviesForm({
             value={dalVerbruik}
             onChange={(e) => setDalVerbruik(e.target.value)}
             placeholder="1500"
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
           />
         </div>
         <div>
@@ -105,7 +105,7 @@ export function ContractAdviesForm({
             value={normaalVerbruik}
             onChange={(e) => setNormaalVerbruik(e.target.value)}
             placeholder="2000"
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
           />
         </div>
       </div>
@@ -118,7 +118,7 @@ export function ContractAdviesForm({
             id="geenGas"
             checked={geenGas}
             onChange={(e) => setGeenGas(e.target.checked)}
-            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+            className="w-4 h-4 text-emerald-600 bg-gray-100 border-gray-300 rounded focus:ring-emerald-500 focus:ring-2"
           />
           <label htmlFor="geenGas" className="ml-2 text-sm font-semibold text-gray-700">
             <Flame className="w-4 h-4 inline mr-2" />
@@ -131,7 +131,7 @@ export function ContractAdviesForm({
             value={gasVerbruik}
             onChange={(e) => setGasVerbruik(e.target.value)}
             placeholder="1200"
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
           />
         )}
       </div>
@@ -156,7 +156,7 @@ export function ContractAdviesForm({
       <button
         onClick={onCalculate}
         disabled={isLoading}
-        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-4 rounded-xl font-bold transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+        className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white px-6 py-4 rounded-xl font-bold transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
       >
         {isLoading ? 'Berekenen...' : 'Bereken Advies'}
       </button>

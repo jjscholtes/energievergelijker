@@ -19,10 +19,10 @@ export const Footer = memo(function Footer() {
               <div className="bg-green-600 px-3 py-1 rounded-full text-sm">
                 🏠 Zonnepanelen Specialist
               </div>
-              <div className="bg-blue-600 px-3 py-1 rounded-full text-sm">
+              <div className="bg-emerald-600 px-3 py-1 rounded-full text-sm">
                 ⚡ Gratis Vergelijking
               </div>
-              <div className="bg-purple-600 px-3 py-1 rounded-full text-sm">
+              <div className="bg-teal-600 px-3 py-1 rounded-full text-sm">
                 🔒 100% Veilig
               </div>
               <div className="bg-orange-600 px-3 py-1 rounded-full text-sm">

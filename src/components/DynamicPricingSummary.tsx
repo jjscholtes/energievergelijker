@@ -47,9 +47,9 @@ export function DynamicPricingSummary() {
 
   if (!summaryData) {
     return (
-      <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl shadow-lg p-8 border border-gray-100">
+      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl shadow-lg p-8 border border-gray-100">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600 mx-auto"></div>
           <p className="mt-2 text-gray-600">Prijzen laden...</p>
         </div>
       </div>
@@ -57,9 +57,9 @@ export function DynamicPricingSummary() {
   }
 
   return (
-    <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl shadow-lg p-8 border border-gray-100">
+    <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl shadow-lg p-8 border border-gray-100">
       <div className="text-center mb-8">
-        <div className="inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-full text-sm font-bold mb-4 shadow-lg">
+        <div className="inline-flex items-center gap-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-6 py-3 rounded-full text-sm font-bold mb-4 shadow-lg">
           <BarChart3 className="w-5 h-5" />
           <span>Dynamische Prijzen</span>
         </div>
@@ -78,10 +78,10 @@ export function DynamicPricingSummary() {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Zap className="w-5 h-5 text-blue-600" />
+                <Zap className="w-5 h-5 text-emerald-600" />
                 <span className="font-medium">Gemiddeld</span>
               </div>
-              <span className="text-2xl font-bold text-blue-600">
+              <span className="text-2xl font-bold text-emerald-600">
                 €{summaryData.average2024.toFixed(3)}/kWh
               </span>
             </div>
@@ -112,10 +112,10 @@ export function DynamicPricingSummary() {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Zap className="w-5 h-5 text-blue-600" />
+                <Zap className="w-5 h-5 text-emerald-600" />
                 <span className="font-medium">Gemiddeld</span>
               </div>
-              <span className="text-2xl font-bold text-blue-600">
+              <span className="text-2xl font-bold text-emerald-600">
                 €{summaryData.average2025.toFixed(3)}/kWh
               </span>
             </div>
@@ -164,7 +164,7 @@ export function DynamicPricingSummary() {
       <div className="text-center">
         <Link
           href="/dynamische-prijzen"
-          className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+          className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:from-emerald-700 hover:to-teal-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
         >
           <BarChart3 className="w-5 h-5" />
           Bekijk Gedetailleerde Analyse

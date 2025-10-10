@@ -166,9 +166,9 @@ export function DynamicPricingPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-teal-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto"></div>
           <p className="mt-4 text-gray-600">Prijzen analyseren...</p>
         </div>
       </div>
@@ -176,20 +176,20 @@ export function DynamicPricingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-teal-50">
       {/* Header */}
       <header className="bg-white/90 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <Link
               href="/"
-              className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors"
+              className="flex items-center gap-2 text-gray-600 hover:text-emerald-600 transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
               <span>Terug naar Home</span>
             </Link>
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+              <div className="w-10 h-10 bg-gradient-to-br from-emerald-600 to-teal-600 rounded-xl flex items-center justify-center shadow-lg">
                 <span className="text-white font-bold text-lg">⚡</span>
               </div>
               <div>
@@ -204,7 +204,7 @@ export function DynamicPricingPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Page Header */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-full text-sm font-bold mb-6 shadow-lg">
+          <div className="inline-flex items-center gap-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-6 py-3 rounded-full text-sm font-bold mb-6 shadow-lg">
             <BarChart3 className="w-5 h-5" />
             <span>Dynamische Energieprijzen</span>
           </div>
@@ -226,7 +226,7 @@ export function DynamicPricingPage() {
               <select
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
               >
                 {years.map(year => (
                   <option key={year.value} value={year.value}>
@@ -242,7 +242,7 @@ export function DynamicPricingPage() {
               <select
                 value={selectedMonth}
                 onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
               >
                 {months.map(month => {
                   const hasData = monthlyData[month.value];
@@ -259,7 +259,7 @@ export function DynamicPricingPage() {
 
         {/* Weighted Average Section */}
         {weightedAverage && (
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl shadow-lg p-8 mb-8 text-white">
+          <div className="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl shadow-lg p-8 mb-8 text-white">
             <div className="text-center mb-6">
               <div className="inline-flex items-center gap-3 bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-full text-sm font-bold mb-4 shadow-lg">
                 <DollarSign className="w-5 h-5" />
@@ -268,7 +268,7 @@ export function DynamicPricingPage() {
               <h2 className="text-3xl font-bold mb-4">
                 Gemiddelde Prijs {selectedYear}
               </h2>
-              <p className="text-blue-100 text-lg">
+              <p className="text-emerald-100 text-lg">
                 Gebaseerd op {weightedAverage.totalDataPoints.toLocaleString()} datapunten
               </p>
             </div>
@@ -279,10 +279,10 @@ export function DynamicPricingPage() {
                 <p className="text-4xl font-bold mb-2">
                   €{weightedAverage.weightedAverage.toFixed(3)}/kWh
                 </p>
-                <p className="text-sm text-blue-100">
+                <p className="text-sm text-emerald-100">
                   Exclusief energiebelasting
                 </p>
-                <p className="text-sm text-blue-200 mt-1">
+                <p className="text-sm text-emerald-200 mt-1">
                   Totaal: €{(weightedAverage.weightedAverage + 0.1316).toFixed(3)}/kWh
                 </p>
               </div>
@@ -292,10 +292,10 @@ export function DynamicPricingPage() {
                 <p className="text-4xl font-bold mb-2">
                   €{weightedAverage.minPrice.toFixed(3)}/kWh
                 </p>
-                <p className="text-sm text-blue-100">
+                <p className="text-sm text-emerald-100">
                   Exclusief energiebelasting
                 </p>
-                <p className="text-sm text-blue-200 mt-1">
+                <p className="text-sm text-emerald-200 mt-1">
                   Totaal: €{(weightedAverage.minPrice + 0.1316).toFixed(3)}/kWh
                 </p>
               </div>
@@ -305,10 +305,10 @@ export function DynamicPricingPage() {
                 <p className="text-4xl font-bold mb-2">
                   €{weightedAverage.maxPrice.toFixed(3)}/kWh
                 </p>
-                <p className="text-sm text-blue-100">
+                <p className="text-sm text-emerald-100">
                   Exclusief energiebelasting
                 </p>
-                <p className="text-sm text-blue-200 mt-1">
+                <p className="text-sm text-emerald-200 mt-1">
                   Totaal: €{(weightedAverage.maxPrice + 0.1316).toFixed(3)}/kWh
                 </p>
               </div>
@@ -324,7 +324,7 @@ export function DynamicPricingPage() {
                     <p className="text-2xl font-bold mb-1">
                       €{season.average.toFixed(3)}/kWh
                     </p>
-                    <p className="text-sm text-blue-200">
+                    <p className="text-sm text-emerald-200">
                       {season.months.length} maand{season.months.length !== 1 ? 'en' : ''}
                     </p>
                   </div>
@@ -341,7 +341,7 @@ export function DynamicPricingPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <div>
                   <h4 className="font-semibold mb-2">💡 Planning</h4>
-                  <ul className="space-y-1 text-blue-100">
+                  <ul className="space-y-1 text-emerald-100">
                     <li>• Gemiddelde prijs: €{weightedAverage.weightedAverage.toFixed(3)}/kWh</li>
                     <li>• Plan grootverbruikers buiten piekuren</li>
                     <li>• Zomer is meestal goedkoper dan winter</li>
@@ -350,7 +350,7 @@ export function DynamicPricingPage() {
                 </div>
                 <div>
                   <h4 className="font-semibold mb-2">📊 Vergelijking</h4>
-                  <ul className="space-y-1 text-blue-100">
+                  <ul className="space-y-1 text-emerald-100">
                     <li>• Vergelijk met vaste contracten</li>
                     <li>• Houd rekening met seizoensvariatie</li>
                     <li>• Overweeg hybride contracten</li>
@@ -377,7 +377,7 @@ export function DynamicPricingPage() {
             {/* Hourly Chart */}
             <div className="bg-white rounded-2xl shadow-lg p-8 mb-8 border border-gray-100">
               <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                <Clock className="w-6 h-6 text-blue-600" />
+                <Clock className="w-6 h-6 text-emerald-600" />
                 Prijzen per Uur - {currentMonthData.monthName} {selectedYear}
               </h3>
               <div className="h-80">
@@ -407,13 +407,13 @@ export function DynamicPricingPage() {
                       ]}
                       labelFormatter={(label) => `Uur: ${label}:00`}
                     />
-                    <Line
-                      type="monotone"
+                    <Line 
+                      type="monotone" 
                       dataKey="price"
-                      stroke="#3B82F6"
+                      stroke="#10B981"
                       strokeWidth={3}
                       dot={false}
-                      activeDot={{ r: 6, fill: '#3B82F6', stroke: '#fff', strokeWidth: 2 }}
+                      activeDot={{ r: 6, fill: '#10B981', stroke: '#fff', strokeWidth: 2 }}
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -463,7 +463,7 @@ export function DynamicPricingPage() {
             {/* Hourly Grid */}
             <div className="bg-white rounded-2xl shadow-lg p-8 mb-8 border border-gray-100">
               <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                <Clock className="w-6 h-6 text-purple-600" />
+                <Clock className="w-6 h-6 text-orange-600" />
                 Gedetailleerd Overzicht per Uur
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3">
@@ -495,9 +495,9 @@ export function DynamicPricingPage() {
             </div>
 
             {/* Data Info */}
-            <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl shadow-lg p-8 border border-gray-100">
+            <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl shadow-lg p-8 border border-gray-100">
               <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                <Info className="w-6 h-6 text-blue-600" />
+                <Info className="w-6 h-6 text-emerald-600" />
                 Over deze Data
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -535,7 +535,7 @@ export function DynamicPricingPage() {
         {/* Diepgaande Analyses */}
         <div className="mt-12 space-y-8">
           <div className="text-center">
-            <div className="inline-flex items-center gap-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-full text-sm font-bold mb-4 shadow-lg">
+            <div className="inline-flex items-center gap-3 bg-gradient-to-r from-orange-600 to-amber-600 text-white px-6 py-3 rounded-full text-sm font-bold mb-4 shadow-lg">
               <FileText className="w-5 h-5" />
               <span>Diepgaande Analyses</span>
             </div>
@@ -550,7 +550,7 @@ export function DynamicPricingPage() {
           {/* Jaarlijkse Trends */}
           <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
             <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-              <TrendingDown className="w-6 h-6 text-blue-600" />
+              <TrendingDown className="w-6 h-6 text-emerald-600" />
               Jaarlijkse Gemiddelde Prijzen (2022-2025)
             </h3>
             
@@ -576,10 +576,10 @@ export function DynamicPricingPage() {
                     <Line 
                       type="monotone" 
                       dataKey="gemiddelde_prijs" 
-                      stroke="#3B82F6" 
+                      stroke="#10B981"
                       strokeWidth={3}
-                      dot={{ fill: '#3B82F6', strokeWidth: 2, r: 6 }}
-                      activeDot={{ r: 8, stroke: '#3B82F6', strokeWidth: 2 }}
+                      dot={{ fill: '#10B981', strokeWidth: 2, r: 6 }}
+                      activeDot={{ r: 8, stroke: '#10B981', strokeWidth: 2 }}
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -607,12 +607,12 @@ export function DynamicPricingPage() {
                   </p>
                 </div>
                 
-                <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 border border-blue-200">
-                  <h4 className="font-bold text-blue-800 mb-3">🔮 2025: Lichte Stijging</h4>
-                  <p className="text-blue-700 text-sm mb-2">
+                <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl p-6 border border-emerald-200">
+                  <h4 className="font-bold text-emerald-800 mb-3">🔮 2025: Lichte Stijging</h4>
+                  <p className="text-emerald-700 text-sm mb-2">
                     <strong>€0.087/kWh</strong> - Voorspelling voor 2025
                   </p>
-                  <p className="text-blue-600 text-xs">
+                  <p className="text-emerald-600 text-xs">
                     Verwacht lichte stijging door toenemende vraag en transitie naar duurzame energie
                   </p>
                 </div>
@@ -638,9 +638,9 @@ export function DynamicPricingPage() {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
-                <h4 className="font-bold text-blue-800 mb-3">📊 Wat Zie Je Hier?</h4>
-                <ul className="space-y-2 text-blue-700 text-sm">
+              <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl p-6 border border-emerald-200">
+                <h4 className="font-bold text-emerald-800 mb-3">📊 Wat Zie Je Hier?</h4>
+                <ul className="space-y-2 text-emerald-700 text-sm">
                   <li>• <strong>Seizoenspatronen:</strong> Winter duurder, zomer goedkoper</li>
                   <li>• <strong>2022 piek:</strong> Extreem hoge prijzen door energiecrisis</li>
                   <li>• <strong>2023-2024:</strong> Duidelijke normalisatie van prijzen</li>
@@ -698,12 +698,12 @@ export function DynamicPricingPage() {
                 </p>
               </div>
               
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
-                <h4 className="font-bold text-blue-800 mb-3">📅 Weekendvoordeel</h4>
-                <p className="text-blue-700 text-sm">
+              <div className="bg-gradient-to-r from-teal-50 to-cyan-50 rounded-xl p-6 border border-teal-200">
+                <h4 className="font-bold text-teal-800 mb-3">📅 Weekendvoordeel</h4>
+                <p className="text-teal-700 text-sm">
                   <strong>Zaterdag/Zondag:</strong> Consistente lagere prijzen
                 </p>
-                <p className="text-blue-600 text-xs mt-2">
+                <p className="text-teal-600 text-xs mt-2">
                   Ideaal voor huishoudelijke taken
                 </p>
               </div>
@@ -711,13 +711,13 @@ export function DynamicPricingPage() {
           </div>
 
           {/* Conclusie */}
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl shadow-lg p-8 text-white">
+          <div className="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl shadow-lg p-8 text-white">
             <h3 className="text-2xl font-bold mb-6 text-center">🎯 Belangrijkste Conclusies</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
                 <h4 className="font-bold text-lg mb-4">📈 Trends</h4>
-                <ul className="space-y-2 text-blue-100 text-sm">
+                <ul className="space-y-2 text-emerald-100 text-sm">
                   <li>• Prijzen zijn sinds 2022 drastisch gedaald</li>
                   <li>• 2024 was het goedkoopste jaar (€0.077/kWh)</li>
                   <li>• 2025 verwacht lichte stijging naar €0.087/kWh</li>
@@ -727,7 +727,7 @@ export function DynamicPricingPage() {
               
               <div>
                 <h4 className="font-bold text-lg mb-4">💡 Strategie</h4>
-                <ul className="space-y-2 text-blue-100 text-sm">
+                <ul className="space-y-2 text-emerald-100 text-sm">
                   <li>• Overweeg dynamische contracten voor zomer</li>
                   <li>• Plan grootverbruikers buiten piekuren</li>
                   <li>• Weekend is meestal goedkoper</li>
@@ -737,7 +737,7 @@ export function DynamicPricingPage() {
             </div>
             
             <div className="mt-6 p-4 bg-white/10 rounded-xl">
-              <p className="text-center text-blue-100">
+              <p className="text-center text-emerald-100">
                 <strong>💡 Tip:</strong> Deze analyses helpen je een realistische verwachting te vormen van dynamische energieprijzen. 
                 Gebruik deze inzichten bij het vergelijken van energiecontracten!
               </p>
@@ -756,7 +756,7 @@ export function DynamicPricingPage() {
             </p>
             <Link
               href="/"
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:from-emerald-700 hover:to-teal-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               <DollarSign className="w-5 h-5" />
               Start Energievergelijking

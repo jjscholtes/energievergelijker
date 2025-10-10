@@ -103,7 +103,7 @@ export function UserProfileForm({ userProfile, setUserProfile }: UserProfileForm
                     Totaal Jaarverbruik Stroom (kWh)
                   </Label>
                   <div className="group relative">
-                    <span className="text-blue-500 cursor-help text-sm">ℹ️</span>
+                    <span className="text-emerald-500 cursor-help text-sm">ℹ️</span>
                     <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
                       Je totale jaarverbruik aan elektriciteit. Wordt automatisch verdeeld in 40% normaal en 60% dal verbruik.
                     </div>
@@ -139,7 +139,7 @@ export function UserProfileForm({ userProfile, setUserProfile }: UserProfileForm
                       Normaal Verbruik (kWh)
                     </Label>
                     <div className="group relative">
-                      <span className="text-blue-500 cursor-help text-sm">ℹ️</span>
+                      <span className="text-emerald-500 cursor-help text-sm">ℹ️</span>
                       <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
                         Verbruik tijdens normale uren (werkdagen 7:00-23:00). Meestal duurder dan dal tarief.
                       </div>
@@ -172,7 +172,7 @@ export function UserProfileForm({ userProfile, setUserProfile }: UserProfileForm
                       Dal Verbruik (kWh)
                     </Label>
                     <div className="group relative">
-                      <span className="text-blue-500 cursor-help text-sm">ℹ️</span>
+                      <span className="text-emerald-500 cursor-help text-sm">ℹ️</span>
                       <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
                         Verbruik tijdens daluren (nacht 23:00-7:00 en weekenden). Meestal goedkoper dan normaal tarief.
                       </div>
@@ -209,7 +209,7 @@ export function UserProfileForm({ userProfile, setUserProfile }: UserProfileForm
                       Jaarverbruik Gas (m³)
                     </Label>
                     <div className="group relative">
-                      <span className="text-blue-500 cursor-help text-sm">ℹ️</span>
+                      <span className="text-emerald-500 cursor-help text-sm">ℹ️</span>
                       <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
                         Jaarverbruik in kubieke meters voor verwarming, warm water en koken. Gemiddeld 1200-1500 m³/jaar.
                       </div>
@@ -221,7 +221,7 @@ export function UserProfileForm({ userProfile, setUserProfile }: UserProfileForm
                       id="geenGas"
                       checked={userProfile.geenGas}
                       onChange={(e) => setUserProfile({ ...userProfile, geenGas: e.target.checked })}
-                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      className="w-4 h-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500"
                     />
                     <Label htmlFor="geenGas" className="text-sm text-gray-600 font-normal">
                       Geen gas
@@ -260,7 +260,7 @@ export function UserProfileForm({ userProfile, setUserProfile }: UserProfileForm
                 id="heeftZonnepanelen"
                 checked={userProfile.heeftZonnepanelen}
                 onChange={(e) => setUserProfile({ ...userProfile, heeftZonnepanelen: e.target.checked })}
-                className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                className="w-5 h-5 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500"
               />
               <Label htmlFor="heeftZonnepanelen" className="text-sm font-medium text-gray-700 cursor-pointer">
                 ☀️ Ik heb zonnepanelen
@@ -277,7 +277,7 @@ export function UserProfileForm({ userProfile, setUserProfile }: UserProfileForm
                         Jaarproductie (kWh)
                       </Label>
                       <div className="group relative">
-                        <span className="text-blue-500 cursor-help text-sm">ℹ️</span>
+                        <span className="text-emerald-500 cursor-help text-sm">ℹ️</span>
                         <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
                           Totale kWh die je zonnepanelen per jaar opwekken. Gemiddeld 3000-4000 kWh voor 10 panelen.
                         </div>
@@ -299,7 +299,7 @@ export function UserProfileForm({ userProfile, setUserProfile }: UserProfileForm
                         Zelfverbruik (%)
                       </Label>
                       <div className="group relative">
-                        <span className="text-blue-500 cursor-help text-sm">ℹ️</span>
+                        <span className="text-emerald-500 cursor-help text-sm">ℹ️</span>
                         <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
                           Percentage dat je direct zelf gebruikt. Gemiddeld 30-40%. Rest wordt teruggeleverd.
                         </div>

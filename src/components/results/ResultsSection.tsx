@@ -71,14 +71,14 @@ export function ResultsSection() {
 
       {/* Contract Comparison Alert */}
       {cheapestFixed && cheapestDynamic && (
-        <div className="bg-gradient-to-r from-blue-50 to-green-50 border-2 border-blue-200 rounded-xl p-6 text-center">
+        <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border-2 border-emerald-200 rounded-xl p-6 text-center">
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="text-4xl">⚡</div>
             <div>
-              <h3 className="text-2xl font-bold text-blue-800">
+              <h3 className="text-2xl font-bold text-emerald-800">
                 {isDynamicCheaper ? 'Dynamische Contracten zijn Goedkoper!' : 'Vaste Contracten zijn Goedkoper!'}
               </h3>
-              <p className="text-blue-700 text-lg">
+              <p className="text-emerald-700 text-lg">
                 {isDynamicCheaper 
                   ? `Je kunt €${savings.toFixed(0)} per jaar besparen met een dynamisch contract`
                   : `Je kunt €${Math.abs(savings).toFixed(0)} per jaar besparen met een vast contract`
@@ -97,7 +97,7 @@ export function ResultsSection() {
               </div>
               <div className="text-center">
                 <div className="font-semibold text-gray-600">Goedkoopste Dynamisch Contract</div>
-                <div className="text-xl font-bold text-blue-600">€{cheapestDynamic?.totaleJaarkostenMetPv.toFixed(0)}</div>
+                <div className="text-xl font-bold text-teal-600">€{cheapestDynamic?.totaleJaarkostenMetPv.toFixed(0)}</div>
                 <div className="text-gray-600">{cheapestDynamic?.contract.leverancier}</div>
               </div>
             </div>
@@ -113,7 +113,7 @@ export function ResultsSection() {
                 });
               }
             }}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-10 py-5 rounded-xl font-bold text-xl transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1"
+            className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white px-10 py-5 rounded-xl font-bold text-xl transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1"
           >
             <div className="flex items-center gap-3">
               <span className="text-2xl">📊</span>
@@ -176,16 +176,16 @@ export function ResultsSection() {
       {dynamicResults.length > 0 && (
         <div>
           {/* Dynamische Contracten Banner */}
-          <div className={`rounded-xl p-4 shadow-lg border-2 mb-6 ${isDynamicCheaper ? 'bg-gradient-to-r from-blue-50 to-blue-100 border-blue-500' : 'bg-gradient-to-r from-gray-50 to-gray-100 border-gray-300'}`}>
+          <div className={`rounded-xl p-4 shadow-lg border-2 mb-6 ${isDynamicCheaper ? 'bg-gradient-to-r from-teal-50 to-teal-100 border-teal-500' : 'bg-gradient-to-r from-gray-50 to-gray-100 border-gray-300'}`}>
             <div className="flex items-center gap-4">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isDynamicCheaper ? 'bg-blue-500' : 'bg-gray-400'}`}>
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isDynamicCheaper ? 'bg-teal-500' : 'bg-gray-400'}`}>
                 <span className="text-white text-lg font-bold">⚡</span>
               </div>
               <div>
-                <h2 className={`text-2xl font-bold ${isDynamicCheaper ? 'text-blue-800' : 'text-gray-700'}`}>
+                <h2 className={`text-2xl font-bold ${isDynamicCheaper ? 'text-teal-800' : 'text-gray-700'}`}>
                   Beste Dynamische Energiecontracten
                 </h2>
-                <p className={`text-sm ${isDynamicCheaper ? 'text-blue-600' : 'text-gray-600'}`}>
+                <p className={`text-sm ${isDynamicCheaper ? 'text-teal-600' : 'text-gray-600'}`}>
                   {isDynamicCheaper 
                     ? '🏆 Deze contracten zijn het goedkoopst voor jouw situatie!'
                     : 'Flexibele tarieven gebaseerd op spotmarktprijzen'
@@ -194,7 +194,7 @@ export function ResultsSection() {
               </div>
               {isDynamicCheaper && (
                 <div className="ml-auto">
-                  <span className="px-3 py-1 bg-blue-500 text-white text-sm rounded-full font-bold">
+                  <span className="px-3 py-1 bg-teal-500 text-white text-sm rounded-full font-bold">
                     GOEDKOOPST
                   </span>
                 </div>
@@ -206,8 +206,8 @@ export function ResultsSection() {
               <ResultCard key={`dynamic-${result.contract.leverancier}`} result={result} rank={index + 1} />
             ))}
           </div>
-          <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-sm text-blue-800">
+          <div className="mt-4 p-4 bg-teal-50 border border-teal-200 rounded-lg">
+            <p className="text-sm text-teal-800">
               💡 <strong>Dynamische contracten</strong> volgen de spotmarktprijzen en kunnen voordelig zijn 
               als je flexibel bent met je energieverbruik. Warmtepomp en EV verbruik zijn meegenomen in de berekening.
             </p>
@@ -217,7 +217,7 @@ export function ResultsSection() {
 
       {/* Detailed Comparison Section - MOVED HERE */}
       {cheapestFixed && cheapestDynamic && (
-        <div id="detailed-comparison" className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-8 border-2 border-blue-200">
+        <div id="detailed-comparison" className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-8 border-2 border-emerald-200">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Gedetailleerde Kostenvergelijking</h2>
             <p className="text-lg text-gray-600">
@@ -278,10 +278,10 @@ export function ResultsSection() {
             </div>
 
             {/* Dynamic Contract */}
-            <div className="bg-white rounded-xl p-6 shadow-lg border-2 border-blue-200">
-              <div className="bg-blue-50 rounded-lg p-4 mb-4">
+            <div className="bg-white rounded-xl p-6 shadow-lg border-2 border-emerald-200">
+              <div className="bg-emerald-50 rounded-lg p-4 mb-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">Dynamisch Contract</span>
+                  <span className="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-sm font-medium">Dynamisch Contract</span>
                   <span className="font-bold text-lg">{cheapestDynamic.contract.leverancier}</span>
                 </div>
                 <p className="text-sm text-gray-600">{cheapestDynamic.contract.productNaam}</p>
@@ -289,15 +289,15 @@ export function ResultsSection() {
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Jaarlijkse kosten:</span>
-                  <span className="font-bold text-xl text-blue-600">€{cheapestDynamic.totaleJaarkostenMetPv.toFixed(0)}</span>
+                  <span className="font-bold text-xl text-teal-600">€{cheapestDynamic.totaleJaarkostenMetPv.toFixed(0)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Maandlasten:</span>
-                  <span className="font-medium text-blue-600">€{cheapestDynamic.maandlastenGemiddeld.toFixed(0)}</span>
+                  <span className="font-medium text-teal-600">€{cheapestDynamic.maandlastenGemiddeld.toFixed(0)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Stroom tarief:</span>
-                  <span className="font-medium text-blue-600">€{((cheapestDynamic.stroomKosten.kaleEnergie + cheapestDynamic.stroomKosten.energiebelasting) / (cheapestDynamic.userProfile?.jaarverbruikStroom || 2900)).toFixed(3)}/kWh gemiddeld</span>
+                  <span className="font-medium text-teal-600">€{((cheapestDynamic.stroomKosten.kaleEnergie + cheapestDynamic.stroomKosten.energiebelasting) / (cheapestDynamic.userProfile?.jaarverbruikStroom || 2900)).toFixed(3)}/kWh gemiddeld</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Gas tarief:</span>
@@ -452,7 +452,7 @@ export function ResultsSection() {
             </div>
 
             {/* Insights */}
-            <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 border-2 border-blue-200">
+            <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl p-6 border-2 border-emerald-200">
               <h4 className="font-bold text-lg text-gray-900 mb-4 flex items-center gap-2">
                 💡 Wat betekent dit voor jou?
               </h4>
@@ -471,7 +471,7 @@ export function ResultsSection() {
                       </div>
                     )}
                     <div className="flex items-start gap-2">
-                      <span className="text-blue-600 font-bold">ℹ</span>
+                      <span className="text-teal-600 font-bold">ℹ</span>
                       <span><strong>Risico:</strong> Prijzen kunnen stijgen bij hoge vraag of koude winters</span>
                     </div>
                   </>
@@ -486,7 +486,7 @@ export function ResultsSection() {
                       <span><strong>Voorspelbaarheid:</strong> Je weet precies wat je betaalt, ongeacht marktontwikkelingen</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <span className="text-blue-600 font-bold">ℹ</span>
+                      <span className="text-teal-600 font-bold">ℹ</span>
                       <span><strong>Kans:</strong> Je mist mogelijk lagere prijzen bij gunstige marktomstandigheden</span>
                     </div>
                   </>
@@ -559,11 +559,11 @@ export function ResultsSection() {
                 </div>
               </div>
 
-              <div className={`rounded-xl p-6 shadow-lg ${isDynamicCheaper ? 'bg-blue-50 border-2 border-blue-500' : 'bg-white'}`}>
+              <div className={`rounded-xl p-6 shadow-lg ${isDynamicCheaper ? 'bg-teal-50 border-2 border-teal-500' : 'bg-white'}`}>
                 <div className="flex items-center gap-3 mb-4">
                   <h4 className="font-bold text-lg text-gray-900">Dynamisch Contract</h4>
                   {isDynamicCheaper && (
-                    <span className="px-3 py-1 bg-blue-500 text-white text-sm rounded-full font-bold">GOEDKOOPST</span>
+                    <span className="px-3 py-1 bg-teal-500 text-white text-sm rounded-full font-bold">GOEDKOOPST</span>
                   )}
                 </div>
                 <div className="space-y-3 text-sm">
@@ -611,18 +611,18 @@ export function ResultsSection() {
                   )}
                   <div className="flex justify-between border-t pt-3 font-bold text-lg">
                     <span>Totaal:</span>
-                    <span className="text-blue-600">€{cheapestDynamic.totaleJaarkostenMetPv.toFixed(0)}</span>
+                    <span className="text-teal-600">€{cheapestDynamic.totaleJaarkostenMetPv.toFixed(0)}</span>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Explanation */}
-            <div className="bg-white rounded-xl p-8 shadow-lg border-l-4 border-blue-500">
-              <h4 className="font-bold text-blue-900 mb-4 text-lg">
+            <div className="bg-white rounded-xl p-8 shadow-lg border-l-4 border-emerald-500">
+              <h4 className="font-bold text-emerald-900 mb-4 text-lg">
                 💡 {isDynamicCheaper ? 'Waarom is het dynamische contract goedkoper?' : 'Waarom is het vaste contract goedkoper?'}
               </h4>
-              <div className="space-y-4 text-blue-800">
+              <div className="space-y-4 text-emerald-800">
                 {isDynamicCheaper ? (
                   <>
                     <p>
@@ -679,7 +679,7 @@ export function ResultsSection() {
 
       {/* PV Comparison: Dynamisch vs Vast */}
       {hasPV && dynamicResults.length > 0 && (
-        <div className="mt-8 p-6 bg-gradient-to-r from-blue-50 to-green-50 border border-gray-200 rounded-lg">
+        <div className="mt-8 p-6 bg-gradient-to-r from-emerald-50 to-green-50 border border-gray-200 rounded-lg">
           <h3 className="text-xl font-bold mb-4 text-gray-800">💡 Zonnepanelen: Dynamisch vs Vast</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white p-4 rounded-lg border border-green-200">
@@ -691,8 +691,8 @@ export function ResultsSection() {
                 <li>• <strong>Voordeel:</strong> Voorspelbare kosten</li>
               </ul>
             </div>
-            <div className="bg-white p-4 rounded-lg border border-blue-200">
-              <h4 className="font-semibold text-blue-800 mb-2">⚡ Dynamische Contracten</h4>
+            <div className="bg-white p-4 rounded-lg border border-emerald-200">
+              <h4 className="font-semibold text-emerald-800 mb-2">⚡ Dynamische Contracten</h4>
               <ul className="text-sm space-y-1">
                 <li>• <strong>Terugleververgoeding:</strong> Gemiddelde spotprijs</li>
                 <li>• <strong>Terugleverkosten:</strong> Geen extra kosten</li>
@@ -716,25 +716,25 @@ export function ResultsSection() {
         
         {/* Winner Banner */}
         {cheapestFixed && cheapestDynamic && (
-          <div className={`rounded-xl p-6 shadow-lg border-2 ${isDynamicCheaper ? 'bg-gradient-to-r from-blue-50 to-blue-100 border-blue-500' : 'bg-gradient-to-r from-green-50 to-green-100 border-green-500'}`}>
+          <div className={`rounded-xl p-6 shadow-lg border-2 ${isDynamicCheaper ? 'bg-gradient-to-r from-teal-50 to-teal-100 border-teal-500' : 'bg-gradient-to-r from-green-50 to-green-100 border-green-500'}`}>
             <div className="flex items-center justify-center gap-4">
-              <div className={`w-12 h-12 rounded-full flex items-center justify-center ${isDynamicCheaper ? 'bg-blue-500' : 'bg-green-500'}`}>
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center ${isDynamicCheaper ? 'bg-teal-500' : 'bg-green-500'}`}>
                 <span className="text-white text-2xl font-bold">🏆</span>
               </div>
               <div className="text-center">
-                <h3 className={`text-2xl font-bold ${isDynamicCheaper ? 'text-blue-800' : 'text-green-800'}`}>
+                <h3 className={`text-2xl font-bold ${isDynamicCheaper ? 'text-teal-800' : 'text-green-800'}`}>
                   {isDynamicCheaper ? 'Dynamisch Contract' : 'Vast Contract'} is GOEDKOOPST!
                 </h3>
-                <p className={`text-lg ${isDynamicCheaper ? 'text-blue-600' : 'text-green-600'}`}>
+                <p className={`text-lg ${isDynamicCheaper ? 'text-teal-600' : 'text-green-600'}`}>
                   Bespaar €{Math.abs(savings).toFixed(0)} per jaar ten opzichte van het alternatief
                 </p>
                 <div className="mt-2">
-                  <span className={`px-4 py-2 rounded-full text-white font-bold ${isDynamicCheaper ? 'bg-blue-500' : 'bg-green-500'}`}>
+                  <span className={`px-4 py-2 rounded-full text-white font-bold ${isDynamicCheaper ? 'bg-teal-500' : 'bg-green-500'}`}>
                     {isDynamicCheaper ? 'Dynamisch' : 'Vast'} Contract Wint!
                   </span>
                 </div>
               </div>
-              <div className={`w-12 h-12 rounded-full flex items-center justify-center ${isDynamicCheaper ? 'bg-blue-500' : 'bg-green-500'}`}>
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center ${isDynamicCheaper ? 'bg-teal-500' : 'bg-green-500'}`}>
                 <span className="text-white text-2xl font-bold">💰</span>
               </div>
             </div>
@@ -800,12 +800,12 @@ export function ResultsSection() {
                 const isCheapest = result === cheapestDynamic;
                 const isBetterThanFixed = isDynamicCheaper;
                 return (
-                  <tr key={`dynamic-${result.contract.leverancier}`} className={`${isCheapest && isBetterThanFixed ? 'bg-blue-100 border-2 border-blue-500' : 'bg-blue-50'}`}>
+                  <tr key={`dynamic-${result.contract.leverancier}`} className={`${isCheapest && isBetterThanFixed ? 'bg-teal-100 border-2 border-teal-500' : 'bg-teal-50'}`}>
                     <td className="border border-gray-300 p-3">
                       <div className="flex items-center gap-2">
-                        <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">Dynamisch</span>
+                        <span className="px-2 py-1 bg-teal-100 text-teal-800 text-xs rounded">Dynamisch</span>
                         {isCheapest && isBetterThanFixed && (
-                          <span className="px-2 py-1 bg-blue-500 text-white text-xs rounded font-bold">GOEDKOOPST</span>
+                          <span className="px-2 py-1 bg-teal-500 text-white text-xs rounded font-bold">GOEDKOOPST</span>
                         )}
                       </div>
                     </td>
@@ -822,7 +822,7 @@ export function ResultsSection() {
                         -€{result.pvOpbrengsten?.totaleOpbrengst.toFixed(0)}
                       </td>
                     )}
-                    <td className="border border-gray-300 p-3 text-right text-blue-600">
+                    <td className="border border-gray-300 p-3 text-right text-teal-600">
                       Uurtarieven
                     </td>
                     <td className="border border-gray-300 p-3 text-right">

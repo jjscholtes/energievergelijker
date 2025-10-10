@@ -33,13 +33,13 @@ interface ContractAdviesResultsProps {
 
 export function ContractAdviesResults({ result }: ContractAdviesResultsProps) {
   return (
-    <div className="mt-8 p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl border border-blue-200">
+    <div className="mt-8 p-6 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl border border-emerald-200">
       {/* Simple Results Header */}
       <div className="text-center mb-6">
         <div className={`inline-flex items-center gap-3 px-6 py-3 rounded-full text-sm font-bold mb-4 shadow-lg ${
           result.goedkoopsteContract === 'vast' 
             ? 'bg-gradient-to-r from-green-500 to-green-600 text-white' 
-            : 'bg-gradient-to-r from-blue-500 to-blue-600 text-white'
+            : 'bg-gradient-to-r from-teal-500 to-cyan-600 text-white'
         }`}>
           <span>{result.goedkoopsteContract === 'vast' ? '🏠' : '⚡'}</span>
           <span>
@@ -77,7 +77,7 @@ export function ContractAdviesResults({ result }: ContractAdviesResultsProps) {
         {/* Dynamisch Contract */}
         <div className={`p-6 rounded-xl border-2 ${
           result.goedkoopsteContract === 'dynamisch' 
-            ? 'border-blue-500 bg-blue-50' 
+            ? 'border-teal-500 bg-teal-50' 
             : 'border-gray-200 bg-white'
         }`}>
           <h5 className="font-bold text-xl mb-4 flex items-center gap-2">

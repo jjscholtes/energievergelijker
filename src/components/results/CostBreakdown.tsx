@@ -239,7 +239,7 @@ export function CostBreakdown({ result }: CostBreakdownProps) {
         <div className="space-y-3 pt-4 border-t-2 border-gray-300">
           <div className="flex justify-between text-lg font-bold">
             <span>Totaal jaarkosten</span>
-            <span className="text-blue-600">€{result.totaleJaarkostenMetPv.toFixed(2)}</span>
+            <span className="text-teal-600">€{result.totaleJaarkostenMetPv.toFixed(2)}</span>
           </div>
           
           <div className="flex justify-between text-sm text-gray-600">

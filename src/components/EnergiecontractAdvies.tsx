@@ -267,7 +267,7 @@ export function EnergiecontractAdvies({ className = '', onResultChange }: Contra
   return (
     <div className={`bg-white/90 backdrop-blur-sm rounded-3xl p-6 lg:p-8 shadow-2xl border border-white/40 ${className}`}>
       <div className="text-center mb-6 lg:mb-8">
-        <div className="inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-full text-sm font-bold mb-4 lg:mb-6 shadow-lg">
+        <div className="inline-flex items-center gap-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-6 py-3 rounded-full text-sm font-bold mb-4 lg:mb-6 shadow-lg">
           <Calculator className="w-5 h-5" />
           <span>Energiecontract Advies</span>
         </div>

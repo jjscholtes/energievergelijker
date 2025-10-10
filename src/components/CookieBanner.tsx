@@ -88,8 +88,8 @@ export function CookieBanner() {
           <div className="flex flex-col lg:flex-row items-start lg:items-center gap-6">
             {/* Cookie Icon & Text */}
             <div className="flex items-start gap-4 flex-1">
-              <div className="bg-blue-100 p-3 rounded-full">
-                <Cookie className="w-6 h-6 text-blue-600" />
+              <div className="bg-emerald-100 p-3 rounded-full">
+                <Cookie className="w-6 h-6 text-emerald-600" />
               </div>
               <div className="flex-1">
                 <h3 className="text-lg font-bold text-gray-900 mb-2">
@@ -100,7 +100,7 @@ export function CookieBanner() {
                   Je kunt je voorkeuren aanpassen of alles accepteren.
                 </p>
                 <div className="mt-3 text-xs text-gray-500">
-                  <a href="/privacy" className="text-blue-600 hover:underline">
+                  <a href="/privacy" className="text-emerald-600 hover:underline">
                     Privacybeleid
                   </a>
                 </div>
@@ -124,7 +124,7 @@ export function CookieBanner() {
               </button>
               <button
                 onClick={acceptAll}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                className="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium"
               >
                 Alles accepteren
               </button>
@@ -174,7 +174,7 @@ export function CookieBanner() {
                     <button
                       onClick={() => togglePreference('analytics')}
                       className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                        preferences.analytics ? 'bg-blue-600' : 'bg-gray-200'
+                        preferences.analytics ? 'bg-emerald-600' : 'bg-gray-200'
                       }`}
                     >
                       <span
@@ -196,7 +196,7 @@ export function CookieBanner() {
                     <button
                       onClick={() => togglePreference('marketing')}
                       className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                        preferences.marketing ? 'bg-blue-600' : 'bg-gray-200'
+                        preferences.marketing ? 'bg-emerald-600' : 'bg-gray-200'
                       }`}
                     >
                       <span
@@ -222,7 +222,7 @@ export function CookieBanner() {
                 </button>
                 <button
                   onClick={acceptSelected}
-                  className="flex-1 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                  className="flex-1 px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium"
                 >
                   Geselecteerde voorkeuren opslaan
                 </button>

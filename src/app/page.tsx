@@ -14,14 +14,14 @@ const FAQ = lazy(() => import('@/components/FAQ').then(module => ({ default: mod
 function LoadingSpinner() {
   return (
     <div className="flex justify-center items-center py-12">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div>
     </div>
   );
 }
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-teal-50">
       <Header />
       
       <main>

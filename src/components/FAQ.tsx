@@ -82,16 +82,16 @@ export function FAQ() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
-      <section className="py-20 bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <section className="py-20 bg-gradient-to-br from-emerald-50 via-white to-teal-50">
         <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-full text-sm font-bold mb-6 shadow-lg">
+          <div className="inline-flex items-center gap-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-6 py-3 rounded-full text-sm font-bold mb-6 shadow-lg">
             <span>❓</span>
             <span>Veelgestelde Vragen</span>
           </div>
           <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
             Veelgestelde Vragen over
-            <span className="animated-gradient bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <span className="animated-gradient bg-gradient-to-r from-emerald-600 via-teal-600 to-green-600 bg-clip-text text-transparent">
               {" "}Energiecontracten
             </span>
           </h2>
@@ -115,9 +115,9 @@ export function FAQ() {
                     {item.question}
                   </h3>
                   {openItems.includes(index) ? (
-                    <ChevronUp className="w-5 h-5 text-blue-600 flex-shrink-0" />
+                    <ChevronUp className="w-5 h-5 text-emerald-600 flex-shrink-0" />
                   ) : (
-                    <ChevronDown className="w-5 h-5 text-blue-600 flex-shrink-0" />
+                    <ChevronDown className="w-5 h-5 text-emerald-600 flex-shrink-0" />
                   )}
                 </button>
                 
@@ -131,7 +131,7 @@ export function FAQ() {
                         {item.keywords.map((keyword, keywordIndex) => (
                           <span
                             key={keywordIndex}
-                            className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium"
+                            className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-sm font-medium"
                           >
                             {keyword}
                           </span>

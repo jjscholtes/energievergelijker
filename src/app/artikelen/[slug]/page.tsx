@@ -128,9 +128,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case 'nieuws': return 'bg-blue-50 text-blue-700 border-blue-200';
+      case 'nieuws': return 'bg-emerald-50 text-emerald-700 border-emerald-200';
       case 'tips': return 'bg-emerald-50 text-emerald-700 border-emerald-200';
-      case 'analyse': return 'bg-purple-50 text-purple-700 border-purple-200';
+      case 'analyse': return 'bg-teal-50 text-teal-700 border-teal-200';
       case 'trends': return 'bg-amber-50 text-amber-700 border-amber-200';
       default: return 'bg-gray-50 text-gray-700 border-gray-200';
     }
@@ -158,7 +158,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               
               return (
                 <li key={idx} className="flex items-start gap-3 text-gray-700 leading-relaxed">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-3 flex-shrink-0"></div>
+                  <div className="w-2 h-2 bg-emerald-500 rounded-full mt-3 flex-shrink-0"></div>
                   <span dangerouslySetInnerHTML={{ __html: processedItem }} />
                 </li>
               );
@@ -174,7 +174,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         elements.push(
           <div key={`table-${elements.length}`} className="overflow-x-auto mb-8">
             <table className="w-full border-collapse bg-white rounded-xl shadow-lg overflow-hidden">
-              <thead className="bg-gradient-to-r from-blue-50 to-purple-50">
+              <thead className="bg-gradient-to-r from-emerald-50 to-teal-50">
                 <tr>
                   {tableHeaders.map((header, idx) => {
                     // Process bold text in table headers
@@ -220,9 +220,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     const flushQuote = () => {
       if (quoteContent.length > 0) {
         elements.push(
-          <div key={`quote-${elements.length}`} className="bg-gradient-to-r from-blue-50 to-purple-50 border-l-4 border-blue-500 p-6 mb-8 rounded-r-xl">
+          <div key={`quote-${elements.length}`} className="bg-gradient-to-r from-emerald-50 to-teal-50 border-l-4 border-emerald-500 p-6 mb-8 rounded-r-xl">
             <div className="flex items-start gap-4">
-              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+              <div className="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                 <span className="text-white font-bold text-sm">"</span>
               </div>
               <div className="space-y-2">
@@ -258,7 +258,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         elements.push(
           <div key={`divider-${index}`} className="my-12 flex items-center">
             <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
-            <div className="mx-4 w-3 h-3 bg-blue-500 rounded-full"></div>
+            <div className="mx-4 w-3 h-3 bg-emerald-500 rounded-full"></div>
             <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
           </div>
         );
@@ -417,14 +417,14 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
       />
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-teal-50">
       {/* Header */}
       <div className="bg-white/90 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <Link 
               href="/#articles-section"
-              className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors"
+              className="flex items-center gap-2 text-gray-600 hover:text-emerald-600 transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
               <span>Terug naar artikelen</span>

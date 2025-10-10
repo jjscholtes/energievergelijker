@@ -42,7 +42,7 @@ export function DynamicPricingHero({ year }: DynamicPricingHeroProps) {
   return (
     <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-6 lg:p-8 shadow-2xl border border-white/40">
       <div className="text-center mb-6 lg:mb-8">
-        <div className="inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-full text-sm font-bold mb-4 lg:mb-6 shadow-lg">
+        <div className="inline-flex items-center gap-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-6 py-3 rounded-full text-sm font-bold mb-4 lg:mb-6 shadow-lg">
           <span>⚡</span>
           <span>Dynamische Prijzen</span>
         </div>
@@ -56,13 +56,13 @@ export function DynamicPricingHero({ year }: DynamicPricingHeroProps) {
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
         {/* Gemiddelde Prijs */}
-        <div className="text-center p-4 lg:p-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl border border-blue-200">
-          <h4 className="text-lg font-bold text-blue-800 mb-3">Gemiddelde Prijs</h4>
-          <div className="text-3xl lg:text-4xl font-bold text-blue-600 mb-2">
+        <div className="text-center p-4 lg:p-6 bg-gradient-to-r from-emerald-50 to-emerald-100 rounded-xl border border-emerald-200">
+          <h4 className="text-lg font-bold text-emerald-800 mb-3">Gemiddelde Prijs</h4>
+          <div className="text-3xl lg:text-4xl font-bold text-emerald-600 mb-2">
             €{(weightedAverage).toFixed(3)}/kWh
           </div>
-          <p className="text-blue-600 text-xs lg:text-sm mb-2">Exclusief energiebelasting</p>
-          <p className="text-blue-800 font-semibold text-sm lg:text-base">
+          <p className="text-emerald-600 text-xs lg:text-sm mb-2">Exclusief energiebelasting</p>
+          <p className="text-emerald-800 font-semibold text-sm lg:text-base">
             Totaal: €{(averageTotal).toFixed(3)}/kWh (inclusief belasting)
           </p>
         </div>
@@ -80,13 +80,13 @@ export function DynamicPricingHero({ year }: DynamicPricingHeroProps) {
         </div>
 
         {/* Hoogste Prijs */}
-        <div className="text-center p-4 lg:p-6 bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl border border-purple-200">
-          <h4 className="text-lg font-bold text-purple-800 mb-3">Hoogste Prijs</h4>
-          <div className="text-3xl lg:text-4xl font-bold text-purple-600 mb-2">
+        <div className="text-center p-4 lg:p-6 bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl border border-orange-200">
+          <h4 className="text-lg font-bold text-orange-800 mb-3">Hoogste Prijs</h4>
+          <div className="text-3xl lg:text-4xl font-bold text-orange-600 mb-2">
             €{(maxPrice).toFixed(3)}/kWh
           </div>
-          <p className="text-purple-600 text-xs lg:text-sm mb-2">Exclusief energiebelasting</p>
-          <p className="text-purple-800 font-semibold text-sm lg:text-base">
+          <p className="text-orange-600 text-xs lg:text-sm mb-2">Exclusief energiebelasting</p>
+          <p className="text-orange-800 font-semibold text-sm lg:text-base">
             Totaal: €{(maxTotal).toFixed(3)}/kWh (inclusief belasting)
           </p>
         </div>
@@ -96,7 +96,7 @@ export function DynamicPricingHero({ year }: DynamicPricingHeroProps) {
       <div className="mt-6 lg:mt-8 text-center">
         <a 
           href="/dynamische-prijzen"
-          className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 lg:px-6 py-2 lg:py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm lg:text-base"
+          className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white px-4 lg:px-6 py-2 lg:py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm lg:text-base"
         >
           <span>📊</span>
           <span>Bekijk Gedetailleerde Analyse</span>

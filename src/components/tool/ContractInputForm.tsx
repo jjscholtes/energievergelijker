@@ -233,9 +233,9 @@ export function ContractInputForm({ userProfile, onAddContract }: ContractInputF
             {currentContract.type === 'dynamisch' ? (
               // Dynamische contracten - alleen relevante velden
               <div className="space-y-4">
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-blue-800 mb-2">⚡ Dynamisch Contract</h4>
-                  <p className="text-sm text-blue-700">
+                <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-emerald-800 mb-2">⚡ Dynamisch Contract</h4>
+                  <p className="text-sm text-emerald-700">
                     Dynamische contracten gebruiken spotmarktprijzen als basis. De 8,5 cent (afname) en 5,95 cent (invoeding) zijn berekende gemiddelden die je kunt aanpassen, plus opslagen.
                   </p>
                 </div>
@@ -248,7 +248,7 @@ export function ContractInputForm({ userProfile, onAddContract }: ContractInputF
                           Gemiddelde prijs kWh afname (€/kWh)
                         </Label>
                         <div className="group relative">
-                          <span className="text-blue-500 cursor-help text-sm">ℹ️</span>
+                          <span className="text-emerald-500 cursor-help text-sm">ℹ️</span>
                           <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
                             Berekend gemiddelde van spotmarktprijzen voor afname. 8,5 cent is een goed uitgangspunt.
                           </div>
@@ -276,7 +276,7 @@ export function ContractInputForm({ userProfile, onAddContract }: ContractInputF
                           Gemiddelde prijs kWh invoeding (€/kWh)
                         </Label>
                         <div className="group relative">
-                          <span className="text-blue-500 cursor-help text-sm">ℹ️</span>
+                          <span className="text-emerald-500 cursor-help text-sm">ℹ️</span>
                           <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
                             Berekend gemiddelde van terugleververgoeding. 5,95 cent is een goed uitgangspunt.
                           </div>
@@ -375,7 +375,7 @@ export function ContractInputForm({ userProfile, onAddContract }: ContractInputF
                         Stroom Normaal Tarief (€/kWh)
                       </Label>
                       <div className="group relative">
-                        <span className="text-blue-500 cursor-help text-sm">ℹ️</span>
+                        <span className="text-emerald-500 cursor-help text-sm">ℹ️</span>
                         <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
                           Kale energieprijs voor normaal verbruik (excl. energiebelasting en BTW). Werkdagen 7:00-23:00.
                         </div>
@@ -402,7 +402,7 @@ export function ContractInputForm({ userProfile, onAddContract }: ContractInputF
                         Stroom Dal Tarief (€/kWh)
                       </Label>
                       <div className="group relative">
-                        <span className="text-blue-500 cursor-help text-sm">ℹ️</span>
+                        <span className="text-emerald-500 cursor-help text-sm">ℹ️</span>
                         <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
                           Kale energieprijs voor dal verbruik (excl. energiebelasting en BTW). Laat leeg voor enkeltarief contract.
                         </div>
@@ -566,7 +566,7 @@ export function ContractInputForm({ userProfile, onAddContract }: ContractInputF
           {/* Add Button */}
           <Button
             onClick={handleAddContract}
-            className="w-full h-12 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white font-bold text-lg rounded-xl transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl"
+            className="w-full h-12 bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white font-bold text-lg rounded-xl transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl"
           >
             <div className="flex items-center gap-3">
               <span>➕</span>

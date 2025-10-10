@@ -35,9 +35,9 @@ export default function ArtikelenPage() {
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case 'nieuws': return 'bg-blue-50 text-blue-700 border-blue-200';
+      case 'nieuws': return 'bg-emerald-50 text-emerald-700 border-emerald-200';
       case 'tips': return 'bg-emerald-50 text-emerald-700 border-emerald-200';
-      case 'analyse': return 'bg-purple-50 text-purple-700 border-purple-200';
+      case 'analyse': return 'bg-teal-50 text-teal-700 border-teal-200';
       case 'trends': return 'bg-amber-50 text-amber-700 border-amber-200';
       default: return 'bg-gray-50 text-gray-700 border-gray-200';
     }
@@ -49,14 +49,14 @@ export default function ArtikelenPage() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-teal-50">
       {/* Header */}
       <div className="bg-white/90 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <Link 
               href="/"
-              className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors"
+              className="flex items-center gap-2 text-gray-600 hover:text-emerald-600 transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
               <span>Terug naar homepage</span>
@@ -111,7 +111,7 @@ export default function ArtikelenPage() {
                 {/* Featured Badge */}
                 {article.featured && (
                   <div className="absolute top-4 right-4">
-                    <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-3 py-1 rounded-full text-sm font-bold backdrop-blur-sm">
+                    <div className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-3 py-1 rounded-full text-sm font-bold backdrop-blur-sm">
                       Uitgelicht
                     </div>
                   </div>
@@ -120,7 +120,7 @@ export default function ArtikelenPage() {
 
               {/* Article Content */}
               <div className="p-6">
-                <h3 className="font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors leading-tight text-lg">
+                <h3 className="font-bold text-gray-900 mb-3 group-hover:text-emerald-600 transition-colors leading-tight text-lg">
                   {article.title}
                 </h3>
                 <p className="text-gray-600 mb-4 line-clamp-3 leading-relaxed">
@@ -165,14 +165,14 @@ export default function ArtikelenPage() {
 
         {/* Call to Action */}
         <div className="mt-16 text-center">
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white">
+          <div className="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl p-8 text-white">
             <h3 className="text-2xl font-bold mb-4">Vind jouw perfecte energiecontract</h3>
-            <p className="text-blue-100 mb-6 text-lg">
+            <p className="text-emerald-100 mb-6 text-lg">
               Gebruik onze vergelijker om het beste energiecontract te vinden voor jouw situatie
             </p>
             <Link
               href="/#user-input-form"
-              className="inline-flex items-center gap-3 bg-white text-blue-600 px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl"
+              className="inline-flex items-center gap-3 bg-white text-emerald-600 px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl"
             >
               <span>Start Vergelijking</span>
             </Link>

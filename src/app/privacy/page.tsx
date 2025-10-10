@@ -9,13 +9,13 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-teal-50">
       {/* Header */}
       <div className="bg-white/90 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <Link 
             href="/"
-            className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors"
+            className="flex items-center gap-2 text-gray-600 hover:text-emerald-600 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
             <span>Terug naar homepage</span>
@@ -27,7 +27,7 @@ export default function PrivacyPage() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="bg-white rounded-2xl shadow-lg p-8 lg:p-12">
           <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-full text-sm font-bold mb-6 shadow-lg">
+            <div className="inline-flex items-center gap-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-6 py-3 rounded-full text-sm font-bold mb-6 shadow-lg">
               <Shield className="w-5 h-5" />
               <span>Privacy & Beveiliging</span>
             </div>
@@ -42,7 +42,7 @@ export default function PrivacyPage() {
           <div className="prose prose-lg max-w-none">
             <section className="mb-12">
               <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                <Eye className="w-6 h-6 text-blue-600" />
+                <Eye className="w-6 h-6 text-emerald-600" />
                 Wie zijn wij?
               </h2>
               <p className="text-gray-700 mb-4">
@@ -51,7 +51,7 @@ export default function PrivacyPage() {
               <p className="text-gray-700 mb-4">
                 Wij respecteren uw privacy en zijn verplicht om uw persoonlijke gegevens te beschermen volgens de Algemene Verordening Gegevensbescherming (AVG/GDPR).
               </p>
-              <div className="bg-blue-50 rounded-lg p-6">
+              <div className="bg-emerald-50 rounded-lg p-6">
                 <h3 className="font-semibold text-gray-900 mb-3">Onze privacy belofte:</h3>
                 <ul className="space-y-2 text-gray-700 text-sm">
                   <li>• Wij verkopen uw gegevens <strong>nooit</strong> aan derden</li>
@@ -67,7 +67,7 @@ export default function PrivacyPage() {
                 <Database className="w-6 h-6 text-green-600" />
                 Welke gegevens verzamelen wij?
               </h2>
-              <div className="bg-blue-50 rounded-lg p-6">
+              <div className="bg-emerald-50 rounded-lg p-6">
                 <h3 className="font-semibold text-gray-900 mb-4">Automatisch verzamelde gegevens:</h3>
                 <ul className="space-y-2 text-gray-700">
                   <li>• <strong>Website gebruik:</strong> Pagina's bekeken, tijd op site</li>
@@ -79,7 +79,7 @@ export default function PrivacyPage() {
 
             <section className="mb-12">
               <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                <Lock className="w-6 h-6 text-purple-600" />
+                <Lock className="w-6 h-6 text-teal-600" />
                 Hoe gebruiken wij uw gegevens?
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -92,7 +92,7 @@ export default function PrivacyPage() {
                     <li>• Website functionaliteit</li>
                   </ul>
                 </div>
-                <div className="bg-blue-50 rounded-lg p-6">
+                <div className="bg-emerald-50 rounded-lg p-6">
                   <h3 className="font-semibold text-gray-900 mb-4">Secundaire doeleinden:</h3>
                   <ul className="space-y-2 text-gray-700 text-sm">
                     <li>• Website verbetering</li>
@@ -118,7 +118,7 @@ export default function PrivacyPage() {
                   Wij gebruiken Vercel Analytics om te begrijpen hoe bezoekers onze website gebruiken. Deze gegevens zijn geanonimiseerd.
                 </p>
               </div>
-              <div className="bg-blue-50 rounded-lg p-6">
+              <div className="bg-emerald-50 rounded-lg p-6">
                 <h3 className="font-semibold text-gray-900 mb-4">Uw keuzes:</h3>
                 <p className="text-gray-700 text-sm">
                   U kunt uw cookie voorkeuren op elk moment aanpassen via de cookie-instellingen in de footer van onze website.
@@ -160,7 +160,7 @@ export default function PrivacyPage() {
                     <li>• Gegevens worden niet opgeslagen na vergelijking</li>
                   </ul>
                 </div>
-                <div className="bg-blue-50 rounded-lg p-6">
+                <div className="bg-emerald-50 rounded-lg p-6">
                   <h3 className="font-semibold text-gray-900 mb-4">Wat gebeurt er NIET?</h3>
                   <ul className="space-y-2 text-gray-700 text-sm">
                     <li>• Geen verkoop aan energieleveranciers</li>
@@ -174,7 +174,7 @@ export default function PrivacyPage() {
 
             <section className="mb-12">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Contact</h2>
-              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6">
+              <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-lg p-6">
                 <p className="text-gray-700 mb-4">
                   Heeft u vragen over dit privacybeleid of wilt u gebruik maken van uw rechten?
                 </p>

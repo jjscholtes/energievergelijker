@@ -64,7 +64,7 @@ export const ContractList = memo(function ContractList({ contracts, dynamicContr
           <CardContent>
             <div className="space-y-3">
               {dynamicContracts.map((contract, index) => (
-                <div key={index} className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <div key={index} className="p-4 bg-teal-50 rounded-lg border border-teal-200">
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <h4 className="font-semibold text-gray-900">{contract.leverancier}</h4>

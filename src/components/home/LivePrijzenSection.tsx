@@ -4,10 +4,10 @@ import { DynamicPricingHero } from '@/components/DynamicPricingHero';
 
 export function LivePrijzenSection() {
   return (
-    <section className="py-16 bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <section className="py-16 bg-gradient-to-br from-emerald-50 via-white to-teal-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-full text-sm font-bold mb-6 shadow-lg">
+          <div className="inline-flex items-center gap-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-6 py-3 rounded-full text-sm font-bold mb-6 shadow-lg">
             <span>📊</span>
             <span>Live Prijzen</span>
           </div>

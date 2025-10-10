@@ -57,7 +57,7 @@ export function CalculationResults({
           <Button
             onClick={onCalculate}
             disabled={isLoading || (contracts.length === 0 && dynamicContracts.length === 0)}
-            className="w-full h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold text-lg rounded-xl transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl"
+            className="w-full h-12 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold text-lg rounded-xl transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl"
           >
             {isLoading ? (
               <div className="flex items-center gap-3">
@@ -81,7 +81,7 @@ export function CalculationResults({
           {sortedResults.length > 0 && (
             <div className="space-y-6">
               {/* Winner Banner */}
-              <div className="bg-gradient-to-r from-green-50 to-blue-50 border-2 border-green-200 rounded-xl p-6 text-center">
+              <div className="bg-gradient-to-r from-green-50 to-teal-50 border-2 border-green-200 rounded-xl p-6 text-center">
                 <div className="flex items-center justify-center gap-4 mb-4">
                   <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
                     <span className="text-white text-2xl font-bold">🏆</span>
@@ -126,7 +126,7 @@ export function CalculationResults({
                               <div className="flex-1">
                                 <div className="flex items-center gap-3 mb-2">
                                   <h4 className="font-semibold text-gray-900">{result.contract.leverancier}</h4>
-                                  <span className={`px-2 py-1 text-xs rounded ${isDynamic ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}`}>
+                                  <span className={`px-2 py-1 text-xs rounded ${isDynamic ? 'bg-teal-100 text-teal-800' : 'bg-green-100 text-green-800'}`}>
                                     {isDynamic ? 'Dynamisch' : 'Vast'}
                                   </span>
                                   {isCheapest && (
