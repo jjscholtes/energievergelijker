@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { BerekeningResult } from '@/types/calculations';
+import { ContractData } from '@/types/contracts';
+import { DynamicContractData } from '@/types/dynamicContracts';
 import { CostBreakdown } from '@/components/results/CostBreakdown';
 
 interface CalculationResultsProps {
@@ -12,6 +14,8 @@ interface CalculationResultsProps {
   isLoading: boolean;
   error: string | null;
   onCalculate: () => void;
+  contracts: ContractData[];
+  dynamicContracts: DynamicContractData[];
 }
 
 export function CalculationResults({ 
@@ -19,7 +23,9 @@ export function CalculationResults({
   dynamicResults, 
   isLoading, 
   error, 
-  onCalculate 
+  onCalculate,
+  contracts,
+  dynamicContracts
 }: CalculationResultsProps) {
   const [expandedResults, setExpandedResults] = useState<Set<string>>(new Set());
 
@@ -50,7 +56,7 @@ export function CalculationResults({
         <div className="space-y-4">
           <Button
             onClick={onCalculate}
-            disabled={isLoading || allResults.length === 0}
+            disabled={isLoading || (contracts.length === 0 && dynamicContracts.length === 0)}
             className="w-full h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold text-lg rounded-xl transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl"
           >
             {isLoading ? (

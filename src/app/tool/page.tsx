@@ -194,6 +194,8 @@ export default function ToolPage() {
             isLoading={isLoading}
             error={error}
             onCalculate={handleCalculate}
+            contracts={contracts}
+            dynamicContracts={dynamicContracts}
           />
 
           {/* Detailed Comparison */}
