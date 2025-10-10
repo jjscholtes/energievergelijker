@@ -72,7 +72,7 @@ export function CostBreakdown({ result }: CostBreakdownProps) {
               <span>€{stroomKosten.netbeheer.toFixed(2)}</span>
             </div>
             <div className="text-xs text-gray-500 ml-4">
-              Vast bedrag per jaar (gemiddelde netbeheerders)
+              Vast bedrag per jaar{result.userProfile?.netbeheerder ? ` (${result.userProfile.netbeheerder})` : ' (gemiddelde netbeheerders)'}
             </div>
             
             <div className="flex justify-between text-green-600 font-semibold">
@@ -161,7 +161,7 @@ export function CostBreakdown({ result }: CostBreakdownProps) {
                 <span>€{gasKosten.netbeheer.toFixed(2)}</span>
               </div>
               <div className="text-xs text-gray-500 ml-4">
-                Vast bedrag per jaar (gemiddelde netbeheerders)
+                Vast bedrag per jaar{result.userProfile?.netbeheerder ? ` (${result.userProfile.netbeheerder})` : ' (gemiddelde netbeheerders)'}
               </div>
               
               <div className="border-t pt-2 flex justify-between font-semibold">

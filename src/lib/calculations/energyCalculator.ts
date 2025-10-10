@@ -91,7 +91,8 @@ export const berekenEnergiekosten = (
       jaarverbruikStroom: userProfile.jaarverbruikStroom,
       jaarverbruikStroomPiek: userProfile.jaarverbruikStroomPiek,
       jaarverbruikStroomDal: userProfile.jaarverbruikStroomDal,
-      jaarverbruikGas: userProfile.jaarverbruikGas
+      jaarverbruikGas: userProfile.jaarverbruikGas,
+      netbeheerder: userProfile.netbeheerder
     }
   };
 };

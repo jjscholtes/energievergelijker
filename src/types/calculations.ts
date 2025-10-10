@@ -73,6 +73,7 @@ export interface BerekeningResult {
     jaarverbruikStroomPiek?: number;
     jaarverbruikStroomDal?: number;
     jaarverbruikGas: number;
+    netbeheerder?: string;
   };
 }
 
