@@ -29,10 +29,9 @@ interface ContractAdviesResult {
 
 interface ContractAdviesResultsProps {
   result: ContractAdviesResult;
-  onReset: () => void;
 }
 
-export function ContractAdviesResults({ result, onReset }: ContractAdviesResultsProps) {
+export function ContractAdviesResults({ result }: ContractAdviesResultsProps) {
   return (
     <div className="mt-8 p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl border border-blue-200">
       {/* Simple Results Header */}
@@ -108,16 +107,6 @@ export function ContractAdviesResults({ result, onReset }: ContractAdviesResults
         <p className="text-xs text-gray-500 italic">
           * Deze berekening gebruikt gemiddelde marktprijzen voor zowel vaste als dynamische contracten. Werkelijke tarieven kunnen per leverancier verschillen.
         </p>
-      </div>
-
-      {/* Reset Button */}
-      <div className="text-center mt-6">
-        <button
-          onClick={onReset}
-          className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300"
-        >
-          Nieuwe Berekenen
-        </button>
       </div>
     </div>
   );

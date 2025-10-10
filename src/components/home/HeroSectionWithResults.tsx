@@ -9,10 +9,6 @@ export function HeroSectionWithResults() {
   const [result, setResult] = useState<ContractAdviesResult | null>(null);
   const resultsRef = useRef<HTMLElement>(null);
 
-  const handleReset = () => {
-    setResult(null);
-  };
-
   // Scroll to results when they appear
   useEffect(() => {
     if (result && resultsRef.current) {
@@ -38,7 +34,7 @@ export function HeroSectionWithResults() {
           className="relative bg-gradient-to-br from-gray-50 via-white to-blue-50 py-12"
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <ContractAdviesResults result={result} onReset={handleReset} />
+            <ContractAdviesResults result={result} />
           </div>
         </section>
       )}
