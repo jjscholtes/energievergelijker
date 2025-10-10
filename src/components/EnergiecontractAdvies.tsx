@@ -1,15 +1,15 @@
 'use client';
 
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { Calculator } from 'lucide-react';
 import { berekenEnergiekosten } from '@/lib/calculations/energyCalculator';
 import { berekenDynamischeEnergiekosten } from '@/lib/calculations/dynamicEnergyCalculator';
 import { sampleCSV2024, sampleCSV2025 } from '@/lib/data/sampleDynamicData';
 import { ContractAdviesForm } from '@/components/energie-advies/ContractAdviesForm';
-import { ContractAdviesResults } from '@/components/energie-advies/ContractAdviesResults';
 
 interface ContractAdviesProps {
   className?: string;
+  onResultChange?: (result: ContractAdviesResult | null) => void;
 }
 
 interface NetbeheerderData {
@@ -20,7 +20,7 @@ interface NetbeheerderData {
   gasVariabel: number;
 }
 
-interface ContractAdviesResult {
+export interface ContractAdviesResult {
   vast: {
     totaal: number;
     stroomKosten: any;
@@ -47,7 +47,7 @@ interface ContractAdviesResult {
   };
 }
 
-export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
+export function EnergiecontractAdvies({ className = '', onResultChange }: ContractAdviesProps) {
   const [netbeheerder, setNetbeheerder] = useState('');
   const [dalVerbruik, setDalVerbruik] = useState('');
   const [normaalVerbruik, setNormaalVerbruik] = useState('');
@@ -257,6 +257,13 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
     setError(null);
   }, []);
 
+  // Notify parent when result changes
+  useEffect(() => {
+    if (onResultChange) {
+      onResultChange(result);
+    }
+  }, [result, onResultChange]);
+
   return (
     <div className={`bg-white/90 backdrop-blur-sm rounded-3xl p-6 lg:p-8 shadow-2xl border border-white/40 ${className}`}>
       <div className="text-center mb-6 lg:mb-8">
@@ -289,11 +296,6 @@ export function EnergiecontractAdvies({ className = '' }: ContractAdviesProps) {
         onCalculate={calculateCosts}
         error={error}
       />
-
-      {/* Results Section - Always show below form */}
-      {result && (
-        <ContractAdviesResults result={result} onReset={handleReset} />
-      )}
     </div>
   );
 }

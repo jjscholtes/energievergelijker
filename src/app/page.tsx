@@ -2,7 +2,7 @@
 
 import { Suspense, lazy } from 'react';
 import { Header } from '@/components/home/Header';
-import { HeroSection } from '@/components/home/HeroSection';
+import { HeroSectionWithResults } from '@/components/home/HeroSectionWithResults';
 import { LivePrijzenSection } from '@/components/home/LivePrijzenSection';
 import { Footer } from '@/components/home/Footer';
 
@@ -25,7 +25,7 @@ export default function Home() {
       <Header />
       
       <main>
-        <HeroSection />
+        <HeroSectionWithResults />
         <LivePrijzenSection />
         
         {/* Lazy loaded sections */}

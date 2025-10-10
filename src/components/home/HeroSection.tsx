@@ -1,8 +1,12 @@
 'use client';
 
-import { EnergiecontractAdvies } from '@/components/EnergiecontractAdvies';
+import { EnergiecontractAdvies, ContractAdviesResult } from '@/components/EnergiecontractAdvies';
 
-export function HeroSection() {
+interface HeroSectionProps {
+  onResultChange?: (result: ContractAdviesResult | null) => void;
+}
+
+export function HeroSection({ onResultChange }: HeroSectionProps) {
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Enhanced Background Elements */}
@@ -65,7 +69,7 @@ export function HeroSection() {
         
           {/* Right Column - Energiecontract Advies */}
           <div className="relative lg:sticky lg:top-24">
-            <EnergiecontractAdvies />
+            <EnergiecontractAdvies onResultChange={onResultChange} />
           </div>
         </div>
       </div>
