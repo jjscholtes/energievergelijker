@@ -10,8 +10,7 @@ export const leveranciers: ContractData[] = [
     tarieven: {
       stroomKalePrijs: 0.0895,
       gasKalePrijs: 0.2850,
-      terugleververgoeding: 0.07,
-      vasteTerugleverkosten: 0
+      terugleververgoeding: 0.07
     },
     kortingEenmalig: 0,
     duurzaamheidsScore: 8.5,
@@ -26,8 +25,7 @@ export const leveranciers: ContractData[] = [
     tarieven: {
       stroomKalePrijs: 0.0920,
       gasKalePrijs: 0.2920,
-      terugleververgoeding: 0.08,
-      vasteTerugleverkosten: 0
+      terugleververgoeding: 0.08
     },
     kortingEenmalig: 0,
     duurzaamheidsScore: 8.0,
@@ -42,8 +40,7 @@ export const leveranciers: ContractData[] = [
     tarieven: {
       stroomKalePrijs: 0.0880,
       gasKalePrijs: 0.2880,
-      terugleververgoeding: 0.06,
-      vasteTerugleverkosten: 0
+      terugleververgoeding: 0.06
     },
     kortingEenmalig: 0,
     duurzaamheidsScore: 7.5,
@@ -58,8 +55,7 @@ export const leveranciers: ContractData[] = [
     tarieven: {
       stroomKalePrijs: 0.0950,
       gasKalePrijs: 0.2950,
-      terugleververgoeding: 0.09,
-      vasteTerugleverkosten: 0
+      terugleververgoeding: 0.09
     },
     kortingEenmalig: 0,
     duurzaamheidsScore: 9.5,
@@ -74,8 +70,7 @@ export const leveranciers: ContractData[] = [
     tarieven: {
       stroomKalePrijs: 0.0850,
       gasKalePrijs: 0.2750,
-      terugleververgoeding: 0.05,
-      vasteTerugleverkosten: 0
+      terugleververgoeding: 0.05
     },
     kortingEenmalig: 0,
     duurzaamheidsScore: 6.5,

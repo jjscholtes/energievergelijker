@@ -39,8 +39,7 @@ describe('New Default Tariffs Test (€0.10 en €0.11)', () => {
         stroomKalePrijsPiek: 0.10,              // ← NIEUWE default €0.10  
         stroomKalePrijsDal: 0.11,               // ← NIEUWE default €0.11
         gasKalePrijs: 1.20,
-        terugleververgoeding: 0.01,
-        vasteTerugleverkosten: 0
+        terugleververgoeding: 0.01
       }
     };
 
@@ -93,8 +92,7 @@ describe('New Default Tariffs Test (€0.10 en €0.11)', () => {
         stroomKalePrijsPiek: 0.12,              // ← Andere waarden
         stroomKalePrijsDal: 0.09,              
         gasKalePrijs: 1.15,
-        terugleververgoeding: 0.008,
-        vasteTerugleverkosten: 0
+        terugleververgoeding: 0.008
       }
     };
 

@@ -39,8 +39,7 @@ describe('Debug €0.25 Issue', () => {
         stroomKalePrijsPiek: 0.10,              // ← Gebruiker input €0.10  
         stroomKalePrijsDal: 0.10,               // ← Gebruiker input €0.10
         gasKalePrijs: 1.20,
-        terugleververgoeding: 0.01,
-        vasteTerugleverkosten: 0
+        terugleververgoeding: 0.01
       }
     };
 
@@ -93,8 +92,7 @@ describe('Debug €0.25 Issue', () => {
         stroomKalePrijsPiek: 0.12,              // ← Andere waarden
         stroomKalePrijsDal: 0.08,              
         gasKalePrijs: 1.15,
-        terugleververgoeding: 0.008,
-        vasteTerugleverkosten: 0
+        terugleververgoeding: 0.008
       }
     };
 

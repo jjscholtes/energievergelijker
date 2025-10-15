@@ -32,8 +32,7 @@ describe('Comprehensive Energy Calculator Tests', () => {
     tarieven: {
       stroomKalePrijs: 0.25,
       gasKalePrijs: 1.20,
-      terugleververgoeding: 0.01,
-      vasteTerugleverkosten: 0
+      terugleververgoeding: 0.01
     },
     kortingEenmalig: 0,
     duurzaamheidsScore: 7,
@@ -81,9 +80,9 @@ describe('Comprehensive Energy Calculator Tests', () => {
         ...baseContract,
         tarieven: {
           ...baseContract.tarieven,
-          stroomKalePrijsPiek: 0.28,
-          stroomKalePrijsDal: 0.22,
-          stroomKalePrijs: undefined // Geen enkel tarief
+          stroomKalePrijsPiek: 0.10,
+          stroomKalePrijsDal: 0.10,
+          terugleververgoeding: 0.01
         }
       };
 
@@ -129,7 +128,8 @@ describe('Comprehensive Energy Calculator Tests', () => {
           ...baseContract.tarieven,
           stroomKalePrijs: 0.25,
           stroomKalePrijsPiek: undefined,
-          stroomKalePrijsDal: undefined
+          stroomKalePrijsDal: undefined,
+          terugleververgoeding: 0.01
         }
       };
 

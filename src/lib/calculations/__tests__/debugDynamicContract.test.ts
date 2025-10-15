@@ -35,8 +35,7 @@ describe('Debug Dynamic Contract', () => {
       tarieven: {
         stroomKalePrijs: 0.15, // Basisprijs
         gasKalePrijs: 1.20,
-        terugleververgoeding: 0.15,
-        vasteTerugleverkosten: 0
+        terugleververgoeding: 0.15
       },
       csvData2024: 'timestamp,price\n2024-01-01T00:00:00Z,0.12\n2024-01-01T01:00:00Z,0.14\n2024-01-01T02:00:00Z,0.16',
       csvData2025: 'timestamp,price\n2025-01-01T00:00:00Z,0.13\n2025-01-01T01:00:00Z,0.15\n2025-01-01T02:00:00Z,0.17',

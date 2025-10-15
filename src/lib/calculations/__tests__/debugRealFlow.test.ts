@@ -39,8 +39,7 @@ describe('Debug Real Application Flow', () => {
         stroomKalePrijsPiek: 0.28,              // ← Gebruiker input
         stroomKalePrijsDal: 0.22,               // ← Gebruiker input
         gasKalePrijs: 1.20,
-        terugleververgoeding: 0.01,
-        vasteTerugleverkosten: 0
+        terugleververgoeding: 0.01
       }
     };
 

@@ -36,8 +36,7 @@ describe('Exact User Input Test', () => {
         stroomKalePrijsPiek: 0.28,              // ← Gebruiker types €0.28  
         stroomKalePrijsDal: 0.20,               // ← Gebruiker types €0.20
         gasKalePrijs: 1.20,
-        terugleververgoeding: 0.01,
-        vasteTerugleverkosten: 0
+        terugleververgoeding: 0.01
       }
     };
 
@@ -82,8 +81,7 @@ describe('Exact User Input Test', () => {
         stroomKalePrijs: 0.25,                 // ← Gebruiker types alleen dit
         // Geen piek/dal tarieven
         gasKalePrijs: 1.20,
-        terugleververgoeding: 0.01,
-        vasteTerugleverkosten: 0
+        terugleververgoeding: 0.01
       }
     };
 

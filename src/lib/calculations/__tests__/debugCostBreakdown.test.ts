@@ -38,8 +38,7 @@ describe('Debug CostBreakdown Display', () => {
         stroomKalePrijsPiek: 0.28,              // ← Piek tarief
         stroomKalePrijsDal: 0.22,               // ← Dal tarief
         gasKalePrijs: 1.20,
-        terugleververgoeding: 0.01,
-        vasteTerugleverkosten: 0
+        teruglevergoeding: 0.01
       }
     };
 

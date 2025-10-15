@@ -32,8 +32,7 @@ export function ContractInputForm({ userProfile, onAddContract }: ContractInputF
       stroomKalePrijsPiek: 0.10,
       stroomKalePrijsDal: 0.10,
       gasKalePrijs: 0.63,
-      terugleververgoeding: 0.01,
-      vasteTerugleverkosten: 0
+      terugleververgoeding: 0.01
     }
   });
 
@@ -113,8 +112,7 @@ export function ContractInputForm({ userProfile, onAddContract }: ContractInputF
         stroomKalePrijsPiek: currentContract.tarieven?.stroomKalePrijsPiek,
         stroomKalePrijsDal: currentContract.tarieven?.stroomKalePrijsDal,
         gasKalePrijs: currentContract.tarieven?.gasKalePrijs || 1.20,
-        terugleververgoeding: currentContract.tarieven?.terugleververgoeding || (currentContract.type === 'dynamisch' ? 0.0595 : 0.01),
-        vasteTerugleverkosten: currentContract.tarieven?.vasteTerugleverkosten || 0
+        terugleververgoeding: currentContract.tarieven?.terugleververgoeding || (currentContract.type === 'dynamisch' ? 0.0595 : 0.01)
       }
     };
 
@@ -149,8 +147,7 @@ export function ContractInputForm({ userProfile, onAddContract }: ContractInputF
         stroomKalePrijsPiek: 0.10,
         stroomKalePrijsDal: 0.10,
         gasKalePrijs: 0.63,
-        terugleververgoeding: 0.01,
-        vasteTerugleverkosten: 0
+        terugleververgoeding: 0.01
       }
     });
   };
@@ -443,25 +440,6 @@ export function ContractInputForm({ userProfile, onAddContract }: ContractInputF
                   </div>
                 </div>
 
-                {userProfile.heeftZonnepanelen && (
-                  <div className="space-y-2">
-                    <Label htmlFor="vasteTerugleverkosten" className="text-sm font-medium text-gray-700">
-                      Vaste Terugleverkosten (€/jaar)
-                    </Label>
-                    <Input
-                      id="vasteTerugleverkosten"
-                      type="number"
-                      value={getInputValue('vasteTerugleverkosten', currentContract.tarieven?.vasteTerugleverkosten || 0)}
-                      onChange={(e) => handleInputChange('vasteTerugleverkosten', e.target.value, (value) => setCurrentContract(prev => ({
-                        ...prev,
-                        tarieven: { ...prev.tarieven!, vasteTerugleverkosten: value }
-                      })))}
-                      className="h-12"
-                      placeholder="Bijv. 0"
-                    />
-                  </div>
-                )}
-                
                 {userProfile.heeftZonnepanelen && (
                   <div className="space-y-2">
                     <Label htmlFor="terugleververgoeding" className="text-sm font-medium text-gray-700">

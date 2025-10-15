@@ -37,8 +37,7 @@ describe('Debug Real Calculation', () => {
         stroomKalePrijsPiek: 0.28,
         stroomKalePrijsDal: 0.22,
         gasKalePrijs: 1.20,
-        terugleververgoeding: 0.01,
-        vasteTerugleverkosten: 0
+        terugleververgoeding: 0.01
       }
     };
 

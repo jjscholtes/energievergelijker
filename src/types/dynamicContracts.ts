@@ -19,7 +19,6 @@ export interface DynamicContractData {
     stroomKalePrijsDal?: number;       // €/kWh dal tarief
     gasKalePrijs: number;              // €/m³
     terugleververgoeding: number;      // €/kWh
-    vasteTerugleverkosten?: number;    // €/jaar bij PV
   };
 }
 

@@ -27,8 +27,7 @@ export function StandaloneContractForm({ onContractsChange, onDynamicContractsCh
     tarieven: {
       stroomKalePrijs: 0.25,
       gasKalePrijs: 1.20,
-      terugleververgoeding: 0.01,
-      vasteTerugleverkosten: 0
+      terugleververgoeding: 0.01
     }
   });
 
@@ -50,8 +49,7 @@ export function StandaloneContractForm({ onContractsChange, onDynamicContractsCh
       tarieven: {
         stroomKalePrijs: currentContract.tarieven?.stroomKalePrijs || 0.25,
         gasKalePrijs: currentContract.tarieven?.gasKalePrijs || 1.20,
-        terugleververgoeding: currentContract.tarieven?.terugleververgoeding || 0.01,
-        vasteTerugleverkosten: currentContract.tarieven?.vasteTerugleverkosten || 0
+        terugleververgoeding: currentContract.tarieven?.terugleververgoeding || 0.01
       }
     };
 
@@ -88,8 +86,7 @@ export function StandaloneContractForm({ onContractsChange, onDynamicContractsCh
       tarieven: {
         stroomKalePrijs: 0.25,
         gasKalePrijs: 1.20,
-        terugleververgoeding: 0.01,
-        vasteTerugleverkosten: 0
+        terugleververgoeding: 0.01
       }
     });
   };
@@ -243,22 +240,6 @@ export function StandaloneContractForm({ onContractsChange, onDynamicContractsCh
                     onChange={(e) => setCurrentContract(prev => ({
                       ...prev,
                       tarieven: { ...prev.tarieven!, terugleververgoeding: Number(e.target.value) }
-                    }))}
-                    className="h-12"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="vasteTerugleverkosten" className="text-sm font-medium text-gray-700">
-                    Vaste Terugleverkosten (€/jaar)
-                  </Label>
-                  <Input
-                    id="vasteTerugleverkosten"
-                    type="number"
-                    value={currentContract.tarieven?.vasteTerugleverkosten || 0}
-                    onChange={(e) => setCurrentContract(prev => ({
-                      ...prev,
-                      tarieven: { ...prev.tarieven!, vasteTerugleverkosten: Number(e.target.value) }
                     }))}
                     className="h-12"
                   />

@@ -71,9 +71,8 @@ export function EnergiecontractAdvies({ className = '', onResultChange }: Contra
         stroomKalePrijs: 0.10,
         terugleververgoeding: 0.01,
         gasKalePrijs: 0.63,
-        vasteTerugleverkosten: 0
       },
-      vasteLeveringskosten: 7,
+      vasteLeveringskosten: 6.99,
       kortingEenmalig: 200
     },
     dynamischContract: {
@@ -89,13 +88,12 @@ export function EnergiecontractAdvies({ className = '', onResultChange }: Contra
       maandelijkseVergoeding: 0,
       opslagPerKwh: 0.025,
       opslagInvoeding: 0.023,
-      vasteLeveringskosten: 7,
+      vasteLeveringskosten: 0,
       kortingEenmalig: 0,
       tarieven: {
-        stroomKalePrijs: 0.085,
-        terugleververgoeding: 0.0595,
-        gasKalePrijs: 0.63,
-        vasteTerugleverkosten: 0
+        stroomKalePrijs: 0.23,
+        gasKalePrijs: 1.18,
+        terugleververgoeding: 0.09
       }
     }
   }), []);
