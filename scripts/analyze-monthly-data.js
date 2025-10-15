@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 const fs = require('fs');
 
 // Analyze CSV data per month and generate simplified data
@@ -5,7 +6,7 @@ function analyzeMonthlyData() {
   const csv2024 = fs.readFileSync('jeroen_punt_nl_dynamische_stroomprijzen_jaar_2024.csv', 'utf8');
   const csv2025 = fs.readFileSync('jeroen_punt_nl_dynamische_stroomprijzen_jaar_2025.csv', 'utf8');
   
-  function parseCSV(csvContent, year) {
+  function parseCSV(csvContent) {
     const lines = csvContent.split('\n');
     const monthlyData = {};
     
@@ -56,10 +57,10 @@ function analyzeMonthlyData() {
     return monthlyData;
   }
   
-  const data2024 = parseCSV(csv2024, 2024);
-  const data2025 = parseCSV(csv2025, 2025);
+  const data2024 = parseCSV(csv2024);
+  const data2025 = parseCSV(csv2025);
   
-  function generateMonthlyStats(monthlyData, year) {
+  function generateMonthlyStats(monthlyData) {
     const result = {};
     
     Object.keys(monthlyData).forEach(month => {

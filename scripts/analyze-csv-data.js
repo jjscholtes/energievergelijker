@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 const fs = require('fs');
-const path = require('path');
 
 // Function to parse CSV data and create monthly summaries
 function analyzeCSVData(filePath, year) {
@@ -15,7 +15,7 @@ function analyzeCSVData(filePath, year) {
   const hourlyData = {};
   
   dataLines.forEach(line => {
-    const [dateStr, utcStr, priceStr] = line.split(';');
+    const [dateStr, , priceStr] = line.split(';');
     
     // Parse date
     const date = new Date(dateStr.replace(/"/g, ''));

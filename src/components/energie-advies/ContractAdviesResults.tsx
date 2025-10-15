@@ -1,31 +1,6 @@
 'use client';
 
-interface ContractAdviesResult {
-  vast: {
-    totaal: number;
-    stroomKosten: any;
-    gasKosten: any;
-    pvOpbrengsten: any;
-    korting: number;
-  };
-  dynamisch: {
-    totaal: number;
-    stroomKosten: any;
-    gasKosten: any;
-    pvOpbrengsten: any;
-    opslagPerKwh: number;
-  };
-  besparing: number;
-  goedkoopsteContract: 'vast' | 'dynamisch';
-  netbeheerder: string;
-  userProfile: {
-    jaarverbruikStroom: number;
-    jaarverbruikGas: number;
-    pvOpwek: number;
-    percentageZelfverbruik: number;
-    geenGas: boolean;
-  };
-}
+import { ContractAdviesResult } from '@/components/EnergiecontractAdvies';
 
 interface ContractAdviesResultsProps {
   result: ContractAdviesResult;

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useCalculationStore } from '@/stores/calculationStore';
 import { userProfileSchema, UserProfileInput } from '@/lib/utils/validation';
-import { bepaalNetbeheerder, getAlleNetbeheerders } from '@/lib/data/netbeheerders';
+import { getAlleNetbeheerders } from '@/lib/data/netbeheerders';
 
 export function UserInputForm() {
   const { setUserProfile, isLoading } = useCalculationStore();
@@ -32,15 +32,9 @@ export function UserInputForm() {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [netbeheerderGevonden, setNetbeheerderGevonden] = useState<boolean>(false);
 
-  // Automatische netbeheerder detectie uitgeschakeld - gebruiker kiest zelf
-  // Dit voorkomt fouten zoals 2492TD die bij Stedin hoort maar Liander krijgt
-  useEffect(() => {
-    setNetbeheerderGevonden(false);
-  }, [formData.postcode]);
 
-  const handleInputChange = (field: keyof UserProfileInput, value: any) => {
+  const handleInputChange = <Field extends keyof UserProfileInput>(field: Field, value: UserProfileInput[Field]) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     // Clear error when user starts typing
     if (errors[field]) {
@@ -54,11 +48,16 @@ export function UserInputForm() {
     try {
       const validatedData = userProfileSchema.parse(formData);
       setUserProfile(validatedData);
-    } catch (error: any) {
+    } catch (error) {
       const newErrors: Record<string, string> = {};
-      error.errors?.forEach((err: any) => {
-        newErrors[err.path[0]] = err.message;
-      });
+      if (error instanceof Error) {
+        const issues = (error as { errors?: Array<{ path: [keyof UserProfileInput]; message: string }> }).errors;
+        if (Array.isArray(issues)) {
+          issues.forEach((err) => {
+            newErrors[err.path[0]] = err.message;
+          });
+        }
+      }
       setErrors(newErrors);
     }
   };

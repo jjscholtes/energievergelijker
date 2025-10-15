@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { Calculator, MapPin, Zap, Sun, Flame, ChevronDown } from 'lucide-react';
+import { MapPin, Zap, Sun, Flame, ChevronDown } from 'lucide-react';
+import { getAlleNetbeheerders } from '@/lib/data/netbeheerders';
 
 interface ContractAdviesFormProps {
   netbeheerder: string;
@@ -38,12 +38,7 @@ export function ContractAdviesForm({
   onCalculate,
   error
 }: ContractAdviesFormProps) {
-  // Netbeheerder data
-  const netbeheerders = [
-    { naam: 'Liander', stroomKosten: 471, gasKosten: 248 },
-    { naam: 'Stedin', stroomKosten: 490, gasKosten: 254 },
-    { naam: 'Enexis', stroomKosten: 492, gasKosten: 267 }
-  ];
+  const netbeheerders = getAlleNetbeheerders();
 
   return (
     <div className="space-y-4 lg:space-y-6">
@@ -72,7 +67,7 @@ export function ContractAdviesForm({
             <option value="">Selecteer je netbeheerder</option>
             {netbeheerders.map((nb) => (
               <option key={nb.naam} value={nb.naam}>
-                {nb.naam} (€{nb.stroomKosten}/jaar stroom, €{nb.gasKosten}/jaar gas)
+                {nb.naam} (€{nb.kostenStroom}/jaar stroom, €{nb.kostenGas}/jaar gas)
               </option>
             ))}
           </select>

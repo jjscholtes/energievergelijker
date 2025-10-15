@@ -1,12 +1,12 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 const fs = require('fs');
-const path = require('path');
 
 // Read CSV files and process them
 function processCSVData() {
   const csv2024 = fs.readFileSync('jeroen_punt_nl_dynamische_stroomprijzen_jaar_2024.csv', 'utf8');
   const csv2025 = fs.readFileSync('jeroen_punt_nl_dynamische_stroomprijzen_jaar_2025.csv', 'utf8');
   
-  function parseCSV(csvContent, year) {
+  function parseCSV(csvContent) {
     const lines = csvContent.split('\n');
     const data = [];
     
@@ -43,11 +43,11 @@ function processCSVData() {
     return data;
   }
   
-  const data2024 = parseCSV(csv2024, 2024);
-  const data2025 = parseCSV(csv2025, 2025);
+  const data2024 = parseCSV(csv2024);
+  const data2025 = parseCSV(csv2025);
   
   // Generate hourly averages for each month
-  function generateHourlyAverages(data, year) {
+  function generateHourlyAverages(data) {
     const monthlyData = {};
     
     // Group by month
@@ -117,8 +117,8 @@ function processCSVData() {
     return result;
   }
   
-  const processed2024 = generateHourlyAverages(data2024, 2024);
-  const processed2025 = generateHourlyAverages(data2025, 2025);
+  const processed2024 = generateHourlyAverages(data2024);
+  const processed2025 = generateHourlyAverages(data2025);
   
   // Generate TypeScript code
   const tsCode = `// Generated from real CSV data analysis

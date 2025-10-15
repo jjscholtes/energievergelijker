@@ -1,17 +1,26 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { TrendingUp, TrendingDown, Clock, Sun, Moon, Zap, BarChart3, Info, ArrowLeft, Calendar, DollarSign, FileText, Image as ImageIcon } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { TrendingDown, Clock, Sun, Moon, BarChart3, Info, ArrowLeft, Calendar, DollarSign, FileText, Image as ImageIcon } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getMonthlyData, getHourlyDataForMonth, getDailyDataForMonth, MonthlyStats } from '@/lib/data/monthlyPriceData';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 
+export type WeightedAverage = {
+  weightedAverage: number;
+  totalDataPoints: number;
+  period: string;
+  minPrice: number;
+  maxPrice: number;
+  seasonalBreakdown: { season: string; average: number; months: number[] }[];
+};
+
 export function DynamicPricingPage() {
   const [selectedYear, setSelectedYear] = useState(2024);
   const [selectedMonth, setSelectedMonth] = useState(1);
   const [monthlyData, setMonthlyData] = useState<{ [month: number]: MonthlyStats }>({});
-  const [weightedAverage, setWeightedAverage] = useState<any>(null);
+  const [weightedAverage, setWeightedAverage] = useState<WeightedAverage | null>(null);
   const [loading, setLoading] = useState(true);
   
   // Jaarlijkse gemiddelde prijzen data
@@ -42,61 +51,7 @@ export function DynamicPricingPage() {
     { value: 12, label: 'December' }
   ];
 
-  useEffect(() => {
-    setLoading(true);
-    
-    try {
-      const data = getMonthlyData(selectedYear);
-      setMonthlyData(data);
-      
-      // Set first available month as default
-      const availableMonths = Object.keys(data).map(Number).sort((a, b) => a - b);
-      if (availableMonths.length > 0 && !data[selectedMonth]) {
-        setSelectedMonth(availableMonths[0]);
-      }
-      
-      // Calculate weighted average for all available months
-      const weightedAvg = calculateWeightedAverage(data, availableMonths);
-      setWeightedAverage(weightedAvg);
-    } catch (error) {
-      console.error('Error loading monthly data:', error);
-    }
-    
-    setLoading(false);
-  }, [selectedYear]);
-
-  const currentMonthData = monthlyData[selectedMonth];
-  const hourlyData = currentMonthData ? getHourlyDataForMonth(selectedYear, selectedMonth) : [];
-  const dailyData = currentMonthData ? getDailyDataForMonth(selectedYear, selectedMonth) : [];
-
-  const getPriceColor = (price: number, min: number, max: number) => {
-    const range = max - min;
-    const position = (price - min) / range;
-    
-    // Special handling for negative prices
-    if (price < 0) return 'text-green-700 bg-green-100 border-green-300 font-bold';
-    if (position < 0.2) return 'text-green-600 bg-green-50 border-green-200';
-    if (position < 0.4) return 'text-yellow-600 bg-yellow-50 border-yellow-200';
-    if (position < 0.6) return 'text-orange-600 bg-orange-50 border-orange-200';
-    if (position < 0.8) return 'text-red-500 bg-red-50 border-red-200';
-    return 'text-red-700 bg-red-100 border-red-300';
-  };
-
-  const getTimeLabel = (hour: number) => {
-    if (hour === 0) return 'Middernacht';
-    if (hour < 6) return 'Nacht';
-    if (hour < 12) return 'Ochtend';
-    if (hour < 18) return 'Middag';
-    return 'Avond';
-  };
-
-  const getTimeIcon = (hour: number) => {
-    if (hour >= 6 && hour < 18) return <Sun className="w-4 h-4" />;
-    return <Moon className="w-4 h-4" />;
-  };
-
-  // Calculate weighted average for available months
-  const calculateWeightedAverage = (data: { [month: number]: MonthlyStats }, months: number[]) => {
+  const calculateWeightedAverage = useCallback((data: { [month: number]: MonthlyStats }, months: number[]): WeightedAverage => {
     let totalWeightedSum = 0;
     let totalDataPoints = 0;
     let minPrice = Infinity;
@@ -162,6 +117,60 @@ export function DynamicPricingPage() {
       maxPrice: maxPrice === -Infinity ? 0 : Math.round(maxPrice * 1000) / 1000,
       seasonalBreakdown
     };
+  }, []);
+
+  useEffect(() => {
+    setLoading(true);
+    
+    try {
+      const data = getMonthlyData(selectedYear);
+      setMonthlyData(data);
+      
+      // Set first available month as default
+      const availableMonths = Object.keys(data).map(Number).sort((a, b) => a - b);
+      const hasSelectedMonth = Boolean(data[selectedMonth]);
+      if (availableMonths.length > 0 && !hasSelectedMonth) {
+        setSelectedMonth(availableMonths[0]);
+      }
+      
+      // Calculate weighted average for all available months
+      const weightedAvg = calculateWeightedAverage(data, availableMonths);
+      setWeightedAverage(weightedAvg);
+    } catch (error) {
+      console.error('Error loading monthly data:', error);
+    }
+    
+    setLoading(false);
+  }, [calculateWeightedAverage, selectedMonth, selectedYear]);
+
+  const currentMonthData = monthlyData[selectedMonth];
+  const hourlyData = currentMonthData ? getHourlyDataForMonth(selectedYear, selectedMonth) : [];
+  const dailyData = currentMonthData ? getDailyDataForMonth(selectedYear, selectedMonth) : [];
+
+  const getPriceColor = (price: number, min: number, max: number) => {
+    const range = max - min;
+    const position = (price - min) / range;
+    
+    // Special handling for negative prices
+    if (price < 0) return 'text-green-700 bg-green-100 border-green-300 font-bold';
+    if (position < 0.2) return 'text-green-600 bg-green-50 border-green-200';
+    if (position < 0.4) return 'text-yellow-600 bg-yellow-50 border-yellow-200';
+    if (position < 0.6) return 'text-orange-600 bg-orange-50 border-orange-200';
+    if (position < 0.8) return 'text-red-500 bg-red-50 border-red-200';
+    return 'text-red-700 bg-red-100 border-red-300';
+  };
+
+  const getTimeLabel = (hour: number) => {
+    if (hour === 0) return 'Middernacht';
+    if (hour < 6) return 'Nacht';
+    if (hour < 12) return 'Ochtend';
+    if (hour < 18) return 'Middag';
+    return 'Avond';
+  };
+
+  const getTimeIcon = (hour: number) => {
+    if (hour >= 6 && hour < 18) return <Sun className="w-4 h-4" />;
+    return <Moon className="w-4 h-4" />;
   };
 
   if (loading) {

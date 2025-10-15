@@ -84,7 +84,7 @@ function parseCSV(csv: string): Record<string, number> {
       header: true,
       skipEmptyLines: true,
       complete: ({ data }) => {
-        (data as any[]).forEach(row => {
+        (data as Array<Record<string, string>>).forEach(row => {
           // Probeer verschillende timestamp kolommen
           const timestampKey = Object.keys(row).find(key => 
             key.toLowerCase().includes('timestamp') || 
@@ -99,22 +99,22 @@ function parseCSV(csv: string): Record<string, number> {
           );
 
           if (timestampKey && priceKey) {
-            try {
-              const ts = parseISO(row[timestampKey]);
-              const price = parseFloat(row[priceKey]);
-              
-              if (!isNaN(price) && ts instanceof Date && !isNaN(ts.getTime())) {
-                result[ts.toISOString()] = price;
-              }
-            } catch (parseError) {
-              console.warn(`Fout bij parsen van rij: ${JSON.stringify(row)}`);
-            }
+        try {
+          const ts = parseISO(row[timestampKey]);
+          const price = parseFloat(row[priceKey]);
+          
+          if (!isNaN(price) && ts instanceof Date && !isNaN(ts.getTime())) {
+            result[ts.toISOString()] = price;
+          }
+        } catch {
+          console.warn(`Fout bij parsen van rij: ${JSON.stringify(row)}`);
+        }
           }
         });
       },
-        error: (error: any) => {
-          throw new Error(`CSV parse fout: ${error.message}`);
-        }
+      error: (error) => {
+        throw new Error(`CSV parse fout: ${error instanceof Error ? error.message : 'Onbekende fout'}`);
+      }
     });
   } catch (error) {
     throw new Error(`CSV parsing gefaald: ${error instanceof Error ? error.message : 'Onbekende fout'}`);

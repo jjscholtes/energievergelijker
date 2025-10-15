@@ -185,7 +185,7 @@ export function StandaloneResultsSection({ results, dynamicResults }: Standalone
           <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
             <p className="text-sm text-yellow-800">
               💡 <strong>Tip:</strong> Deze berekening is gebaseerd op een standaard verbruik van 2900 kWh stroom en 1200 m³ gas. 
-              Je kunt de tarieven aanpassen om verschillende scenario's te vergelijken.
+              Je kunt de tarieven aanpassen om verschillende scenario&apos;s te vergelijken.
             </p>
           </div>
         </CardContent>

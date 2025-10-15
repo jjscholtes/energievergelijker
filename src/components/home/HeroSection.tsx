@@ -61,7 +61,7 @@ export function HeroSection({ onResultChange }: HeroSectionProps) {
             {/* Enhanced Info Box - moved to bottom */}
             <div className="bg-gradient-to-r from-green-50 via-emerald-50 to-teal-50 border border-emerald-200 rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
               <p className="text-green-800 font-semibold text-xl">
-                💡 <strong>Wist je dat?</strong> Het juiste energiecontract kan je honderden euro's per jaar besparen, 
+                💡 <strong>Wist je dat?</strong> Het juiste energiecontract kan je honderden euro&apos;s per jaar besparen, 
                 vooral als je zonnepanelen, warmtepomp of elektrische auto hebt.
               </p>
             </div>

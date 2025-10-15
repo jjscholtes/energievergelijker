@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { DynamicCalcParams, DynamicCostResult } from '@/types/dynamicContracts';
 import { calculatePriceStats } from '@/lib/calculations/annualCostCalculator';
-import { sampleCSV2024, sampleCSV2025, generateRealisticCSVData } from '@/lib/data/sampleDynamicData';
+import { generateRealisticCSVData } from '@/lib/data/sampleDynamicData';
 
 interface DynamicContractFormProps {
   onCalculate: (params: DynamicCalcParams) => Promise<DynamicCostResult>;
@@ -60,7 +60,7 @@ export function DynamicContractForm({ onCalculate, isLoading }: DynamicContractF
     loadPredefinedData();
   }, []);
 
-  const handleInputChange = (field: keyof DynamicCalcParams, value: any) => {
+  const handleInputChange = <Field extends keyof DynamicCalcParams>(field: Field, value: DynamicCalcParams[Field]) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     setError(null);
   };
@@ -72,8 +72,8 @@ export function DynamicContractForm({ onCalculate, isLoading }: DynamicContractF
 
     try {
       await onCalculate(formData);
-    } catch (err: any) {
-      setError(err.message || 'Er is een fout opgetreden bij de berekening');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Er is een fout opgetreden bij de berekening');
     }
   };
 

@@ -90,7 +90,7 @@ export function ContractInputForm({ userProfile, onAddContract }: ContractInputF
         tarieven: { ...prev.tarieven!, terugleververgoeding: 0.01 }
       }));
     }
-  }, [currentContract.type]);
+  }, [currentContract.type, currentContract.tarieven?.terugleververgoeding]);
 
   const handleAddContract = () => {
     if (!currentContract.leverancier) {

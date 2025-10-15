@@ -31,10 +31,10 @@ export async function POST(request: NextRequest) {
     const result: DynamicCostResult = await computeAnnualCost(params);
     
     return NextResponse.json(result);
-  } catch (error: any) {
+  } catch (error) {
     console.error('API Error:', error);
     return NextResponse.json(
-      { error: error.message || 'Onbekende fout bij berekening' },
+      { error: error instanceof Error ? error.message : 'Onbekende fout bij berekening' },
       { status: 500 }
     );
   }

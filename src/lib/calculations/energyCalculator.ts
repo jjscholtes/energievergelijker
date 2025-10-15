@@ -1,7 +1,7 @@
 import { UserProfile } from '@/types/user';
 import { ContractData } from '@/types/contracts';
 import { BerekeningResult, StroomKosten, GasKosten, PvOpbrengsten } from '@/types/calculations';
-import { berekenGasbelasting, berekenGasNetbeheer } from './gasStaffels';
+import { berekenGasbelasting } from './gasStaffels';
 import { berekenSaldering } from './saldering';
 import { getNetbeheerderKosten } from './netbeheerderKosten';
 
@@ -41,9 +41,6 @@ export const berekenEnergiekosten = (
     userProfile.aansluitingGas,
     netbeheerderKosten.gas
   );
-
-  // Vaste kosten
-  const vasteKostenJaar = contract.vasteLeveringskosten * 12;
 
   // Totale kosten zonder PV
   // vasteKostenJaar is al meegenomen in stroomKosten.totaal, dus niet dubbel tellen
@@ -181,17 +178,4 @@ function berekenGaskosten(
   };
 };
 
-/**
- * Berekent netbeheerkosten voor stroom
- * Gebaseerd op vaste jaarlijkse kosten per netbeheerder uit "Overzicht Kostencomponenten Energie"
- */
-function berekenStroomNetbeheer(
-  verbruikKwh: number,
-  aansluiting: UserProfile['aansluitingElektriciteit']
-): number {
-  // Vaste jaarlijkse kosten per netbeheerder (gemiddelde van Liander, Stedin, Enexis)
-  // Liander: ~€471, Stedin: ~€490, Enexis: ~€492
-  const gemiddeldeNetbeheerKosten = 485; // €/jaar (gemiddelde van de drie grote netbeheerders)
-
-  return gemiddeldeNetbeheerKosten;
-};
+// Netbeheerkosten worden via getNetbeheerderKosten bepaald; extra helper niet nodig.

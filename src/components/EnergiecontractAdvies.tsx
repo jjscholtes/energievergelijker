@@ -1,12 +1,14 @@
 'use client';
 
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Calculator } from 'lucide-react';
 import { berekenEnergiekosten } from '@/lib/calculations/energyCalculator';
 import { berekenDynamischeEnergiekosten } from '@/lib/calculations/dynamicEnergyCalculator';
-import { sampleCSV2024, sampleCSV2025, dynamicContracts } from '@/lib/data/sampleDynamicData';
+import { dynamicContracts, generateRealisticCSVData } from '@/lib/data/sampleDynamicData';
 import { leveranciers } from '@/lib/data/leveranciers';
 import { ContractAdviesForm } from '@/components/energie-advies/ContractAdviesForm';
+import { getAlleNetbeheerders } from '@/lib/data/netbeheerders';
+import { BerekeningResult } from '@/types/calculations';
 
 interface ContractAdviesProps {
   className?: string;
@@ -24,18 +26,18 @@ interface NetbeheerderData {
 export interface ContractAdviesResult {
   vast: {
     totaal: number;
-    stroomKosten: any;
-    gasKosten: any;
-    pvOpbrengsten: any;
+    stroomKosten: BerekeningResult['stroomKosten'];
+    gasKosten: BerekeningResult['gasKosten'];
+    pvOpbrengsten: BerekeningResult['pvOpbrengsten'];
     korting: number;
   };
   dynamisch: {
     totaal: number;
-    stroomKosten: any;
-    gasKosten: any;
-    pvOpbrengsten: any;
+    stroomKosten: BerekeningResult['stroomKosten'];
+    gasKosten: BerekeningResult['gasKosten'];
+    pvOpbrengsten: BerekeningResult['pvOpbrengsten'];
     opslagPerKwh: number;
-    maandbedragen?: any[]; // Added for monthly breakdown
+    maandbedragen?: number[]; // Added for monthly breakdown
   };
   besparing: number;
   goedkoopsteContract: 'vast' | 'dynamisch';
@@ -60,51 +62,26 @@ export function EnergiecontractAdvies({ className = '', onResultChange }: Contra
   const [result, setResult] = useState<ContractAdviesResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Memoized contract data to prevent recreation on every render
-  const contractData = useMemo(() => {
-    const vasteContracten = leveranciers.filter((c) => c.type === 'vast');
-    const dynamischeBron = dynamicContracts;
-
-    const vastContract = vasteContracten[0];
-    const dynamischContract = {
-      ...dynamischeBron[0],
-      csvData2024: sampleCSV2024,
-      csvData2025: sampleCSV2025,
-      maandelijkseVergoeding: dynamischeBron[0].vasteLeveringskosten,
-      opslagPerKwh: dynamischeBron[0].opslagPerKwh ?? 0.02,
-      tarieven: {
-        ...dynamischeBron[0].tarieven,
-        stroomKalePrijs: dynamischeBron[0].tarieven?.stroomKalePrijs ?? 0.085
-      }
-    };
-
-    return { vastContract, dynamischContract };
-  }, []);
-
-  // Memoized netbeheerder data getter
   const getNetbeheerderData = useCallback((naam: string): NetbeheerderData => {
-    const netbeheerders = [
-      { naam: 'Liander', stroomKosten: 471, gasKosten: 248 },
-      { naam: 'Stedin', stroomKosten: 490, gasKosten: 254 },
-      { naam: 'Enexis', stroomKosten: 492, gasKosten: 267 }
-    ];
-    
-    const netbeheerder = netbeheerders.find(n => n.naam === naam);
+    const netbeheerder = getAlleNetbeheerders().find((nb) => nb.naam === naam);
+
     if (!netbeheerder) {
-      return { 
-        netbeheerder: 'Enexis', 
-        stroomVastrecht: 492, 
-        gasVastrecht: 267, 
-        stroomVariabel: 492, 
-        gasVariabel: 267 
+      const fallback = getAlleNetbeheerders()[0];
+      return {
+        netbeheerder: fallback?.naam || 'Onbekend',
+        stroomVastrecht: fallback?.kostenStroom || 0,
+        gasVastrecht: fallback?.kostenGas || 0,
+        stroomVariabel: fallback?.kostenStroom || 0,
+        gasVariabel: fallback?.kostenGas || 0
       };
     }
+
     return {
       netbeheerder: netbeheerder.naam,
-      stroomVastrecht: netbeheerder.stroomKosten,
-      gasVastrecht: netbeheerder.gasKosten,
-      stroomVariabel: netbeheerder.stroomKosten,
-      gasVariabel: netbeheerder.gasKosten
+      stroomVastrecht: netbeheerder.kostenStroom,
+      gasVastrecht: netbeheerder.kostenGas,
+      stroomVariabel: netbeheerder.kostenStroom,
+      gasVariabel: netbeheerder.kostenGas
     };
   }, []);
 
@@ -161,48 +138,94 @@ export function EnergiecontractAdvies({ className = '', onResultChange }: Contra
         }
       };
 
-      // Calculate vast contract using exact same logic
-      console.log('Calculating vast contract...');
-      let vastResult;
-      try {
-        vastResult = berekenEnergiekosten(userProfile, contractData.vastContract);
-        console.log('Vast result:', vastResult);
-      } catch (calcError) {
-        console.error('Error calculating vast contract:', calcError);
-        throw new Error(`Vast contract berekening mislukt: ${calcError instanceof Error ? calcError.message : 'Onbekende fout'}`);
+      const vasteContracten = leveranciers.filter((c) => c.type === 'vast');
+      if (vasteContracten.length === 0) {
+        throw new Error('Geen vaste contracten beschikbaar voor vergelijking.');
       }
 
-      // Calculate dynamisch contract using exact same logic
-      console.log('Calculating dynamisch contract...');
-      let dynamischResult;
-      try {
-        dynamischResult = await berekenDynamischeEnergiekosten(userProfile, contractData.dynamischContract, sampleCSV2024, sampleCSV2025, '2025');
-        console.log('Dynamisch result:', dynamischResult);
-      } catch (calcError) {
-        console.error('Error calculating dynamisch contract:', calcError);
-        throw new Error(`Dynamisch contract berekening mislukt: ${calcError instanceof Error ? calcError.message : 'Onbekende fout'}`);
-      }
+      const vasteResultaten = vasteContracten.map((contract) => {
+        try {
+          return berekenEnergiekosten(userProfile, contract);
+        } catch (calcError) {
+          throw new Error(
+            `Vast contract "${contract.leverancier}" berekening mislukt: ${
+              calcError instanceof Error ? calcError.message : 'Onbekende fout'
+            }`
+          );
+        }
+      });
 
-      const besparing = Math.abs(vastResult.totaleJaarkostenMetPv - dynamischResult.totaleJaarkostenMetPv);
-      const goedkoopsteContract = vastResult.totaleJaarkostenMetPv < dynamischResult.totaleJaarkostenMetPv ? 'vast' : 'dynamisch';
+      const gesorteerdeVaste = [...vasteResultaten].sort(
+        (a, b) => a.totaleJaarkostenMetPv - b.totaleJaarkostenMetPv
+      );
+      const goedkoopsteVaste = gesorteerdeVaste[0];
 
-      const dynamicMonthlyBreakdown = dynamischResult.maandlasten ? dynamischResult.maandlasten : Array.from({ length: 12 }, () => dynamischResult.maandlastenGemiddeld);
+      const csv2024 = generateRealisticCSVData(2024, 0.15);
+      const csv2025 = generateRealisticCSVData(2025, 0.15);
+
+      const dynamischeResultaten: BerekeningResult[] = dynamicContracts.length > 0
+        ? await Promise.all(
+            dynamicContracts.map(async (contract) => {
+              const dynamischContract = {
+                ...contract,
+                csvData2024: csv2024,
+                csvData2025: csv2025,
+                maandelijkseVergoeding: contract.maandelijkseVergoeding ?? contract.vasteLeveringskosten,
+                opslagPerKwh: contract.opslagPerKwh ?? 0.02,
+                tarieven: {
+                  ...contract.tarieven,
+                  stroomKalePrijs: contract.tarieven?.stroomKalePrijs ?? 0.085
+                }
+              };
+
+              try {
+                return await berekenDynamischeEnergiekosten(
+                  userProfile,
+                  dynamischContract,
+                  dynamischContract.csvData2024,
+                  dynamischContract.csvData2025,
+                  '2024'
+                );
+              } catch (calcError) {
+                throw new Error(
+                  `Dynamisch contract "${contract.leverancier}" berekening mislukt: ${
+                    calcError instanceof Error ? calcError.message : 'Onbekende fout'
+                  }`
+                );
+              }
+            })
+          )
+        : [];
+
+      const gesorteerdeDynamische = [...dynamischeResultaten].sort(
+        (a, b) => a.totaleJaarkostenMetPv - b.totaleJaarkostenMetPv
+      );
+      const goedkoopsteDynamische = gesorteerdeDynamische[0];
+
+      const besparing = Math.abs(
+        goedkoopsteVaste.totaleJaarkostenMetPv - goedkoopsteDynamische.totaleJaarkostenMetPv
+      );
+
+      const goedkoopsteContract =
+        goedkoopsteVaste.totaleJaarkostenMetPv < goedkoopsteDynamische.totaleJaarkostenMetPv
+          ? 'vast'
+          : 'dynamisch';
 
       setResult({
         vast: {
-          totaal: vastResult.totaleJaarkostenMetPv,
-          stroomKosten: vastResult.stroomKosten,
-          gasKosten: vastResult.gasKosten,
-          pvOpbrengsten: vastResult.pvOpbrengsten,
-          korting: contractData.vastContract.kortingEenmalig
+          totaal: goedkoopsteVaste.totaleJaarkostenMetPv,
+          stroomKosten: goedkoopsteVaste.stroomKosten,
+          gasKosten: goedkoopsteVaste.gasKosten,
+          pvOpbrengsten: goedkoopsteVaste.pvOpbrengsten,
+          korting: goedkoopsteVaste.contract.kortingEenmalig || 0
         },
         dynamisch: {
-          totaal: dynamischResult.totaleJaarkostenMetPv,
-          stroomKosten: dynamischResult.stroomKosten,
-          gasKosten: dynamischResult.gasKosten,
-          pvOpbrengsten: dynamischResult.pvOpbrengsten,
-          opslagPerKwh: contractData.dynamischContract.opslagPerKwh,
-          maandbedragen: dynamicMonthlyBreakdown
+          totaal: goedkoopsteDynamische.totaleJaarkostenMetPv,
+          stroomKosten: goedkoopsteDynamische.stroomKosten,
+          gasKosten: goedkoopsteDynamische.gasKosten,
+          pvOpbrengsten: goedkoopsteDynamische.pvOpbrengsten,
+          opslagPerKwh: goedkoopsteDynamische.stroomKosten.opslagPerKwhTarief || 0,
+          maandbedragen: Array.from({ length: 12 }, () => goedkoopsteDynamische.maandlastenGemiddeld)
         },
         besparing,
         goedkoopsteContract,
@@ -234,12 +257,7 @@ export function EnergiecontractAdvies({ className = '', onResultChange }: Contra
     } finally {
       setIsLoading(false);
     }
-  }, [netbeheerder, dalVerbruik, normaalVerbruik, gasVerbruik, geenGas, pvTeruglevering, getNetbeheerderData, contractData]);
-
-  const handleReset = useCallback(() => {
-    setResult(null);
-    setError(null);
-  }, []);
+  }, [netbeheerder, dalVerbruik, normaalVerbruik, gasVerbruik, geenGas, pvTeruglevering, getNetbeheerderData]);
 
   // Notify parent when result changes
   useEffect(() => {

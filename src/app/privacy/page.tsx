@@ -46,7 +46,7 @@ export default function PrivacyPage() {
                 Wie zijn wij?
               </h2>
               <p className="text-gray-700 mb-4">
-                Beste Energiecontract is een specialistische energievergelijker die zich richt op het vinden van de beste energiecontracten voor huishoudens met zonnepanelen, warmtepompen en elektrische auto's.
+                Beste Energiecontract is een specialistische energievergelijker die zich richt op het vinden van de beste energiecontracten voor huishoudens met zonnepanelen, warmtepompen en elektrische auto&apos;s.
               </p>
               <p className="text-gray-700 mb-4">
                 Wij respecteren uw privacy en zijn verplicht om uw persoonlijke gegevens te beschermen volgens de Algemene Verordening Gegevensbescherming (AVG/GDPR).
@@ -70,7 +70,7 @@ export default function PrivacyPage() {
               <div className="bg-emerald-50 rounded-lg p-6">
                 <h3 className="font-semibold text-gray-900 mb-4">Automatisch verzamelde gegevens:</h3>
                 <ul className="space-y-2 text-gray-700">
-                  <li>• <strong>Website gebruik:</strong> Pagina's bekeken, tijd op site</li>
+                  <li>• <strong>Website gebruik:</strong> Pagina&apos;s bekeken, tijd op site</li>
                   <li>• <strong>Technische gegevens:</strong> Browser type, IP-adres, apparaat</li>
                   <li>• <strong>Cookies:</strong> Voor website functionaliteit en analyse</li>
                 </ul>

@@ -634,7 +634,7 @@ export function ResultsSection() {
                       omdat ze de spotmarktprijzen doorgeven zonder opslag.
                     </p>
                     <p>
-                      <strong>Flexibiliteit:</strong> Als je slim bent met je energieverbruik (bijvoorbeeld 's nachts 
+                      <strong>Flexibiliteit:</strong> Als je slim bent met je energieverbruik (bijvoorbeeld &apos;s nachts 
                       of in het weekend), kun je flink besparen op je energierekening.
                     </p>
                     <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-4">
@@ -759,11 +759,11 @@ export function ResultsSection() {
             </thead>
             <tbody>
               {/* Vaste contracten */}
-              {results.map((result, index) => {
+              {results.map((result, indexResult) => {
                 const isCheapest = result === cheapestFixed;
                 const isBetterThanDynamic = !isDynamicCheaper;
                 return (
-                  <tr key={result.contract.leverancier} className={`${isCheapest && isBetterThanDynamic ? 'bg-green-100 border-2 border-green-500' : index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                  <tr key={`${result.contract.leverancier}-${indexResult}`} className={`${isCheapest && isBetterThanDynamic ? 'bg-green-100 border-2 border-green-500' : indexResult % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
                     <td className="border border-gray-300 p-3">
                       <div className="flex items-center gap-2">
                         <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">Vast</span>
@@ -796,11 +796,11 @@ export function ResultsSection() {
               })}
               
               {/* Dynamische contracten */}
-              {dynamicResults.map((result, index) => {
+              {dynamicResults.map((result, indexDynamic) => {
                 const isCheapest = result === cheapestDynamic;
                 const isBetterThanFixed = isDynamicCheaper;
                 return (
-                  <tr key={`dynamic-${result.contract.leverancier}`} className={`${isCheapest && isBetterThanFixed ? 'bg-teal-100 border-2 border-teal-500' : 'bg-teal-50'}`}>
+                  <tr key={`dynamic-${result.contract.leverancier}-${indexDynamic}`} className={`${isCheapest && isBetterThanFixed ? 'bg-teal-100 border-2 border-teal-500' : 'bg-teal-50'}`}>
                     <td className="border border-gray-300 p-3">
                       <div className="flex items-center gap-2">
                         <span className="px-2 py-1 bg-teal-100 text-teal-800 text-xs rounded">Dynamisch</span>

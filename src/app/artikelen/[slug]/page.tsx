@@ -223,7 +223,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           <div key={`quote-${elements.length}`} className="bg-gradient-to-r from-emerald-50 to-teal-50 border-l-4 border-emerald-500 p-6 mb-8 rounded-r-xl">
             <div className="flex items-start gap-4">
               <div className="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                <span className="text-white font-bold text-sm">"</span>
+                <span className="text-white font-bold text-sm">&quot;</span>
               </div>
               <div className="space-y-2">
                 {quoteContent.map((line, idx) => {

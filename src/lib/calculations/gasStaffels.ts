@@ -29,10 +29,7 @@ export const berekenGasbelasting = (verbruikM3: number): number => {
  * Berekent de netbeheerkosten voor gas
  * Gebaseerd op vaste jaarlijkse kosten per netbeheerder uit "Overzicht Kostencomponenten Energie"
  */
-export const berekenGasNetbeheer = (
-  verbruikM3: number,
-  aansluiting: "G4" | "G6" | "G10" | "G16" | "G25"
-): number => {
+export const berekenGasNetbeheer = (): number => {
   // Vaste jaarlijkse kosten per netbeheerder (gemiddelde van Liander, Stedin, Enexis)
   // Liander: ~€248, Stedin: ~€268, Enexis: ~€254
   const gemiddeldeGasNetbeheerKosten = 257; // €/jaar (gemiddelde van de drie grote netbeheerders)

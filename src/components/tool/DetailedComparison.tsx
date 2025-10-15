@@ -225,7 +225,7 @@ export const DetailedComparison: React.FC<DetailedComparisonProps> = ({ results,
                 voor je teruggeleverde stroom, wat veel meer oplevert dan de vaste €0.01/kWh bij vaste contracten.
               </p>
               <p>
-                <strong>Flexibiliteit:</strong> Als je slim bent met je energieverbruik (bijvoorbeeld 's nachts 
+                <strong>Flexibiliteit:</strong> Als je slim bent met je energieverbruik (bijvoorbeeld &apos;s nachts 
                 of in het weekend), kun je flink besparen op je energierekening.
               </p>
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-4">

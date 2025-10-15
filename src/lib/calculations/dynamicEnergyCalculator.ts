@@ -1,10 +1,9 @@
 import Papa from 'papaparse';
 import { parseISO } from 'date-fns';
 import { UserProfile } from '@/types/user';
-import { ContractData } from '@/types/contracts';
 import { DynamicContractData } from '@/types/dynamicContracts';
-import { BerekeningResult, StroomKosten, GasKosten, PvOpbrengsten } from '@/types/calculations';
-import { berekenGasbelasting, berekenGasNetbeheer } from './gasStaffels';
+import { BerekeningResult, StroomKosten, PvOpbrengsten } from '@/types/calculations';
+import { berekenGasbelasting } from './gasStaffels';
 import { berekenSaldering } from './saldering';
 import { getNetbeheerderKosten } from './netbeheerderKosten';
 
@@ -158,38 +157,6 @@ export const berekenDynamischeEnergiekosten = async (
 };
 
 /**
- * Berekent de gaskosten inclusief alle belastingen en netbeheerkosten
- */
-const berekenGaskosten = (
-  verbruikM3: number,
-  kalePrijs: number,
-  aansluiting: UserProfile['aansluitingGas']
-): GasKosten => {
-  // Kale energie
-  const kaleEnergie = verbruikM3 * kalePrijs;
-
-  // Gestaffelde energiebelasting gas
-  const energiebelasting = berekenGasbelasting(verbruikM3);
-
-  // BTW (21%)
-  const btw = (kaleEnergie + energiebelasting) * 0.21;
-
-  // Netbeheerkosten
-  const netbeheer = berekenGasNetbeheer(verbruikM3, aansluiting || 'G4');
-
-  const totaal = kaleEnergie + energiebelasting + btw + netbeheer;
-
-  return {
-    kaleEnergie,
-    energiebelasting,
-    btw,
-    netbeheer,
-    totaal
-  };
-};
-
-
-/**
  * Parse CSV data naar price map - SYNCHRONOUS VERSION
  */
 function parseCSV(csv: string): Record<string, number> {
@@ -200,8 +167,7 @@ function parseCSV(csv: string): Record<string, number> {
   }
 
   try {
-    // Gebruik Papa.parseSync voor synchrone parsing
-    const parsed = Papa.parse(csv, {
+    const parsed = Papa.parse<Record<string, string>>(csv, {
       header: true,
       skipEmptyLines: true
     });
@@ -210,8 +176,7 @@ function parseCSV(csv: string): Record<string, number> {
       console.warn('CSV parse errors:', parsed.errors);
     }
 
-    (parsed.data as any[]).forEach(row => {
-      // Probeer verschillende timestamp kolommen
+    (parsed.data as Array<Record<string, string>>).forEach(row => {
       const timestampKey = Object.keys(row).find(key => 
         key.toLowerCase().includes('timestamp') || 
         key.toLowerCase().includes('time') ||
@@ -232,14 +197,13 @@ function parseCSV(csv: string): Record<string, number> {
           if (!isNaN(price) && ts instanceof Date && !isNaN(ts.getTime())) {
             result[ts.toISOString()] = price;
           }
-        } catch (parseError) {
+        } catch {
           console.warn(`Fout bij parsen van rij: ${JSON.stringify(row)}`);
         }
       }
     });
   } catch (error) {
     console.error('CSV parsing gefaald:', error);
-    // Return empty result instead of throwing
     return {};
   }
 
