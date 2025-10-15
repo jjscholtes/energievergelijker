@@ -75,7 +75,7 @@ export function DynamicPricingComparisonTables() {
                 <th className="p-4 text-left font-bold">Tijdstip</th>
                 <th className="p-4 text-left font-bold">Totaalprijs*</th>
                 <th className="p-4 text-left font-bold">Geschikt voor</th>
-                <th className="p-4 text-left font-bold">Besparing t.o.v. piek</th>
+                <th className="p-4 text-left font-bold">vs Vast (€0,25/kWh)</th>
               </tr>
             </thead>
             <tbody>
@@ -83,31 +83,31 @@ export function DynamicPricingComparisonTables() {
                 <td className="p-4 font-semibold text-gray-900">00:00 - 06:00 (Nacht)</td>
                 <td className="p-4 text-green-700 font-bold">€0,20-0,24/kWh</td>
                 <td className="p-4 text-gray-700">EV laden, wasmachine, droger, boiler</td>
-                <td className="p-4 text-green-600 font-bold">40-50%</td>
+                <td className="p-4 text-green-600 font-bold">4-20% goedkoper ✓</td>
               </tr>
               <tr className="border-b border-gray-200 hover:bg-green-50">
                 <td className="p-4 font-semibold text-gray-900">06:00 - 09:00 (Ochtend)</td>
                 <td className="p-4 text-orange-700 font-bold">€0,27-0,34/kWh</td>
                 <td className="p-4 text-gray-700">Vermijd grootverbruikers</td>
-                <td className="p-4 text-red-600">-30%</td>
+                <td className="p-4 text-red-600 font-bold">8-36% duurder ✗</td>
               </tr>
               <tr className="border-b border-gray-200 hover:bg-green-50">
                 <td className="p-4 font-semibold text-gray-900">09:00 - 16:00 (Middag)</td>
                 <td className="p-4 text-yellow-700 font-bold">€0,24-0,28/kWh</td>
                 <td className="p-4 text-gray-700">Redelijk, goed met zonnepanelen</td>
-                <td className="p-4 text-yellow-600">-20%</td>
+                <td className="p-4 text-yellow-600">4% goedkoper - 12% duurder</td>
               </tr>
               <tr className="border-b border-gray-200 hover:bg-green-50">
                 <td className="p-4 font-semibold text-gray-900">16:00 - 21:00 (Avond)</td>
                 <td className="p-4 text-red-700 font-bold">€0,31-0,41/kWh</td>
                 <td className="p-4 text-gray-700">Duurste uren - vermijd indien mogelijk</td>
-                <td className="p-4 text-red-600 font-bold">Piek!</td>
+                <td className="p-4 text-red-600 font-bold">24-64% duurder ✗✗</td>
               </tr>
               <tr className="hover:bg-green-50">
                 <td className="p-4 font-semibold text-gray-900">21:00 - 00:00 (Late avond)</td>
                 <td className="p-4 text-yellow-700 font-bold">€0,25-0,29/kWh</td>
                 <td className="p-4 text-gray-700">Redelijk, dalend naar nacht</td>
-                <td className="p-4 text-yellow-600">-15%</td>
+                <td className="p-4 text-yellow-600">Gelijk - 16% duurder</td>
               </tr>
             </tbody>
           </table>
