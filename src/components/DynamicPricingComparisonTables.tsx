@@ -25,7 +25,7 @@ export function DynamicPricingComparisonTables() {
               <tr className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
                 <th className="p-4 text-left font-bold">Seizoen</th>
                 <th className="p-4 text-left font-bold">Gem. Spotprijs</th>
-                <th className="p-4 text-left font-bold">Incl. Belasting</th>
+                <th className="p-4 text-left font-bold">Totaalprijs*</th>
                 <th className="p-4 text-left font-bold">Verschil t.o.v. Jaargemiddelde</th>
               </tr>
             </thead>
@@ -33,30 +33,33 @@ export function DynamicPricingComparisonTables() {
               <tr className="border-b border-gray-200 hover:bg-blue-50">
                 <td className="p-4 font-semibold text-gray-900">❄️ Winter</td>
                 <td className="p-4 text-gray-700">€0,095/kWh</td>
-                <td className="p-4 text-gray-700">€0,227/kWh</td>
+                <td className="p-4 text-gray-700">€0,250/kWh</td>
                 <td className="p-4 text-red-600 font-bold">+23% duurder</td>
               </tr>
               <tr className="border-b border-gray-200 hover:bg-blue-50">
                 <td className="p-4 font-semibold text-gray-900">🌸 Lente</td>
                 <td className="p-4 text-gray-700">€0,072/kWh</td>
-                <td className="p-4 text-gray-700">€0,204/kWh</td>
+                <td className="p-4 text-gray-700">€0,227/kWh</td>
                 <td className="p-4 text-green-600 font-bold">-7% goedkoper</td>
               </tr>
               <tr className="border-b border-gray-200 hover:bg-blue-50">
                 <td className="p-4 font-semibold text-gray-900">☀️ Zomer</td>
                 <td className="p-4 text-gray-700">€0,058/kWh</td>
-                <td className="p-4 text-gray-700">€0,190/kWh</td>
+                <td className="p-4 text-gray-700">€0,213/kWh</td>
                 <td className="p-4 text-green-600 font-bold">-25% goedkoper</td>
               </tr>
               <tr className="hover:bg-blue-50">
                 <td className="p-4 font-semibold text-gray-900">🍂 Herfst</td>
                 <td className="p-4 text-gray-700">€0,081/kWh</td>
-                <td className="p-4 text-gray-700">€0,213/kWh</td>
+                <td className="p-4 text-gray-700">€0,236/kWh</td>
                 <td className="p-4 text-orange-600 font-bold">Gemiddeld</td>
               </tr>
             </tbody>
           </table>
         </div>
+        <p className="text-sm text-gray-600 mt-3 italic">
+          *Totaalprijs = Spotprijs + Energiebelasting (€0,1316/kWh) + Leveranciersopslag (€0,023/kWh)
+        </p>
       </div>
 
       {/* Beste tijden om te verbruiken */}
