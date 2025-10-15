@@ -4,6 +4,7 @@ import { Suspense, lazy } from 'react';
 import { Header } from '@/components/home/Header';
 import { HeroSectionWithResults } from '@/components/home/HeroSectionWithResults';
 import { DynamicPricingHero } from '@/components/DynamicPricingHero';
+import { BatteryPromotion } from '@/components/home/BatteryPromotion';
 import { Footer } from '@/components/home/Footer';
 
 // Lazy load components that are below the fold
@@ -33,6 +34,9 @@ export default function Home() {
             <DynamicPricingHero />
           </div>
         </section>
+        
+        {/* Thuis Accu Promotie */}
+        <BatteryPromotion />
         
         {/* Lazy loaded sections */}
         <Suspense fallback={<LoadingSpinner />}>

@@ -2,9 +2,25 @@ import { Metadata } from 'next';
 import { DynamicPricingPage } from '@/components/DynamicPricingPage';
 
 export const metadata: Metadata = {
-  title: "Dynamische Energieprijzen | Beste Energiecontract",
-  description: "Ontdek de werkelijke dynamische energieprijzen per maand. Bekijk gemiddelde, hoogste en laagste prijzen per maand en per dag van de week.",
-  keywords: "dynamische energieprijzen, spotmarkt prijzen, energieprijzen per maand, energieprijzen per dag, energieprijzen 2024, energieprijzen 2025",
+  title: "Dynamische Energieprijzen | Actuele Uurprijzen, Kosten & Besparen | Energievergelijker",
+  description: "Ontdek actuele dynamische energieprijzen per uur en seizoen. Zie wanneer stroom het goedkoopst is en bespaar tot €300/jaar. Compleet overzicht met historische data.",
+  keywords: "dynamische energieprijzen, uurprijzen stroom, spotmarkt prijzen vandaag, wanneer is stroom goedkoop, dynamisch energiecontract kosten, besparen dynamische prijzen, negatieve stroomprijzen, energieprijzen per uur, EPEX spotprijzen Nederland, beste tijdstip stroom verbruiken, load shifting energie",
+  openGraph: {
+    title: "Dynamische Energieprijzen | Complete Gids & Actuele Uurprijzen",
+    description: "Ontdek wanneer stroom het goedkoopst is en bespaar tot €300/jaar met dynamische energieprijzen. Inclusief historische trends en praktijkvoorbeelden.",
+    url: 'https://besteenergiecontract.nl/dynamische-prijzen',
+    siteName: 'Beste Energiecontract',
+    locale: 'nl_NL',
+    type: 'article',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "Dynamische Energieprijzen | Actuele Uurprijzen & Besparing",
+    description: "Zie wanneer stroom het goedkoopst is. Bespaar tot €300/jaar met onze complete prijsanalyse.",
+  },
+  alternates: {
+    canonical: 'https://besteenergiecontract.nl/dynamische-prijzen',
+  },
 };
 
 export default function DynamicPricingPageRoute() {

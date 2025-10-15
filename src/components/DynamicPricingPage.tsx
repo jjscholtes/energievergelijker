@@ -1,11 +1,23 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { TrendingDown, Clock, Sun, Moon, BarChart3, Info, ArrowLeft, Calendar, DollarSign, FileText, Image as ImageIcon } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getMonthlyData, getHourlyDataForMonth, getDailyDataForMonth, MonthlyStats } from '@/lib/data/monthlyPriceData';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { SeasonalPriceTool } from '@/components/SeasonalPriceTool';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { DynamicPricingIntro } from '@/components/DynamicPricingIntro';
+import { DynamicPricingKeyTakeaways } from '@/components/DynamicPricingKeyTakeaways';
+import { DynamicPricingFAQ } from '@/components/DynamicPricingFAQ';
+import { DynamicPricingCaseStudies } from '@/components/DynamicPricingCaseStudies';
+import { DynamicPricingGettingStarted } from '@/components/DynamicPricingGettingStarted';
+import { DynamicPricingComparisonTables } from '@/components/DynamicPricingComparisonTables';
+import { DynamicPricingSummaryBox } from '@/components/DynamicPricingSummaryBox';
+import { DynamicPricingEducationalContent } from '@/components/DynamicPricingEducationalContent';
+import { EnergyGlossary } from '@/components/EnergyGlossary';
+import { generateArticleSchema, generateDatasetSchema, generateWebPageSchema } from '@/lib/schema/dynamicPricingSchemas';
 
 export type WeightedAverage = {
   weightedAverage: number;
@@ -144,8 +156,14 @@ export function DynamicPricingPage() {
   }, [calculateWeightedAverage, selectedMonth, selectedYear]);
 
   const currentMonthData = monthlyData[selectedMonth];
-  const hourlyData = currentMonthData ? getHourlyDataForMonth(selectedYear, selectedMonth) : [];
-  const dailyData = currentMonthData ? getDailyDataForMonth(selectedYear, selectedMonth) : [];
+  const hourlyData = useMemo(
+    () => (currentMonthData ? getHourlyDataForMonth(selectedYear, selectedMonth) : []),
+    [currentMonthData, selectedMonth, selectedYear]
+  );
+  const dailyData = useMemo(
+    () => (currentMonthData ? getDailyDataForMonth(selectedYear, selectedMonth) : []),
+    [currentMonthData, selectedMonth, selectedYear]
+  );
 
   const getPriceColor = (price: number, min: number, max: number) => {
     const range = max - min;
@@ -184,8 +202,27 @@ export function DynamicPricingPage() {
     );
   }
 
+  // Generate schema markup
+  const articleSchema = generateArticleSchema(selectedYear);
+  const datasetSchema = generateDatasetSchema(selectedYear, weightedAverage?.totalDataPoints || 0);
+  const webPageSchema = generateWebPageSchema();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-teal-50">
+      {/* Schema Markup */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(datasetSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }}
+      />
+
       {/* Header */}
       <header className="bg-white/90 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -211,6 +248,9 @@ export function DynamicPricingPage() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Breadcrumbs */}
+        <Breadcrumbs items={[{ label: 'Dynamische Prijzen' }]} />
+
         {/* Page Header */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-6 py-3 rounded-full text-sm font-bold mb-6 shadow-lg">
@@ -218,12 +258,21 @@ export function DynamicPricingPage() {
             <span>Dynamische Energieprijzen</span>
           </div>
           <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-            Echte Marktdata {selectedYear}
+            Dynamische Energieprijzen: Complete Gids & Actuele Uurprijzen
           </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Analyseer de werkelijke dynamische energieprijzen per maand. Bekijk gemiddelde, hoogste en laagste prijzen per maand en per dag van de week.
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-6">
+            Ontdek actuele dynamische energieprijzen per uur en seizoen. Zie wanneer stroom het goedkoopst is en bespaar tot €300 per jaar.
           </p>
+          <div className="flex justify-center">
+            <EnergyGlossary />
+          </div>
         </div>
+
+        {/* Key Takeaways - Above the fold */}
+        <DynamicPricingKeyTakeaways />
+
+        {/* Introduction Section */}
+        <DynamicPricingIntro />
 
         {/* Controls */}
         <div className="bg-white rounded-2xl shadow-lg p-8 mb-8 border border-gray-100">
@@ -266,7 +315,26 @@ export function DynamicPricingPage() {
           </div>
         </div>
 
-        {/* Weighted Average Section */}
+        {/* Summary Box for AI Extraction */}
+        {weightedAverage && (() => {
+          // Sort seasons by price to find cheapest and most expensive
+          const sortedSeasons = [...weightedAverage.seasonalBreakdown].sort((a, b) => a.average - b.average);
+          const cheapest = sortedSeasons[0];
+          const mostExpensive = sortedSeasons[sortedSeasons.length - 1];
+          
+          return (
+            <DynamicPricingSummaryBox
+              year={selectedYear}
+              averagePrice={weightedAverage.weightedAverage}
+              cheapestSeason={cheapest?.season || 'Zomer'}
+              cheapestSeasonPrice={cheapest?.average || 0.065}
+              mostExpensiveSeason={mostExpensive?.season || 'Winter'}
+              mostExpensiveSeasonPrice={mostExpensive?.average || 0.110}
+              potentialSavings="€200-400/jaar"
+            />
+          );
+        })()}
+
         {weightedAverage && (
           <div className="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl shadow-lg p-8 mb-8 text-white">
             <div className="text-center mb-6">
@@ -275,7 +343,7 @@ export function DynamicPricingPage() {
                 <span>Gewogen Gemiddelde</span>
               </div>
               <h2 className="text-3xl font-bold mb-4">
-                Gemiddelde Prijs {selectedYear}
+                Actuele prijzen per uur en seizoen
               </h2>
               <p className="text-emerald-100 text-lg">
                 Gebaseerd op {weightedAverage.totalDataPoints.toLocaleString()} datapunten
@@ -379,6 +447,19 @@ export function DynamicPricingPage() {
             </div>
           </div>
         )}
+
+        {/* Seasonal Price Tool */}
+        <section aria-labelledby="seasonal-tool-heading">
+          <div className="mb-12">
+            <SeasonalPriceTool year={selectedYear} />
+          </div>
+        </section>
+
+        {/* Comparison Tables */}
+        <DynamicPricingComparisonTables />
+
+        {/* Educational Content */}
+        <DynamicPricingEducationalContent />
 
         {currentMonthData ? (
           <>
@@ -513,7 +594,7 @@ export function DynamicPricingPage() {
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-3">📊 Data Bron</h4>
                   <ul className="space-y-2 text-gray-700 text-sm">
-                    <li>• Gebaseerd op echte spotmarkt data uit CSV bestanden</li>
+                    <li>• Gebaseerd op EPEX spotmarkt prijzen (Europese energiebeurs)</li>
                     <li>• {currentMonthData.dataPoints} datapunten geanalyseerd voor {currentMonthData.monthName}</li>
                     <li>• Prijzen zijn exclusief energiebelasting (€0.1316/kWh)</li>
                     <li>• Data komt van de Nederlandse energiemarkt</li>
@@ -639,7 +720,7 @@ export function DynamicPricingPage() {
             <div className="text-center mb-6">
               <Image
                 src="/spotprijs-maandelijks-2022-2025.png"
-                alt="Gemiddelde spotprijs per maand 2022-2025"
+                alt="Historische spotmarktprijzen elektriciteit per maand 2022-2025 Nederland - trend energiecrisis naar normalisatie"
                 width={800}
                 height={400}
                 className="rounded-xl shadow-lg mx-auto"
@@ -660,7 +741,7 @@ export function DynamicPricingPage() {
               <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
                 <h4 className="font-bold text-green-800 mb-3">💡 Praktische Tips</h4>
                 <ul className="space-y-2 text-green-700 text-sm">
-                  <li>• <strong>Plan je contract:</strong> Overweeg vaste contracten in winter</li>
+                  <li>• <strong>Vergelijk:</strong> Vaste contracten €0,25/kWh vs dynamische prijzen</li>
                   <li>• <strong>Dynamisch in zomer:</strong> Profiteer van lagere zomerprijzen</li>
                   <li>• <strong>Hybride aanpak:</strong> Combineer vaste en dynamische contracten</li>
                   <li>• <strong>Monitor trends:</strong> Houd ontwikkelingen in de gaten</li>
@@ -668,6 +749,9 @@ export function DynamicPricingPage() {
               </div>
             </div>
           </div>
+
+          {/* Case Studies */}
+          <DynamicPricingCaseStudies />
 
           {/* Seizoenspatronen Detailanalyse */}
           <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
@@ -679,7 +763,7 @@ export function DynamicPricingPage() {
             <div className="text-center mb-6">
               <Image
                 src="/herfst-2024-uur-dag-prijzen.png"
-                alt="Gemiddelde prijs per uur en dag - Alle seizoenen"
+                alt="Gemiddelde dynamische stroomprijzen per uur en dag in herfst 2024 - seizoenspatroon analyse"
                 width={800}
                 height={400}
                 className="rounded-xl shadow-lg mx-auto"
@@ -754,24 +838,11 @@ export function DynamicPricingPage() {
           </div>
         </div>
 
-        {/* Call to Action */}
-        <div className="text-center mt-12">
-          <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">
-              Klaar om te Vergelijken?
-            </h3>
-            <p className="text-gray-600 mb-6">
-              Gebruik deze inzichten om een realistische schatting te maken van je gemiddelde kWh prijs voor dynamische contracten.
-            </p>
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:from-emerald-700 hover:to-teal-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-            >
-              <DollarSign className="w-5 h-5" />
-              Start Energievergelijking
-            </Link>
-          </div>
-        </div>
+        {/* FAQ Section */}
+        <DynamicPricingFAQ />
+
+        {/* Getting Started Guide */}
+        <DynamicPricingGettingStarted />
       </main>
     </div>
   );
