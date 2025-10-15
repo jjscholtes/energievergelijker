@@ -73,7 +73,7 @@ export function DynamicPricingComparisonTables() {
             <thead>
               <tr className="bg-gradient-to-r from-emerald-600 to-green-600 text-white">
                 <th className="p-4 text-left font-bold">Tijdstip</th>
-                <th className="p-4 text-left font-bold">Gem. Prijs (excl. belasting)</th>
+                <th className="p-4 text-left font-bold">Totaalprijs*</th>
                 <th className="p-4 text-left font-bold">Geschikt voor</th>
                 <th className="p-4 text-left font-bold">Besparing t.o.v. piek</th>
               </tr>
@@ -81,37 +81,40 @@ export function DynamicPricingComparisonTables() {
             <tbody>
               <tr className="border-b border-gray-200 hover:bg-green-50">
                 <td className="p-4 font-semibold text-gray-900">00:00 - 06:00 (Nacht)</td>
-                <td className="p-4 text-green-700 font-bold">€0,05-0,08/kWh</td>
+                <td className="p-4 text-green-700 font-bold">€0,20-0,24/kWh</td>
                 <td className="p-4 text-gray-700">EV laden, wasmachine, droger, boiler</td>
                 <td className="p-4 text-green-600 font-bold">40-50%</td>
               </tr>
               <tr className="border-b border-gray-200 hover:bg-green-50">
                 <td className="p-4 font-semibold text-gray-900">06:00 - 09:00 (Ochtend)</td>
-                <td className="p-4 text-orange-700 font-bold">€0,12-0,18/kWh</td>
+                <td className="p-4 text-orange-700 font-bold">€0,27-0,34/kWh</td>
                 <td className="p-4 text-gray-700">Vermijd grootverbruikers</td>
                 <td className="p-4 text-red-600">-30%</td>
               </tr>
               <tr className="border-b border-gray-200 hover:bg-green-50">
                 <td className="p-4 font-semibold text-gray-900">09:00 - 16:00 (Middag)</td>
-                <td className="p-4 text-yellow-700 font-bold">€0,08-0,12/kWh</td>
+                <td className="p-4 text-yellow-700 font-bold">€0,24-0,28/kWh</td>
                 <td className="p-4 text-gray-700">Redelijk, goed met zonnepanelen</td>
                 <td className="p-4 text-yellow-600">-20%</td>
               </tr>
               <tr className="border-b border-gray-200 hover:bg-green-50">
                 <td className="p-4 font-semibold text-gray-900">16:00 - 21:00 (Avond)</td>
-                <td className="p-4 text-red-700 font-bold">€0,15-0,25/kWh</td>
+                <td className="p-4 text-red-700 font-bold">€0,31-0,41/kWh</td>
                 <td className="p-4 text-gray-700">Duurste uren - vermijd indien mogelijk</td>
                 <td className="p-4 text-red-600 font-bold">Piek!</td>
               </tr>
               <tr className="hover:bg-green-50">
                 <td className="p-4 font-semibold text-gray-900">21:00 - 00:00 (Late avond)</td>
-                <td className="p-4 text-yellow-700 font-bold">€0,09-0,13/kWh</td>
+                <td className="p-4 text-yellow-700 font-bold">€0,25-0,29/kWh</td>
                 <td className="p-4 text-gray-700">Redelijk, dalend naar nacht</td>
                 <td className="p-4 text-yellow-600">-15%</td>
               </tr>
             </tbody>
           </table>
         </div>
+        <p className="text-sm text-gray-600 mt-3 italic">
+          *Totaalprijs = Spotprijs + Energiebelasting (€0,1316/kWh) + Leveranciersopslag (€0,023/kWh)
+        </p>
       </div>
 
       <div className="mt-6 p-6 bg-gradient-to-r from-blue-50 to-emerald-50 border border-emerald-200 rounded-xl">
