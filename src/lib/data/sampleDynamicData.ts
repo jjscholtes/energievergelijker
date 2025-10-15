@@ -145,8 +145,9 @@ export function generateRealisticCSVData(year: number, basePrice: number = 0.08)
         priceMultiplier *= 0.9;
       }
       
-      // Voeg wat random variatie toe (minder variatie voor meer realisme)
-      const randomVariation = 0.95 + Math.random() * 0.1; // 0.95 tot 1.05
+      // Voeg consistente variatie toe (gebaseerd op dag en uur voor reproduceerbaarheid)
+      const dayHourSeed = day * 24 + hour;
+      const randomVariation = 0.95 + (Math.sin(dayHourSeed * 0.1) * 0.05); // 0.95 tot 1.05, maar consistent
       const finalPrice = basePrice * priceMultiplier * randomVariation;
       
       hours.push({

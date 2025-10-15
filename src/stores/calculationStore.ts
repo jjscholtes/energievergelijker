@@ -91,11 +91,24 @@ export const useCalculationStore = create<CalculationStore>((set, get) => ({
       // Bereken voor alle dynamische contracten met de nieuwe geïntegreerde calculator
       const dynamicCalculations = await Promise.all(
         dynamicContracts.map(async (contract) => {
+          // Maak dezelfde contract aanpassingen als in de advies module
+          const dynamischContract = {
+            ...contract,
+            csvData2024: csv2024,
+            csvData2025: csv2025,
+            maandelijkseVergoeding: contract.maandelijkseVergoeding ?? contract.vasteLeveringskosten,
+            opslagPerKwh: contract.opslagPerKwh ?? 0.02,
+            tarieven: {
+              ...contract.tarieven,
+              stroomKalePrijs: contract.tarieven?.stroomKalePrijs ?? 0.085
+            }
+          };
+
           const result = await berekenDynamischeEnergiekosten(
             userProfile,
-            contract,
-            csv2024,
-            csv2025,
+            dynamischContract,
+            dynamischContract.csvData2024,
+            dynamischContract.csvData2025,
             '2024'
           );
 
