@@ -69,4 +69,46 @@ describe('Debug Dynamic Contract', () => {
     expect(result.stroomKosten.kaleEnergie).toBeCloseTo(verwachteKaleEnergie, 2);
     console.log('✅ SUCCES: Dynamische contract correct berekend!');
   });
+
+  it('gooit een fout bij lege CSV-data', async () => {
+    const profile: UserProfile = {
+      postcode: '1234AB',
+      netbeheerder: 'Liander',
+      aansluitingElektriciteit: '1x25A',
+      aansluitingGas: 'G4',
+      jaarverbruikStroom: 3500,
+      jaarverbruikStroomPiek: 1400,
+      jaarverbruikStroomDal: 2100,
+      jaarverbruikGas: 800,
+      heeftZonnepanelen: false,
+      geenGas: false,
+      piekDalVerdeling: {
+        piek: 0.4,
+        dal: 0.6
+      }
+    };
+
+    const contract: DynamicContractData = {
+      leverancier: 'Test Provider',
+      type: 'dynamisch',
+      looptijdMaanden: 1,
+      vasteLeveringskosten: 4,
+      csvData2024: '',
+      csvData2025: '',
+      kortingEenmalig: 0,
+      duurzaamheidsScore: 8,
+      klanttevredenheid: 7,
+      terugleververgoeding: 0,
+      maandelijkseVergoeding: 5,
+      opslagPerKwh: 0.02,
+      tarieven: {
+        gasKalePrijs: 0.6,
+        terugleververgoeding: 0.05
+      }
+    };
+
+    await expect(
+      berekenDynamischeEnergiekosten(profile, contract, contract.csvData2024, contract.csvData2025, '2024')
+    ).rejects.toThrow('Geen geldige prijsdata gevonden in CSV');
+  });
 });

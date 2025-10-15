@@ -14,7 +14,10 @@ import { ContractList } from '@/components/tool/ContractList';
 import { CalculationResults } from '@/components/tool/CalculationResults';
 import { DetailedComparison } from '@/components/tool/DetailedComparison';
 
-interface UserProfile {
+
+import type { UserProfile as StoreUserProfile } from '@/types/user';
+
+interface UserProfileFormState {
   netbeheerder: string;
   jaarverbruikStroom: number;
   jaarverbruikStroomPiek: number;
@@ -35,7 +38,7 @@ export default function ToolPage() {
   const [error, setError] = useState<string | null>(null);
 
   // Gebruikersprofiel voor berekeningen
-  const [userProfile, setUserProfile] = useState<UserProfile>({
+  const [userProfile, setUserProfile] = useState<UserProfileFormState>({
     netbeheerder: 'Liander',
     jaarverbruikStroom: 2900,
     jaarverbruikStroomPiek: 1160, // 40% van 2900
@@ -81,27 +84,35 @@ export default function ToolPage() {
     try {
       // Voor vaste contracten
       const fixedResults: BerekeningResult[] = [];
-      for (const contract of contracts) {
-        const fullUserProfile = {
-          postcode: '1234AB', // Dummy postcode, netbeheerder wordt direct gebruikt
+      const buildProfile = (overrides?: Partial<StoreUserProfile>): StoreUserProfile => {
+        const totalStroom = userProfile.jaarverbruikStroom;
+        const piek = userProfile.jaarverbruikStroomPiek ?? Math.round(totalStroom * 0.4);
+        const dal = userProfile.jaarverbruikStroomDal ?? Math.max(0, totalStroom - piek);
+
+        return {
+          postcode: overrides?.postcode ?? '1000AA',
           netbeheerder: userProfile.netbeheerder,
-          aansluitingElektriciteit: '1x25A' as const,
-          aansluitingGas: 'G4' as const,
-          jaarverbruikStroom: userProfile.jaarverbruikStroom,
-          jaarverbruikStroomPiek: userProfile.jaarverbruikStroomPiek,
-          jaarverbruikStroomDal: userProfile.jaarverbruikStroomDal,
+          aansluitingElektriciteit: overrides?.aansluitingElektriciteit ?? '1x25A',
+          aansluitingGas: overrides?.aansluitingGas ?? 'G4',
+          jaarverbruikStroom: totalStroom,
+          jaarverbruikStroomPiek: piek,
+          jaarverbruikStroomDal: dal,
           jaarverbruikGas: userProfile.jaarverbruikGas,
           heeftZonnepanelen: userProfile.heeftZonnepanelen,
           pvOpwek: userProfile.pvOpwek,
-          percentageZelfverbruik: userProfile.percentageZelfverbruik,
-          heeftWarmtepomp: false,
-          heeftElektrischeAuto: false,
+          percentageZelfverbruik: userProfile.percentageZelfverbruik ?? 0,
+          heeftWarmtepomp: overrides?.heeftWarmtepomp ?? false,
+          heeftElektrischeAuto: overrides?.heeftElektrischeAuto ?? false,
           geenGas: userProfile.geenGas,
           piekDalVerdeling: {
-            piek: 0.4,
-            dal: 0.6
+            piek: piek / (totalStroom || 1),
+            dal: dal / (totalStroom || 1)
           }
         };
+      };
+
+      for (const contract of contracts) {
+        const fullUserProfile = buildProfile();
 
         const result = berekenEnergiekosten(fullUserProfile, contract);
         fixedResults.push(result);
@@ -114,26 +125,7 @@ export default function ToolPage() {
         const csv2025 = generateRealisticCSVData(2025, 0.15);
         
         for (const contract of dynamicContracts) {
-          const fullUserProfile = {
-            postcode: '1234AB', // Dummy postcode, netbeheerder wordt direct gebruikt
-            netbeheerder: userProfile.netbeheerder,
-            aansluitingElektriciteit: '1x25A' as const,
-            aansluitingGas: 'G4' as const,
-            jaarverbruikStroom: userProfile.jaarverbruikStroom,
-            jaarverbruikStroomPiek: userProfile.jaarverbruikStroomPiek,
-            jaarverbruikStroomDal: userProfile.jaarverbruikStroomDal,
-            jaarverbruikGas: userProfile.jaarverbruikGas,
-            heeftZonnepanelen: userProfile.heeftZonnepanelen,
-            pvOpwek: userProfile.pvOpwek,
-            percentageZelfverbruik: userProfile.percentageZelfverbruik,
-            heeftWarmtepomp: false,
-            heeftElektrischeAuto: false,
-            geenGas: userProfile.geenGas,
-            piekDalVerdeling: {
-              piek: 0.4,
-              dal: 0.6
-            }
-          };
+          const fullUserProfile = buildProfile();
 
           const dynamicContract: DynamicContractData = {
             ...contract,

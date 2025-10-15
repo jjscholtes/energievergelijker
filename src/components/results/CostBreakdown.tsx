@@ -9,6 +9,10 @@ interface CostBreakdownProps {
 
 export function CostBreakdown({ result }: CostBreakdownProps) {
   const { stroomKosten, gasKosten, pvOpbrengsten } = result;
+  const piekTarief = result.contract.tarieven?.stroomKalePrijsPiek;
+  const dalTarief = result.contract.tarieven?.stroomKalePrijsDal;
+  const enkelTarief = result.contract.tarieven?.stroomKalePrijs;
+  const dynamicBasisTarief = result.contract.tarieven?.stroomKalePrijs;
 
   return (
     <Card className="w-full">
@@ -36,7 +40,15 @@ export function CostBreakdown({ result }: CostBreakdownProps) {
                   <span>€{stroomKosten.kaleEnergie.toFixed(2)}</span>
                 </div>
                 <div className="text-xs text-gray-500 ml-4">
-                  <div>Verbruik × basisprijs = {result.userProfile?.jaarverbruikStroom || 0} kWh × €{result.contract.tarieven?.stroomKalePrijs?.toFixed(4) || '0.0000'} (ingevulde basisprijs)</div>
+                  {dynamicBasisTarief !== undefined ? (
+                    <div>
+                      Verbruik × basisprijs = {result.userProfile?.jaarverbruikStroom || 0} kWh × €{dynamicBasisTarief.toFixed(4)} (ingevulde basisprijs)
+                    </div>
+                  ) : (
+                    <div>
+                      Basisprijs niet opgegeven in contract, berekening volgt spotmarktdata.
+                    </div>
+                  )}
                 </div>
               </>
             ) : (
@@ -46,14 +58,22 @@ export function CostBreakdown({ result }: CostBreakdownProps) {
                   <span>Kale energie prijs</span>
                   <span>€{stroomKosten.kaleEnergie.toFixed(2)}</span>
                 </div>
-                {result.contract.tarieven?.stroomKalePrijsDal && result.contract.tarieven.stroomKalePrijsDal > 0 ? (
+                {piekTarief !== undefined && dalTarief !== undefined ? (
                   <div className="text-xs text-gray-500 ml-4 space-y-1">
-                    <div>Normaal: {result.userProfile?.jaarverbruikStroomPiek || 0} kWh × €{(result.contract.tarieven?.stroomKalePrijsPiek || 0.10).toFixed(4)} = €{((result.userProfile?.jaarverbruikStroomPiek || 0) * (result.contract.tarieven?.stroomKalePrijsPiek || 0.10)).toFixed(2)}</div>
-                    <div>Dal: {result.userProfile?.jaarverbruikStroomDal || 0} kWh × €{(result.contract.tarieven?.stroomKalePrijsDal || 0.10).toFixed(4)} = €{((result.userProfile?.jaarverbruikStroomDal || 0) * (result.contract.tarieven?.stroomKalePrijsDal || 0.10)).toFixed(2)}</div>
+                    <div>
+                      Normaal: {result.userProfile?.jaarverbruikStroomPiek || 0} kWh × €{piekTarief.toFixed(4)} = €{(((result.userProfile?.jaarverbruikStroomPiek || 0) * piekTarief)).toFixed(2)}
+                    </div>
+                    <div>
+                      Dal: {result.userProfile?.jaarverbruikStroomDal || 0} kWh × €{dalTarief.toFixed(4)} = €{(((result.userProfile?.jaarverbruikStroomDal || 0) * dalTarief)).toFixed(2)}
+                    </div>
+                  </div>
+                ) : enkelTarief !== undefined ? (
+                  <div className="text-xs text-gray-500 ml-4">
+                    Enkeltarief: {result.userProfile?.jaarverbruikStroom || 0} kWh × €{enkelTarief.toFixed(4)} = €{stroomKosten.kaleEnergie.toFixed(2)}
                   </div>
                 ) : (
                   <div className="text-xs text-gray-500 ml-4">
-                    Enkeltarief: {result.userProfile?.jaarverbruikStroom || 0} kWh × €{(result.contract.tarieven?.stroomKalePrijs || 0.25).toFixed(4)} = €{stroomKosten.kaleEnergie.toFixed(2)}
+                    Contract bevat geen expliciete tarieven; kale energie volgt uit berekening.
                   </div>
                 )}
               </>
@@ -212,6 +232,11 @@ export function CostBreakdown({ result }: CostBreakdownProps) {
                 <span>Totaal PV opbrengst</span>
                 <span>-€{pvOpbrengsten.totaleOpbrengst.toFixed(2)}</span>
               </div>
+              {pvOpbrengsten.totaleOpbrengst < 0 && (
+                <div className="text-xs text-amber-600 ml-4">
+                  Terugleverkosten zijn hoger dan de opbrengsten; hierdoor stijgen de jaarkosten ondanks zonnepanelen.
+                </div>
+              )}
             </div>
           </div>
         )}

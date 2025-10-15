@@ -129,6 +129,7 @@ function berekenStroomkosten(
   const netbeheer = netbeheerKosten;
 
   // 4. Vermindering energiebelasting (heffingskorting) - €631.35 per jaar
+  //    Vaste aftrek op het totale elektriciteitsdeel (incl. btw), zoals leveranciers dit toepassen.
   const heffingskorting = 631.35;
 
   // 5. Vaste leveringskosten (jaarlijks)
