@@ -35,6 +35,7 @@ export interface ContractAdviesResult {
     gasKosten: any;
     pvOpbrengsten: any;
     opslagPerKwh: number;
+    maandbedragen?: any[]; // Added for monthly breakdown
   };
   besparing: number;
   goedkoopsteContract: 'vast' | 'dynamisch';
@@ -185,6 +186,8 @@ export function EnergiecontractAdvies({ className = '', onResultChange }: Contra
       const besparing = Math.abs(vastResult.totaleJaarkostenMetPv - dynamischResult.totaleJaarkostenMetPv);
       const goedkoopsteContract = vastResult.totaleJaarkostenMetPv < dynamischResult.totaleJaarkostenMetPv ? 'vast' : 'dynamisch';
 
+      const dynamicMonthlyBreakdown = dynamischResult.maandlasten ? dynamischResult.maandlasten : Array.from({ length: 12 }, () => dynamischResult.maandlastenGemiddeld);
+
       setResult({
         vast: {
           totaal: vastResult.totaleJaarkostenMetPv,
@@ -198,7 +201,8 @@ export function EnergiecontractAdvies({ className = '', onResultChange }: Contra
           stroomKosten: dynamischResult.stroomKosten,
           gasKosten: dynamischResult.gasKosten,
           pvOpbrengsten: dynamischResult.pvOpbrengsten,
-          opslagPerKwh: contractData.dynamischContract.opslagPerKwh
+          opslagPerKwh: contractData.dynamischContract.opslagPerKwh,
+          maandbedragen: dynamicMonthlyBreakdown
         },
         besparing,
         goedkoopsteContract,
