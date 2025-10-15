@@ -4,7 +4,8 @@ import { useState, useCallback, useMemo, useEffect } from 'react';
 import { Calculator } from 'lucide-react';
 import { berekenEnergiekosten } from '@/lib/calculations/energyCalculator';
 import { berekenDynamischeEnergiekosten } from '@/lib/calculations/dynamicEnergyCalculator';
-import { sampleCSV2024, sampleCSV2025 } from '@/lib/data/sampleDynamicData';
+import { sampleCSV2024, sampleCSV2025, dynamicContracts } from '@/lib/data/sampleDynamicData';
+import { leveranciers } from '@/lib/data/leveranciers';
 import { ContractAdviesForm } from '@/components/energie-advies/ContractAdviesForm';
 
 interface ContractAdviesProps {
@@ -59,44 +60,25 @@ export function EnergiecontractAdvies({ className = '', onResultChange }: Contra
   const [error, setError] = useState<string | null>(null);
 
   // Memoized contract data to prevent recreation on every render
-  const contractData = useMemo(() => ({
-    vastContract: {
-      leverancier: 'Gemiddeld Vast Contract',
-      productNaam: 'Standaard Vast',
-      type: 'vast' as const,
-      looptijdMaanden: 12,
-      duurzaamheidsScore: 3,
-      klanttevredenheid: 3,
-      tarieven: {
-        stroomKalePrijs: 0.10,
-        terugleververgoeding: 0.01,
-        gasKalePrijs: 0.63,
-      },
-      vasteLeveringskosten: 6.99,
-      kortingEenmalig: 200
-    },
-    dynamischContract: {
-      leverancier: 'Gemiddeld Flexibel Contract',
-      productNaam: 'Standaard Flexibel',
-      type: 'dynamisch' as const,
-      looptijdMaanden: 12,
-      duurzaamheidsScore: 3,
-      klanttevredenheid: 3,
+  const contractData = useMemo(() => {
+    const vasteContracten = leveranciers.filter((c) => c.type === 'vast');
+    const dynamischeBron = dynamicContracts;
+
+    const vastContract = vasteContracten[0];
+    const dynamischContract = {
+      ...dynamischeBron[0],
       csvData2024: sampleCSV2024,
       csvData2025: sampleCSV2025,
-      terugleververgoeding: 0.0595,
-      maandelijkseVergoeding: 0,
-      opslagPerKwh: 0.025,
-      opslagInvoeding: 0.023,
-      vasteLeveringskosten: 0,
-      kortingEenmalig: 0,
+      maandelijkseVergoeding: dynamischeBron[0].vasteLeveringskosten,
+      opslagPerKwh: dynamischeBron[0].opslagPerKwh ?? 0.02,
       tarieven: {
-        stroomKalePrijs: 0.23,
-        gasKalePrijs: 1.18,
-        terugleververgoeding: 0.09
+        ...dynamischeBron[0].tarieven,
+        stroomKalePrijs: dynamischeBron[0].tarieven?.stroomKalePrijs ?? 0.085
       }
-    }
-  }), []);
+    };
+
+    return { vastContract, dynamischContract };
+  }, []);
 
   // Memoized netbeheerder data getter
   const getNetbeheerderData = useCallback((naam: string): NetbeheerderData => {

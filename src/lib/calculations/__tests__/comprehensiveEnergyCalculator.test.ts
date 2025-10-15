@@ -31,6 +31,8 @@ describe('Comprehensive Energy Calculator Tests', () => {
     vasteLeveringskosten: 8.99,
     tarieven: {
       stroomKalePrijs: 0.25,
+      stroomKalePrijsPiek: 0.28,
+      stroomKalePrijsDal: 0.22,
       gasKalePrijs: 1.20,
       terugleververgoeding: 0.01
     },
@@ -51,10 +53,10 @@ describe('Comprehensive Energy Calculator Tests', () => {
       });
 
       // Kale energie stroom: 3000 * 0.25 = 750
-      expect(result.stroomKosten.kaleEnergie).toBe(750);
-      
-      // Energiebelasting stroom: 3000 * 0.1316 = 394.8
-      expect(result.stroomKosten.energiebelasting).toBeCloseTo(394.8, 1);
+      expect(result.totaleJaarkosten).toBeGreaterThan(0);
+      expect(result.stroomKosten.kaleEnergie).toBeCloseTo(732, 1); // 1200 × 0.28 + 1800 × 0.22
+      expect(result.stroomKosten.energiebelasting).toBeCloseTo(394.8, 1); // 3000 * 0.1316
+      expect(result.gasKosten.kaleEnergie).toBe(1440); // 1200 * 1.20
       
       // Netbeheer stroom: Liander = 471
       expect(result.stroomKosten.netbeheer).toBe(471);
@@ -63,7 +65,7 @@ describe('Comprehensive Energy Calculator Tests', () => {
       expect(result.stroomKosten.vasteLeveringskosten).toBeCloseTo(107.88, 1);
       
       // Heffingskorting: 631.35
-      const expectedStroomTotaal = 750 + 394.8 + 471 + 107.88 - 631.35;
+      const expectedStroomTotaal = 732 + 394.8 + 471 + 107.88 - 631.35;
       expect(result.stroomKosten.totaal).toBeCloseTo(expectedStroomTotaal, 1);
       
       // Gas kosten
@@ -80,8 +82,8 @@ describe('Comprehensive Energy Calculator Tests', () => {
         ...baseContract,
         tarieven: {
           ...baseContract.tarieven,
-          stroomKalePrijsPiek: 0.10,
-          stroomKalePrijsDal: 0.10,
+          stroomKalePrijsPiek: 0.28,
+          stroomKalePrijsDal: 0.22,
           terugleververgoeding: 0.01
         }
       };
@@ -233,7 +235,7 @@ describe('Comprehensive Energy Calculator Tests', () => {
 
   describe('Edge Cases and Error Handling', () => {
     it('should handle zero consumption', () => {
-      const zeroProfile = { ...baseUserProfile, jaarverbruikStroom: 0, jaarverbruikGas: 0 };
+      const zeroProfile = { ...baseUserProfile, jaarverbruikStroom: 0, jaarverbruikGas: 0, jaarverbruikStroomPiek: 0, jaarverbruikStroomDal: 0 };
       const result = berekenEnergiekosten(zeroProfile, baseContract);
 
       expect(result.stroomKosten.kaleEnergie).toBe(0);
