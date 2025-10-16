@@ -1,20 +1,8 @@
-import { Metadata } from 'next';
-import Link from 'next/link';
-import { Calculator, TrendingUp, Zap, BarChart3, ArrowRight, Lightbulb } from 'lucide-react';
+'use client';
 
-export const metadata: Metadata = {
-  title: "Energie Tools | Contract Vergelijker & Prijzen Checker | Energievergelijker",
-  description: "Vergelijk energiecontracten, bereken je energiekosten en ontdek de beste deal. Gratis tools om direct te zien wat je kan besparen op je energierekening.",
-  keywords: "energiecontract vergelijken, energiekosten berekenen, dynamische prijzen checker, energie besparen tool, contract calculator, stroomprijzen vergelijken",
-  openGraph: {
-    title: "Energie Tools | Vergelijk & Bereken je Energiekosten",
-    description: "Gebruik onze gratis tools om energiecontracten te vergelijken en te berekenen wat het beste bij jou past.",
-    url: 'https://besteenergiecontract.nl/tool',
-    siteName: 'Beste Energiecontract',
-    locale: 'nl_NL',
-    type: 'website',
-  },
-};
+import Link from 'next/link';
+import { Calculator, TrendingUp, Zap, Battery, ArrowRight } from 'lucide-react';
+import { Header } from '@/components/home/Header';
 
 interface ToolCardProps {
   icon: React.ReactNode;
@@ -136,10 +124,26 @@ export default function ToolsPage() {
       href: "/dynamische-prijzen",
       color: "emerald",
     },
+    {
+      icon: <Zap className="w-8 h-8" />,
+      title: "Thuisaccu Terugverdientijd",
+      description: "Bereken wanneer een thuisbatterij zich terugverdient, met en zonder saldering vanaf 2027.",
+      features: [
+        "3 scenario's: nu, na 2027, dynamisch",
+        "Eigenverbruik verhoging berekening",
+        "Arbitrage voordelen analyse",
+        "Terugleverkosten besparing",
+        "Cashflow visualisaties",
+      ],
+      href: "/tool/batterij",
+      badge: "Nieuw",
+      color: "orange",
+    },
   ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+      <Header />
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white py-20">
         <div className="container mx-auto px-4">
@@ -167,7 +171,7 @@ export default function ToolsPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {tools.map((tool, index) => (
               <ToolCard key={index} {...tool} />
             ))}
@@ -216,7 +220,7 @@ export default function ToolsPage() {
             <div className="grid md:grid-cols-3 gap-8">
               <div className="bg-white rounded-xl p-6 shadow-md">
                 <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                  <BarChart3 className="w-6 h-6 text-blue-600" />
+                  <Battery className="w-6 h-6 text-blue-600" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">Nauwkeurig</h3>
                 <p className="text-gray-600">
@@ -236,7 +240,7 @@ export default function ToolsPage() {
 
               <div className="bg-white rounded-xl p-6 shadow-md">
                 <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
-                  <Lightbulb className="w-6 h-6 text-purple-600" />
+                  <Battery className="w-6 h-6 text-purple-600" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">Onafhankelijk</h3>
                 <p className="text-gray-600">
