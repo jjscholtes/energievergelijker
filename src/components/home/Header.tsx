@@ -73,6 +73,13 @@ export const Header = memo(function Header() {
           <div className="md:hidden border-t border-gray-100">
             <div className="px-2 pt-2 pb-3 space-y-1">
               <Link 
+                href="/"
+                className="block text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 font-medium px-3 py-2 rounded-lg transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Home
+              </Link>
+              <Link 
                 href="/tool"
                 className="block text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 font-medium px-3 py-2 rounded-lg transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
