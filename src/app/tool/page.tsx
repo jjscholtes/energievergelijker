@@ -144,40 +144,13 @@ export default function ToolsPage() {
       <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-flex items-center gap-3 bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-full text-sm font-bold mb-6 shadow-lg">
-              <Zap className="w-5 h-5" />
-              <span>Gratis Energie Tools</span>
-            </div>
-            
             <h1 className="text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-              Vergelijk & Bespaar op je Energierekening
+              Energie Tools
             </h1>
             
             <p className="text-xl lg:text-2xl text-blue-100 mb-8 max-w-3xl mx-auto leading-relaxed">
-              Gebruik onze gratis tools om de beste energiedeal te vinden en direct te zien hoeveel je kunt besparen
+              Gebruik onze tools om verschillende energiecontracten te vergelijken en inzicht te krijgen in je energiekosten
             </p>
-
-            <div className="flex flex-wrap gap-4 justify-center">
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl px-6 py-4 border border-white/20">
-                <div className="flex items-center gap-3">
-                  <BarChart3 className="w-6 h-6" />
-                  <div className="text-left">
-                    <div className="text-2xl font-bold">100% Gratis</div>
-                    <div className="text-sm text-blue-100">Geen verborgen kosten</div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl px-6 py-4 border border-white/20">
-                <div className="flex items-center gap-3">
-                  <Lightbulb className="w-6 h-6" />
-                  <div className="text-left">
-                    <div className="text-2xl font-bold">Direct Inzicht</div>
-                    <div className="text-sm text-blue-100">Zie je besparing meteen</div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
