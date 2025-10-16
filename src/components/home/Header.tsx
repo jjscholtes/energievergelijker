@@ -22,7 +22,7 @@ export const Header = memo(function Header() {
               href="/tool"
               className="text-gray-700 hover:text-emerald-600 font-medium transition-colors px-4 py-2 rounded-lg hover:bg-emerald-50"
             >
-              Zelf Vergelijken
+              Tools
             </Link>
             <Link 
               href="/dynamische-prijzen"
