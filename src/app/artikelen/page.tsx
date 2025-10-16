@@ -2,6 +2,7 @@ import { articles } from '@/lib/data/articles';
 import { Calendar, Clock, User, ArrowLeft, TrendingUp, Lightbulb, BarChart3, Newspaper } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Header } from '@/components/home/Header';
 
 export const metadata = {
   title: 'Artikelen & Nieuws | Beste Energiecontract',
@@ -50,20 +51,7 @@ export default function ArtikelenPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-teal-50">
-      {/* Header */}
-      <div className="bg-white/90 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <Link 
-              href="/"
-              className="flex items-center gap-2 text-gray-600 hover:text-emerald-600 transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5" />
-              <span>Terug naar homepage</span>
-            </Link>
-          </div>
-        </div>
-      </div>
+      <Header />
 
       {/* Page Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

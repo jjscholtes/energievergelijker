@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { TrendingDown, Clock, Sun, Moon, BarChart3, Info, ArrowLeft, Calendar, DollarSign, FileText, Image as ImageIcon } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Header } from '@/components/home/Header';
 import { getMonthlyData, getHourlyDataForMonth, getDailyDataForMonth, MonthlyStats } from '@/lib/data/monthlyPriceData';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { SeasonalPriceTool } from '@/components/SeasonalPriceTool';
@@ -223,29 +224,7 @@ export function DynamicPricingPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }}
       />
 
-      {/* Header */}
-      <header className="bg-white/90 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <Link
-              href="/"
-              className="flex items-center gap-2 text-gray-600 hover:text-emerald-600 transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5" />
-              <span>Terug naar Home</span>
-            </Link>
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-emerald-600 to-teal-600 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-lg">⚡</span>
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">Dynamische Prijzen</h1>
-                <p className="text-gray-600 text-sm">Echte marktdata {selectedYear}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Breadcrumbs */}
