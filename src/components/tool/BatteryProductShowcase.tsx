@@ -196,8 +196,7 @@ export function BatteryProductShowcase({ className = '' }: BatteryProductShowcas
         <div className="mt-12 text-center">
           <p className="text-sm text-gray-500 max-w-3xl mx-auto">
             <strong>Let op:</strong> Dit is geen directe vergelijking. Beide systemen hebben hun eigen sterke punten. 
-            De HomeWizard heeft meer capaciteit per module, terwijl de Zendure modulairder is en een lager instapbedrag heeft. 
-            Productdetails afkomstig uit officiële datafeed partners (HomeWizard Partner Programma en Zendure Nederland via Daisycon).
+            De HomeWizard heeft meer capaciteit per module, terwijl de Zendure modulairder is en een lager instapbedrag heeft.
           </p>
         </div>
       </div>
