@@ -2,6 +2,225 @@ import { Article } from '@/types/articles';
 
 export const articles: Article[] = [
   {
+    id: 'einde-salderingsregeling-2027',
+    title: 'Einde van de salderingsregeling en stijgende energiebelastingen: wat betekent 2027 voor jouw energierekening?',
+    summary: 'Vanaf 1 januari 2027 verdwijnt de salderingsregeling voor zonnepanelen. Tegelijkertijd stijgen energiebelastingen en netbeheerkosten. Wat betekent dit voor jouw energierekening en hoe bereid je je voor?',
+    imageUrl: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=800&h=400&fit=crop&crop=center',
+    content: `
+## Einde salderingsregeling in 2027
+
+Vanaf 1 januari 2027 verdwijnt in Nederland de salderingsregeling. Kleine verbruikers met zonnepanelen mogen nu nog de stroom die zij aan het net terugleveren volledig wegstrepen tegen hun verbruik; vanaf 2027 wordt die één-op-één verrekening afgeschaft. In plaats daarvan moeten energieleveranciers een "redelijke vergoeding" betalen voor teruggeleverde stroom. De overheid wil daarmee stimuleren dat huishoudens meer van hun zelf opgewekte zonne-energie direct gebruiken en zo het overvolle elektriciteitsnet ontlasten.
+
+## Wat verandert er in 2027?
+
+### Geen volledige saldering meer
+
+De wet tot beëindiging van de salderingsregeling is in 2024 aangenomen en wordt per 2027 van kracht. De compensatie voor teruggeleverde stroom mag niet negatief zijn, maar kan wel sterk variëren per maand. De minimumvergoeding moet minstens 50% van het kale stroomtarief zijn (exclusief energiebelasting en btw). Bij een stroomprijs van 30 cent per kWh zou je dus ongeveer 8 cent per kWh ontvangen.
+
+### Negatieve terugleververgoedingen mogelijk per kwartier
+
+De vergoeding mag gemiddeld over de maand niet negatief zijn. Bij dynamische contracten kan de terugleverprijs op sommige kwartieren wel onder nul zakken. Je wilt dan kunnen pauzeren met terugleveren via een thuisbatterij of slimme omvormer.
+
+### Vervanging van oude meters
+
+Omdat oude draaistroommeters letterlijk "terugdraaien" bij teruglevering, registreerden zij geen feed-in en ontliepen eigenaren de terugleverkosten. Netbeheerders vervangen daarom per 1 januari 2026 alle analoge meters door digitale exemplaren. Ruim 535.000 oude meters moeten worden vervangen. Na vervanging kunnen energieleveranciers precies meten hoeveel je levert en wat je moet betalen.
+
+### Introductie van feed-in kosten
+
+Steeds meer leveranciers rekenen een terugleverboete of feed-in tarief. Al meer dan de helft van de dynamische leveranciers brengt een terugleververgoeding in rekening. De ACM staat zulke kosten toe zolang ze de werkelijke kosten weerspiegelen.
+
+## Gevolgen voor zonnepaneelbezitters
+
+### Hogere terugleverkosten en langere terugverdientijd
+
+De kosten voor het terugleveren van stroom stijgen snel. De terugleverkosten zijn tussen maart en augustus 2025 gemiddeld met 5% gestegen, waardoor sommige gezinnen jaarlijks tot €1.000 extra betalen. De Consumentenbond schat dat hierdoor de terugverdientijd voor zonnepanelen kan oplopen van vijf naar 15 tot 20 jaar.
+
+Door hogere feed-in kosten en het verdwijnen van de salderingsregeling wordt het terugverdienen van zonnepanelen lastiger. Toch blijven zonne-experts benadrukken dat zonnepanelen interessant blijven wanneer je een groot deel van de opgewekte stroom zelf verbruikt.
+
+### Aandacht voor zelfconsumptie en opslag
+
+Wanneer salderen stopt, wordt het voordeliger om zonne-energie direct te gebruiken of op te slaan. Het advies is om een thuisbatterij, warmtepomp of elektrische auto slim te koppelen aan je zonnepanelen. Door op zonnige momenten te laden of te verwarmen, beperk je de hoeveelheid stroom die je moet terugleveren tegen lage vergoeding.
+
+Ook Holland Solar, de branchevereniging, ziet het einde van salderen als aanleiding om een flex-bonus in te voeren zodat huishoudens worden beloond voor investeringen in opslag en slimme sturing.
+
+## Stijgende energiebelastingen en netbeheerkosten in 2026
+
+Naast de salderingskwestie stijgen ook de belastingen en vaste kosten op energie, waardoor de energierekening vanaf 2026 oploopt:
+
+### Energiebelasting op gas omhoog, stroom omlaag
+
+De energiebelasting op gas stijgt in 2026 van €0,6996 naar €0,7267 per m³, terwijl de belasting op stroom daalt van €0,1229 naar €0,1108 per kWh.
+
+### Vermindering energiebelasting lager
+
+De vaste belastingkorting daalt met €6,23, van €635,19 naar €628,96 per aansluiting.
+
+### Netbeheerkosten stijgen
+
+Netbeheerders moeten het overvolle net uitbreiden en doorberekenen die investeringen aan consumenten. De ACM voorspelt een stijging van circa 3,34%, wat neerkomt op ongeveer €25 per jaar extra.
+
+### Focus op elektrificatie
+
+Huishoudens die relatief veel gas verbruiken er het meest op achteruitgaan, terwijl huizen met warmtepomp en hoog stroomverbruik juist voordeel kunnen hebben van de lagere stroombelasting.
+
+## ETS2 en groen gas maken lange gascontracten duurder
+
+In augustus 2025 is gemeld dat meerjarige gascontracten flink duurder zijn dan eenjarige. Essent en Vattenfall rekenen ongeveer €1,20 per m³ voor een contract van één jaar, maar €1,40 per m³ voor drie jaar. Het prijsverschil kan een huishouden bijna €1.000 extra kosten over drie jaar.
+
+De hogere prijs komt vooral door:
+
+### Bijmenging van groen gas
+
+Vanaf 2026 moeten leveranciers een percentage duurzame gassen mengen. Dit voegt in 2026 3,3–4,6 cent per m³ toe aan de gasprijs, oplopend tot 12–17 cent per m³ in 2030.
+
+### Invoering van ETS2
+
+Het Europese CO₂-handelsysteem voor gebouwde omgeving zorgt voor een extra heffing van enkele centen per m³ gas.
+
+Doordat de gasbelasting stijgt en extra heffingen worden ingevoerd, adviseren experts om niet langer dan een jaar vast te leggen. Een éénjarig vast contract biedt zekerheid tegen prijsschommelingen en houdt je flexibel voor toekomstige veranderingen.
+
+## Aanbevelingen voor consumenten
+
+### 1. Bereid je voor op het einde van salderen
+
+Wie zonnepanelen heeft, doet er goed aan om het eigen verbruik te verhogen. Investeer in een thuisbatterij, elektrische auto of warmtepomp zodat je opgewekte stroom zelf kunt gebruiken.
+
+### 2. Check feed-in tarieven en kosten
+
+Vraag je leverancier welke terugleverkosten of -vergoedingen gelden; sommigen rekenen een vast bedrag, anderen een variabel tarief. Let op dynamische contracten waar de terugleverprijs per kwartier kan variëren.
+
+### 3. Overweeg een éénjarig vast contract
+
+Door de stijgende gasheffingen en onzekerheden rond ETS2 en groen gas zijn langer lopende contracten momenteel vaak duurder.
+
+### 4. Verlaag je gasverbruik
+
+Met de hogere gasbelastingen loont het om te isoleren of over te stappen op elektrische verwarming.
+
+### 5. Controleer je meter
+
+Als je nog een oude draaistroommeter hebt, houd er rekening mee dat deze vóór 2026 wordt vervangen. Ga alvast na of een digitale meter (met terugleverbeperking) invloed heeft op je zonnepanelen en neem maatregelen.
+
+## Conclusie
+
+Het afschaffen van de salderingsregeling markeert een keerpunt in de Nederlandse energietransitie. De overheid wil zonnepaneelbezitters prikkelen om hun stroom zelf te gebruiken in plaats van terug te leveren. Tegelijkertijd stijgen de gasbelasting en netbeheerkosten, waardoor je energierekening vanaf 2026 omhoog gaat en gas steeds minder aantrekkelijk wordt.
+
+Wie wil profiteren van duurzame opwekking en kosten besparen, doet er goed aan om de komende jaren te investeren in slimme opslag en efficiënte elektrificatie, kritisch te kijken naar de eigen energieleverancier en flexibel te blijven met kortlopende contracten.
+    `,
+    author: 'Energievergelijker Redactie',
+    publishDate: '2025-10-17',
+    category: 'analyse',
+    readTime: 9,
+    featured: false,
+    tags: ['salderingsregeling', 'zonnepanelen', 'energiebelasting', '2027', 'terugleverkosten', 'netbeheerkosten', 'ETS2', 'groen gas']
+  },
+  {
+    id: 'kwartierprijzen-dynamische-contracten-2025',
+    title: 'Kwartierprijzen en dynamische energiecontracten: hoe bereid je je voor op 96 prijsmomenten per dag?',
+    summary: 'Per 1 oktober 2025 is de Europese elektriciteitsmarkt overgestapt van uurprijzen naar kwartierprijzen. Dit betekent 96 prijsmomenten per dag in plaats van 24. Wat betekent dit voor jouw energierekening en moet je nu overstappen op een dynamisch contract?',
+    imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=400&fit=crop&crop=center',
+    content: `
+## Van 24 naar 96 prijsmomenten
+
+Per 1 oktober 2025 is de Europese elektriciteitsmarkt overgestapt van uurprijzen naar kwartierprijzen.
+Binnen de Single Day-Ahead Coupling (SDAC) wordt de prijs voor elke 15-minutenperiode bepaald, waardoor er 96 prijsmomenten per dag ontstaan in plaats van 24. De Europese Commissie beschrijft de verandering als noodzakelijk om het systeem flexibeler en betrouwbaarder te maken en om meer wind- en zonne-energie te kunnen inpassen.
+
+Voor huishoudens met een dynamisch energiecontract is dit een belangrijke wijziging. De vraag is: wat betekent dit concreet voor jouw energierekening, en moet je nu overstappen op een dynamisch contract?
+
+## Van uurprijzen naar kwartierprijzen
+
+Bij een dynamisch contract betaal je de actuele handelsprijs voor stroom en gas. Tot 1 oktober 2025 werd de stroomprijs elk uur vastgesteld; de gasprijs veranderde één keer per dag. De overstap naar kwartierprijzen betekent dat leveranciers vanaf nu elke dag 96 kwartierprijzen kunnen doorgeven. Gas blijft voorlopig per dag geprijsd.
+
+Deze granulariteit sluit beter aan bij schommelingen in vraag en aanbod; vooral zonnige of winderige periodes leiden vaak tot lage of zelfs negatieve prijzen.
+
+## Welke leveranciers stappen over?
+
+Niet alle dynamische energieleveranciers voeren de wijziging direct door. Begin oktober 2025 zijn alleen **Tibber, Coolblue Energie, NieuweStroom en Noord Energie** per 1 oktober daadwerkelijk met kwartierprijzen gestart.
+
+Grote leveranciers zoals **Vattenfall, Budget Energie en Essent** blijven de marktprijzen omrekenen naar uurprijzen; zij nemen het gemiddelde van vier kwartierprijzen. **Frank Energie en NextEnergy** onderzoeken de overstap, maar hanteren voorlopig uurprijzen.
+
+De Autoriteit Consument & Markt (ACM) benadrukt dat leveranciers hun klanten moeten informeren over de overgang; huishoudens moeten weten of hun contract naar kwartierprijzen wordt omgezet.
+
+## Voordelen van kwartierprijzen
+
+### Nauwkeuriger inspelen op goedkope momenten
+
+Door vier keer zoveel prijsblokken zijn er meer periodes waarin de stroomprijs laag of zelfs negatief is. Wie zijn verbruik kan verschuiven (bijvoorbeeld met een elektrische auto, warmtepomp of thuisbatterij) kan profiteren van deze prijsdalingen.
+
+### Beter benutten van duurzame energie
+
+Kwartierprijzen volgen de variatie in wind- en zonne-opwekking beter en verminderen zo onbalans op het net.
+
+### Meer flexibiliteit voor energie-intensieve gebruikers
+
+De Europese Commissie verwacht dat een fijnmaziger markt leidt tot efficiënter gebruik van het netwerk en uiteindelijk lagere systeemkosten.
+
+## Nadelen en uitdagingen
+
+### Onvoorspelbaarheid en complexiteit
+
+Het aantal prijsmomenten verviervoudigt. Dit maakt het lezen van je dagoverzicht ingewikkelder; een app met 96 blokjes kan onoverzichtelijk zijn.
+
+### Niet alle apparaten profiteren
+
+Kwartierprijzen zijn vooral zinvol voor apparaten die flexibel kunnen schakelen of opslaan. Voor een wasmachine of vaatwasser die een volledig programma draait is het voordeel beperkt.
+
+### Hoger risico bij piekprijzen
+
+Meer prijsmomenten betekenen ook meer momenten met (zeer) hoge prijzen. Zonder slimme sturing loop je het risico om op dure momenten te verbruiken.
+
+## Voor wie is een dynamisch contract interessant?
+
+### Flexibele huishoudens
+
+Huishoudens met slimme apparatuur – zoals elektrische auto's, laadpalen, warmtepompen of thuisbatterijen – kunnen hun verbruik sturen naar goedkope kwartieren. Zij profiteren het meeste.
+
+Ook mensen met zonnepanelen die een thuisbatterij hebben kunnen surplusenergie opslaan in plaats van terugleveren tegen lage vergoeding.
+
+### Verbruikers die actief sturen
+
+Uit analyses bleek dat 80% van de huishoudens met een dynamisch contract tussen juni 2024 en mei 2025 méér betaalde dan bij een vast contract, omdat vaste contracten hoge cashbacks boden. Wie geen gebruik maakt van slimme sturing en zijn energie verbruikt wanneer het uitkomt, loopt bij dynamische contracten kans om duur uit te zijn.
+
+Extra risico's: je hebt een slimme meter nodig, de facturen variëren sterk en bij prijspieken kan de rekening oplopen.
+
+## Vast contract vaak nog goedkoper
+
+Een analyse liet zien dat vaste contracten in 2025 gemiddeld €140,91 per maand kostten, tegenover €148 voor dynamische contracten en €158 voor variabele contracten. Het prijsverschil komt vooral doordat veel leveranciers hoge welkomstkortingen geven bij een jaarcontract en hun marge spreiden over de looptijd.
+
+Ook de ACM Monitor van september 2025 toonde dat vaste contracten weer iets goedkoper zijn dankzij lagere groothandelsprijzen.
+
+## Aanbeveling voor consumenten
+
+### Controleer of je leverancier daadwerkelijk op kwartierprijzen overstapt
+
+Alleen enkele kleinere dynamische leveranciers doen dat per 1 oktober 2025.
+
+### Investeer in slimme sturing
+
+Zonder automatisering wordt het nagenoeg onmogelijk om handmatig op 96 prijsmomenten per dag in te spelen.
+
+### Vergelijk contracten
+
+Voor veel mensen is een éénjarig vast contract nog steeds het goedkoopst, zeker als je weinig flexibiliteit hebt.
+
+### Gebruik kwartierprijzen bewust
+
+Zie kwartierprijzen als een kans om duurzamer en goedkoper te verbruiken, maar wees je bewust van de hogere volatiliteit en de tijd/technologie die nodig is om ervan te profiteren.
+
+## Conclusie
+
+Kwartierprijzen zijn een belangrijke stap richting een flexibele en duurzame energiemarkt. Ze bieden kansen voor huishoudens die hun verbruik kunnen sturen en duurzame energie willen benutten. Tegelijkertijd vergroten ze de complexiteit en het risico voor consumenten zonder slimme apparatuur.
+
+Wie overweegt om over te stappen op een dynamisch contract met kwartierprijzen doet er verstandig aan om niet alleen naar de potentieel lage prijzen te kijken, maar ook naar de benodigde technologie, de eigen flexibiliteit en de alternatieven in de markt. Voorlopig blijft een vast contract voor veel huishoudens de meest voorspelbare en vaak goedkoopste keuze.
+    `,
+    author: 'Energievergelijker Redactie',
+    publishDate: '2025-10-16',
+    category: 'analyse',
+    readTime: 8,
+    featured: true,
+    tags: ['kwartierprijzen', 'dynamische contracten', 'SDAC', 'spotmarkt', 'energieprijzen', '2025', 'flexibiliteit']
+  },
+  {
     id: 'terugleververgoeding-trends-2025',
     title: 'Teruglevering vergoedingen & trends (2025)',
     summary: 'De markt voor teruglevering vergoedingen verschuift van hoge, variabele vergoedingen naar lage vaste vergoedingen plus teruglevering kosten. Dit dwingt zonnepaneelbezitters hun eigen opgewekte stroom in hoge mate zelf te benutten.',
