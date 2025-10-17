@@ -7,6 +7,7 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
+    formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -33,6 +34,16 @@ const nextConfig = {
         pathname: '/**',
       },
     ],
+  },
+  // Optimize package imports for better tree-shaking
+  experimental: {
+    optimizePackageImports: ['recharts', 'lucide-react', '@radix-ui/react-select', '@radix-ui/react-slider'],
+  },
+  // Module optimization
+  modularizeImports: {
+    'recharts': {
+      transform: 'recharts/lib/{{member}}',
+    },
   },
   async headers() {
     return [
@@ -62,6 +73,19 @@ const nextConfig = {
           {
             key: 'Content-Security-Policy',
             value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://daisycon.tools http://tm.tradetracker.net https://tm.tradetracker.net https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; frame-src https://daisycon.tools;",
+          },
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        source: '/static/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
           },
         ],
       },

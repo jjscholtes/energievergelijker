@@ -9,13 +9,13 @@ interface HeroSectionProps {
 export function HeroSection({ onResultChange }: HeroSectionProps) {
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-emerald-50 via-teal-50 to-green-50">
-      {/* Enhanced Background Elements */}
+      {/* Enhanced Background Elements - GPU Accelerated */}
       <div className="absolute inset-0">
-        <div className="absolute top-20 left-10 w-96 h-96 bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-full mix-blend-multiply filter blur-xl opacity-40 animate-pulse"></div>
-        <div className="absolute top-40 right-10 w-96 h-96 bg-gradient-to-r from-teal-400 to-teal-600 rounded-full mix-blend-multiply filter blur-xl opacity-40 animate-pulse animation-delay-2000"></div>
-        <div className="absolute bottom-20 left-1/3 w-96 h-96 bg-gradient-to-r from-green-400 to-green-600 rounded-full mix-blend-multiply filter blur-xl opacity-40 animate-pulse animation-delay-4000"></div>
-        <div className="absolute top-1/2 left-1/4 w-80 h-80 bg-gradient-to-r from-cyan-400 to-cyan-600 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse animation-delay-1000"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-gradient-to-r from-emerald-300 to-teal-500 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse animation-delay-3000"></div>
+        <div className="absolute top-20 left-10 w-96 h-96 bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-full mix-blend-multiply filter blur-xl animate-pulse-glow"></div>
+        <div className="absolute top-40 right-10 w-96 h-96 bg-gradient-to-r from-teal-400 to-teal-600 rounded-full mix-blend-multiply filter blur-xl animate-pulse-glow animation-delay-2000"></div>
+        <div className="absolute bottom-20 left-1/3 w-96 h-96 bg-gradient-to-r from-green-400 to-green-600 rounded-full mix-blend-multiply filter blur-xl animate-pulse-glow animation-delay-4000"></div>
+        <div className="absolute top-1/2 left-1/4 w-80 h-80 bg-gradient-to-r from-cyan-400 to-cyan-600 rounded-full mix-blend-multiply filter blur-xl animate-pulse-glow animation-delay-1000"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-gradient-to-r from-emerald-300 to-teal-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse-glow animation-delay-3000"></div>
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">

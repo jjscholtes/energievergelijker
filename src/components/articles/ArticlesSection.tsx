@@ -7,13 +7,13 @@ export default function ArticlesSection() {
 
   return (
     <section id="articles-section" className="py-32 bg-gradient-to-br from-slate-50 via-white to-teal-50 relative overflow-hidden">
-      {/* Enhanced Background Pattern */}
+      {/* Enhanced Background Pattern - GPU Accelerated */}
       <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-r from-teal-400 to-teal-600 rounded-full mix-blend-multiply filter blur-xl animate-pulse animation-delay-2000"></div>
-        <div className="absolute bottom-0 left-1/2 w-96 h-96 bg-gradient-to-r from-green-400 to-green-600 rounded-full mix-blend-multiply filter blur-xl animate-pulse animation-delay-4000"></div>
-        <div className="absolute top-1/2 left-1/4 w-80 h-80 bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-full mix-blend-multiply filter blur-xl animate-pulse animation-delay-1000"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-gradient-to-r from-amber-400 to-amber-600 rounded-full mix-blend-multiply filter blur-xl animate-pulse animation-delay-3000"></div>
+        <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-full mix-blend-multiply filter blur-xl animate-pulse-glow"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-r from-teal-400 to-teal-600 rounded-full mix-blend-multiply filter blur-xl animate-pulse-glow animation-delay-2000"></div>
+        <div className="absolute bottom-0 left-1/2 w-96 h-96 bg-gradient-to-r from-green-400 to-green-600 rounded-full mix-blend-multiply filter blur-xl animate-pulse-glow animation-delay-4000"></div>
+        <div className="absolute top-1/2 left-1/4 w-80 h-80 bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-full mix-blend-multiply filter blur-xl animate-pulse-glow animation-delay-1000"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-gradient-to-r from-amber-400 to-amber-600 rounded-full mix-blend-multiply filter blur-xl animate-pulse-glow animation-delay-3000"></div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">

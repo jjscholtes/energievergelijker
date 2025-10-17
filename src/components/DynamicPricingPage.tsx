@@ -1,12 +1,11 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, lazy, Suspense } from 'react';
 import { TrendingDown, Clock, Sun, Moon, BarChart3, Info, ArrowLeft, Calendar, DollarSign, FileText, Image as ImageIcon } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Header } from '@/components/home/Header';
 import { getMonthlyData, getHourlyDataForMonth, getDailyDataForMonth, MonthlyStats } from '@/lib/data/monthlyPriceData';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { SeasonalPriceTool } from '@/components/SeasonalPriceTool';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { DynamicPricingIntro } from '@/components/DynamicPricingIntro';
@@ -19,6 +18,17 @@ import { DynamicPricingSummaryBox } from '@/components/DynamicPricingSummaryBox'
 import { DynamicPricingEducationalContent } from '@/components/DynamicPricingEducationalContent';
 import { EnergyGlossary } from '@/components/EnergyGlossary';
 import { generateArticleSchema, generateDatasetSchema, generateWebPageSchema } from '@/lib/schema/dynamicPricingSchemas';
+
+// Lazy load Recharts components
+const LineChart = lazy(() => import('recharts').then(mod => ({ default: mod.LineChart })));
+const Line = lazy(() => import('recharts').then(mod => ({ default: mod.Line })));
+const XAxis = lazy(() => import('recharts').then(mod => ({ default: mod.XAxis })));
+const YAxis = lazy(() => import('recharts').then(mod => ({ default: mod.YAxis })));
+const CartesianGrid = lazy(() => import('recharts').then(mod => ({ default: mod.CartesianGrid })));
+const Tooltip = lazy(() => import('recharts').then(mod => ({ default: mod.Tooltip })));
+const ResponsiveContainer = lazy(() => import('recharts').then(mod => ({ default: mod.ResponsiveContainer })));
+const BarChart = lazy(() => import('recharts').then(mod => ({ default: mod.BarChart })));
+const Bar = lazy(() => import('recharts').then(mod => ({ default: mod.Bar })));
 
 export type WeightedAverage = {
   weightedAverage: number;
@@ -450,42 +460,44 @@ export function DynamicPricingPage() {
                 Prijzen per Uur - {currentMonthData.monthName} {selectedYear}
               </h3>
               <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={hourlyData}>
-                    <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.5} />
-                    <XAxis
-                      dataKey="hour"
-                      tickFormatter={(tick) => `${tick}:00`}
-                      interval="preserveStartEnd"
-                      minTickGap={20}
-                      tick={{ fill: '#6B7280', fontSize: 12 }}
-                      axisLine={{ stroke: '#D1D5DB' }}
-                      tickLine={{ stroke: '#D1D5DB' }}
-                    />
-                    <YAxis
-                      tickFormatter={(tick) => `€${tick.toFixed(2)}`}
-                      domain={['auto', 'auto']}
-                      tick={{ fill: '#6B7280', fontSize: 12 }}
-                      axisLine={{ stroke: '#D1D5DB' }}
-                      tickLine={{ stroke: '#D1D5DB' }}
-                    />
+                <Suspense fallback={<div className="flex justify-center items-center h-full"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div></div>}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={hourlyData}>
+                      <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.5} />
+                      <XAxis
+                        dataKey="hour"
+                        tickFormatter={(tick) => `${tick}:00`}
+                        interval="preserveStartEnd"
+                        minTickGap={20}
+                        tick={{ fill: '#6B7280', fontSize: 12 }}
+                        axisLine={{ stroke: '#D1D5DB' }}
+                        tickLine={{ stroke: '#D1D5DB' }}
+                      />
+                      <YAxis
+                        tickFormatter={(tick) => `€${tick.toFixed(2)}`}
+                        domain={['auto', 'auto']}
+                        tick={{ fill: '#6B7280', fontSize: 12 }}
+                        axisLine={{ stroke: '#D1D5DB' }}
+                        tickLine={{ stroke: '#D1D5DB' }}
+                      />
                     <Tooltip
-                      formatter={(value: number) => [
+                      formatter={(value: any) => [
                         `€${value.toFixed(3)}/kWh`,
                         'Prijs (excl. belasting)'
                       ]}
-                      labelFormatter={(label) => `Uur: ${label}:00`}
+                      labelFormatter={(label: any) => `Uur: ${label}:00`}
                     />
-                    <Line 
-                      type="monotone" 
-                      dataKey="price"
-                      stroke="#10B981"
-                      strokeWidth={3}
-                      dot={false}
-                      activeDot={{ r: 6, fill: '#10B981', stroke: '#fff', strokeWidth: 2 }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
+                      <Line 
+                        type="monotone" 
+                        dataKey="price"
+                        stroke="#10B981"
+                        strokeWidth={3}
+                        dot={false}
+                        activeDot={{ r: 6, fill: '#10B981', stroke: '#fff', strokeWidth: 2 }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </Suspense>
               </div>
             </div>
 
@@ -496,36 +508,38 @@ export function DynamicPricingPage() {
                 Gemiddelde Prijzen per Dag van de Week
               </h3>
               <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={dailyData}>
-                    <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.5} />
-                    <XAxis
-                      dataKey="dayName"
-                      tick={{ fill: '#6B7280', fontSize: 12 }}
-                      axisLine={{ stroke: '#D1D5DB' }}
-                      tickLine={{ stroke: '#D1D5DB' }}
-                    />
-                    <YAxis
-                      tickFormatter={(tick) => `€${tick.toFixed(2)}`}
-                      domain={['auto', 'auto']}
-                      tick={{ fill: '#6B7280', fontSize: 12 }}
-                      axisLine={{ stroke: '#D1D5DB' }}
-                      tickLine={{ stroke: '#D1D5DB' }}
-                    />
+                <Suspense fallback={<div className="flex justify-center items-center h-full"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div></div>}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={dailyData}>
+                      <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.5} />
+                      <XAxis
+                        dataKey="dayName"
+                        tick={{ fill: '#6B7280', fontSize: 12 }}
+                        axisLine={{ stroke: '#D1D5DB' }}
+                        tickLine={{ stroke: '#D1D5DB' }}
+                      />
+                      <YAxis
+                        tickFormatter={(tick) => `€${tick.toFixed(2)}`}
+                        domain={['auto', 'auto']}
+                        tick={{ fill: '#6B7280', fontSize: 12 }}
+                        axisLine={{ stroke: '#D1D5DB' }}
+                        tickLine={{ stroke: '#D1D5DB' }}
+                      />
                     <Tooltip
-                      formatter={(value: number) => [
+                      formatter={(value: any) => [
                         `€${value.toFixed(3)}/kWh`,
                         'Gemiddelde prijs'
                       ]}
-                      labelFormatter={(label) => `${label}`}
+                      labelFormatter={(label: any) => `${label}`}
                     />
-                    <Bar
-                      dataKey="price"
-                      fill="#10B981"
-                      radius={[4, 4, 0, 0]}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
+                      <Bar
+                        dataKey="price"
+                        fill="#10B981"
+                        radius={[4, 4, 0, 0]}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </Suspense>
               </div>
             </div>
 
@@ -626,32 +640,34 @@ export function DynamicPricingPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Chart */}
               <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={yearlyAverages}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis 
-                      dataKey="jaar" 
-                      tick={{ fontSize: 12 }}
-                      tickFormatter={(value) => `${value}`}
-                    />
-                    <YAxis 
-                      tick={{ fontSize: 12 }}
-                      tickFormatter={(value) => `€${value.toFixed(3)}`}
-                    />
-                    <Tooltip 
-                      formatter={(value: number) => [`€${value.toFixed(3)}/kWh`, 'Gemiddelde Prijs']}
-                      labelFormatter={(label) => `Jaar ${label}`}
-                    />
-                    <Line 
-                      type="monotone" 
-                      dataKey="gemiddelde_prijs" 
-                      stroke="#10B981"
-                      strokeWidth={3}
-                      dot={{ fill: '#10B981', strokeWidth: 2, r: 6 }}
-                      activeDot={{ r: 8, stroke: '#10B981', strokeWidth: 2 }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
+                <Suspense fallback={<div className="flex justify-center items-center h-full"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div></div>}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={yearlyAverages}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis 
+                        dataKey="jaar" 
+                        tick={{ fontSize: 12 }}
+                        tickFormatter={(value) => `${value}`}
+                      />
+                      <YAxis 
+                        tick={{ fontSize: 12 }}
+                        tickFormatter={(value) => `€${value.toFixed(3)}`}
+                      />
+                      <Tooltip 
+                        formatter={(value: any) => [`€${value.toFixed(3)}/kWh`, 'Gemiddelde Prijs']}
+                        labelFormatter={(label: any) => `Jaar ${label}`}
+                      />
+                      <Line 
+                        type="monotone" 
+                        dataKey="gemiddelde_prijs" 
+                        stroke="#10B981"
+                        strokeWidth={3}
+                        dot={{ fill: '#10B981', strokeWidth: 2, r: 6 }}
+                        activeDot={{ r: 8, stroke: '#10B981', strokeWidth: 2 }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </Suspense>
               </div>
               
               {/* Analysis */}
@@ -703,6 +719,9 @@ export function DynamicPricingPage() {
                 width={800}
                 height={400}
                 className="rounded-xl shadow-lg mx-auto"
+                quality={85}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 800px"
+                loading="lazy"
               />
             </div>
             
@@ -746,6 +765,9 @@ export function DynamicPricingPage() {
                 width={800}
                 height={400}
                 className="rounded-xl shadow-lg mx-auto"
+                quality={85}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 800px"
+                loading="lazy"
               />
             </div>
             

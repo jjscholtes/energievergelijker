@@ -1,10 +1,11 @@
+# Allow all crawlers
 User-agent: *
 Allow: /
 
 # Sitemap
 Sitemap: https://besteenergiecontract.nl/sitemap.xml
 
-# Crawl-delay for AI bots
+# Crawl-delay for AI bots to be respectful
 User-agent: GPTBot
 Crawl-delay: 1
 
@@ -20,6 +21,5 @@ Crawl-delay: 1
 User-agent: Claude-Web
 Crawl-delay: 1
 
-# Allow all AI bots to crawl
-User-agent: *
-Allow: /
+User-agent: Google-Extended
+Crawl-delay: 1

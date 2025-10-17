@@ -1,21 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { BatteryCalculationResult, ChartDataPoint } from '@/types/battery';
 import { Card } from '@/components/ui/card';
-import {
-  LineChart,
-  Line,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  ReferenceLine,
-} from 'recharts';
 import {
   Battery,
   TrendingUp,
@@ -26,6 +13,19 @@ import {
   ChevronDown,
   ChevronUp,
 } from 'lucide-react';
+
+// Lazy load Recharts
+const LineChart = lazy(() => import('recharts').then(mod => ({ default: mod.LineChart })));
+const Line = lazy(() => import('recharts').then(mod => ({ default: mod.Line })));
+const BarChart = lazy(() => import('recharts').then(mod => ({ default: mod.BarChart })));
+const Bar = lazy(() => import('recharts').then(mod => ({ default: mod.Bar })));
+const XAxis = lazy(() => import('recharts').then(mod => ({ default: mod.XAxis })));
+const YAxis = lazy(() => import('recharts').then(mod => ({ default: mod.YAxis })));
+const CartesianGrid = lazy(() => import('recharts').then(mod => ({ default: mod.CartesianGrid })));
+const Tooltip = lazy(() => import('recharts').then(mod => ({ default: mod.Tooltip })));
+const Legend = lazy(() => import('recharts').then(mod => ({ default: mod.Legend })));
+const ResponsiveContainer = lazy(() => import('recharts').then(mod => ({ default: mod.ResponsiveContainer })));
+const ReferenceLine = lazy(() => import('recharts').then(mod => ({ default: mod.ReferenceLine })));
 
 interface BatteryResultsProps {
   result: BatteryCalculationResult;
@@ -294,45 +294,47 @@ export function BatteryResults({ result }: BatteryResultsProps) {
             Cumulatieve kosten en besparing. Break-even punt geeft aan wanneer de investering is terugverdiend.
           </p>
           
-          <ResponsiveContainer width="100%" height={400}>
-            <LineChart data={cashflowData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis 
-                dataKey="jaar" 
-                label={{ value: 'Jaren', position: 'insideBottom', offset: -5 }}
-              />
-              <YAxis 
-                label={{ value: 'Cumulatieve cashflow (€)', angle: -90, position: 'insideLeft' }}
-              />
-              <Tooltip 
-                formatter={(value: number) => [`€${Math.round(value)}`, '']}
-                labelFormatter={(label) => `Jaar ${label}`}
-              />
-              <Legend />
-              <ReferenceLine y={0} stroke="#666" strokeDasharray="3 3" />
-              <Line 
-                type="monotone" 
-                dataKey="huidig" 
-                stroke="#3B82F6" 
-                strokeWidth={2}
-                name="Huidig (met saldering)"
-              />
-              <Line 
-                type="monotone" 
-                dataKey="na2027" 
-                stroke="#F97316" 
-                strokeWidth={2}
-                name="Na 2027 (geen saldering)"
-              />
-              <Line 
-                type="monotone" 
-                dataKey="dynamisch" 
-                stroke="#10B981" 
-                strokeWidth={2}
-                name="Dynamisch + Arbitrage"
-              />
-            </LineChart>
-          </ResponsiveContainer>
+          <Suspense fallback={<div className="flex justify-center items-center h-[400px]"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600"></div></div>}>
+            <ResponsiveContainer width="100%" height={400}>
+              <LineChart data={cashflowData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis 
+                  dataKey="jaar" 
+                  label={{ value: 'Jaren', position: 'insideBottom', offset: -5 }}
+                />
+                <YAxis 
+                  label={{ value: 'Cumulatieve cashflow (€)', angle: -90, position: 'insideLeft' }}
+                />
+                <Tooltip 
+                  formatter={(value: any) => [`€${Math.round(value)}`, '']}
+                  labelFormatter={(label: any) => `Jaar ${label}`}
+                />
+                <Legend />
+                <ReferenceLine y={0} stroke="#666" strokeDasharray="3 3" />
+                <Line 
+                  type="monotone" 
+                  dataKey="huidig" 
+                  stroke="#3B82F6" 
+                  strokeWidth={2}
+                  name="Huidig (met saldering)"
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="na2027" 
+                  stroke="#F97316" 
+                  strokeWidth={2}
+                  name="Na 2027 (geen saldering)"
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="dynamisch" 
+                  stroke="#10B981" 
+                  strokeWidth={2}
+                  name="Dynamisch + Arbitrage"
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </Suspense>
         </Card>
 
         {/* Besparingen per Scenario */}
@@ -342,18 +344,20 @@ export function BatteryResults({ result }: BatteryResultsProps) {
             Samenstelling van de jaarlijkse besparing per scenario.
           </p>
           
-          <ResponsiveContainer width="100%" height={350}>
-            <BarChart data={savingsData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="naam" />
-              <YAxis label={{ value: 'Besparing (€/jaar)', angle: -90, position: 'insideLeft' }} />
-              <Tooltip formatter={(value: number) => `€${Math.round(value)}`} />
-              <Legend />
-              <Bar dataKey="eigenverbruik" stackId="a" fill="#10B981" name="Eigenverbruik" />
-              <Bar dataKey="terugleverkosten" stackId="a" fill="#F59E0B" name="Terugleverkosten" />
-              <Bar dataKey="arbitrage" stackId="a" fill="#3B82F6" name="Arbitrage" />
-            </BarChart>
-          </ResponsiveContainer>
+          <Suspense fallback={<div className="flex justify-center items-center h-[350px]"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600"></div></div>}>
+            <ResponsiveContainer width="100%" height={350}>
+              <BarChart data={savingsData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="naam" />
+                <YAxis label={{ value: 'Besparing (€/jaar)', angle: -90, position: 'insideLeft' }} />
+                <Tooltip formatter={(value: any) => `€${Math.round(value)}`} />
+                <Legend />
+                <Bar dataKey="eigenverbruik" stackId="a" fill="#10B981" name="Eigenverbruik" />
+                <Bar dataKey="terugleverkosten" stackId="a" fill="#F59E0B" name="Terugleverkosten" />
+                <Bar dataKey="arbitrage" stackId="a" fill="#3B82F6" name="Arbitrage" />
+              </BarChart>
+            </ResponsiveContainer>
+          </Suspense>
         </Card>
       </div>
 

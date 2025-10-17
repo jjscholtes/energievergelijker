@@ -18,12 +18,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Energievergelijker voor Zonnepanelen | Vergelijk Energiecontracten 2024",
+  title: "Energievergelijker voor Zonnepanelen | Vergelijk Energiecontracten 2025",
   description: "De specialistische energievergelijker voor zonnepanelen eigenaren. Vergelijk energiecontracten met accurate salderingsberekeningen en vind de beste terugleververgoeding. Bespaar tot €800 per jaar!",
-  keywords: "energievergelijker, zonnepanelen, energiecontract, saldering, teruglevering, energie besparen, groene energie, Nederlandse energieleveranciers, warmtepomp energiecontract, elektrische auto energie, dynamisch energiecontract, vast energiecontract, terugleververgoeding vergelijking, energiebelasting besparen, netbeheerkosten, beste energieleverancier zonnepanelen, energiecontract vergelijking 2024, salderingsberekening, teruglevering stroom, energieprijzen vergelijken",
-  authors: [{ name: "Energievergelijker" }],
-  creator: "Energievergelijker",
-  publisher: "Energievergelijker",
+  keywords: "energievergelijker, zonnepanelen, energiecontract, saldering, teruglevering, energie besparen, groene energie, Nederlandse energieleveranciers, warmtepomp energiecontract, elektrische auto energie, dynamisch energiecontract, vast energiecontract, terugleververgoeding vergelijking, energiebelasting besparen, netbeheerkosten, beste energieleverancier zonnepanelen, energiecontract vergelijking 2025, salderingsberekening, teruglevering stroom, energieprijzen vergelijken",
+  authors: [{ name: "Beste Energiecontract" }],
+  creator: "Beste Energiecontract",
+  publisher: "Beste Energiecontract",
   formatDetection: {
     email: false,
     address: false,
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     canonical: '/',
   },
   openGraph: {
-    title: "Energievergelijker voor Zonnepanelen | Vergelijk Energiecontracten 2024",
+    title: "Energievergelijker voor Zonnepanelen | Vergelijk Energiecontracten 2025",
     description: "De specialistische energievergelijker voor zonnepanelen eigenaren. Vergelijk energiecontracten met accurate salderingsberekeningen.",
     url: 'https://besteenergiecontract.nl',
     siteName: 'Beste Energiecontract',
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Energievergelijker voor Zonnepanelen | Vergelijk Energiecontracten 2024",
+    title: "Energievergelijker voor Zonnepanelen | Vergelijk Energiecontracten 2025",
     description: "De specialistische energievergelijker voor zonnepanelen eigenaren. Vergelijk energiecontracten met accurate salderingsberekeningen.",
   },
   robots: {
@@ -56,9 +56,6 @@ export const metadata: Metadata = {
       'max-image-preview': 'large',
       'max-snippet': -1,
     },
-  },
-  verification: {
-    google: 'your-google-verification-code',
   },
   category: 'energy comparison',
 };

@@ -121,16 +121,16 @@
   }
 }
 
-/* Custom Animations */
+/* Custom Animations - GPU Accelerated */
 @keyframes gradient {
   0% {
-    background-position: 0% 50%;
+    transform: translateX(0%) scale(1);
   }
   50% {
-    background-position: 100% 50%;
+    transform: translateX(10%) scale(1.05);
   }
   100% {
-    background-position: 0% 50%;
+    transform: translateX(0%) scale(1);
   }
 }
 
@@ -145,24 +145,29 @@
 
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+    transform: scale(1);
+    opacity: 0.4;
   }
   50% {
-    box-shadow: 0 0 40px rgba(16, 185, 129, 0.6);
+    transform: scale(1.05);
+    opacity: 0.6;
   }
 }
 
 .animate-gradient {
   background-size: 200% 200%;
   animation: gradient 3s ease infinite;
+  will-change: transform;
 }
 
 .animate-float {
   animation: float 3s ease-in-out infinite;
+  will-change: transform;
 }
 
 .animate-pulse-glow {
   animation: pulse-glow 2s ease-in-out infinite;
+  will-change: transform, opacity;
 }
 
 .animation-delay-1000 {

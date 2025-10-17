@@ -1,8 +1,21 @@
 'use client';
 
+import { lazy, Suspense } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PvOpbrengsten } from '@/types/calculations';
-import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+
+// Lazy load Recharts
+const PieChart = lazy(() => import('recharts').then(mod => ({ default: mod.PieChart })));
+const Pie = lazy(() => import('recharts').then(mod => ({ default: mod.Pie })));
+const Cell = lazy(() => import('recharts').then(mod => ({ default: mod.Cell })));
+const ResponsiveContainer = lazy(() => import('recharts').then(mod => ({ default: mod.ResponsiveContainer })));
+const BarChart = lazy(() => import('recharts').then(mod => ({ default: mod.BarChart })));
+const Bar = lazy(() => import('recharts').then(mod => ({ default: mod.Bar })));
+const XAxis = lazy(() => import('recharts').then(mod => ({ default: mod.XAxis })));
+const YAxis = lazy(() => import('recharts').then(mod => ({ default: mod.YAxis })));
+const CartesianGrid = lazy(() => import('recharts').then(mod => ({ default: mod.CartesianGrid })));
+const Tooltip = lazy(() => import('recharts').then(mod => ({ default: mod.Tooltip })));
+const Legend = lazy(() => import('recharts').then(mod => ({ default: mod.Legend })));
 
 interface PVBreakdownChartProps {
   pvData: PvOpbrengsten;
@@ -139,28 +152,30 @@ export function PVBreakdownChart({ pvData }: PVBreakdownChartProps) {
             <CardTitle className="text-center">Verdeling van Zonneproductie</CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={pieData}
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={100}
-                  dataKey="value"
-                  label={({ name, value }: { name: string; value: number }) => `${name}: ${value.toFixed(0)} kWh`}
-                >
-                  {pieData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.fill} />
-                  ))}
-                </Pie>
-                <Tooltip 
-                  formatter={(value: number, name: string, props: { payload: { euro: number } }) => [
-                    `${value.toFixed(0)} kWh (€${props.payload.euro.toFixed(0)})`,
-                    name
-                  ]}
-                />
-              </PieChart>
-            </ResponsiveContainer>
+            <Suspense fallback={<div className="flex justify-center items-center h-[300px]"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div></div>}>
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={pieData}
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={100}
+                    dataKey="value"
+                    label={({ name, value }: any) => `${name}: ${value.toFixed(0)} kWh`}
+                  >
+                    {pieData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.fill} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    formatter={(value: any, name: any, props: any) => [
+                      `${value.toFixed(0)} kWh (€${props.payload.euro.toFixed(0)})`,
+                      name
+                    ]}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </Suspense>
           </CardContent>
         </Card>
 
@@ -170,35 +185,37 @@ export function PVBreakdownChart({ pvData }: PVBreakdownChartProps) {
             <CardTitle className="text-center">Opbrengsten per Categorie</CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={barData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="categorie" />
-                <YAxis yAxisId="kwh" orientation="left" />
-                <YAxis yAxisId="euro" orientation="right" />
-                <Tooltip 
-                  formatter={(value: number, name: string) => [
-                    name === 'kwh' ? `${value.toFixed(0)} kWh` : `€${value.toFixed(0)}`,
-                    name === 'kwh' ? 'kWh' : 'Euro'
-                  ]}
-                />
-                <Legend />
-                <Bar 
-                  yAxisId="kwh" 
-                  dataKey="kwh" 
-                  fill="#8884d8" 
-                  name="kWh"
-                  radius={[4, 4, 0, 0]}
-                />
-                <Bar 
-                  yAxisId="euro" 
-                  dataKey="euro" 
-                  fill="#82ca9d" 
-                  name="Euro"
-                  radius={[4, 4, 0, 0]}
-                />
-              </BarChart>
-            </ResponsiveContainer>
+            <Suspense fallback={<div className="flex justify-center items-center h-[300px]"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div></div>}>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={barData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="categorie" />
+                  <YAxis yAxisId="kwh" orientation="left" />
+                  <YAxis yAxisId="euro" orientation="right" />
+                  <Tooltip 
+                    formatter={(value: any, name: any) => [
+                      name === 'kwh' ? `${value.toFixed(0)} kWh` : `€${value.toFixed(0)}`,
+                      name === 'kwh' ? 'kWh' : 'Euro'
+                    ]}
+                  />
+                  <Legend />
+                  <Bar 
+                    yAxisId="kwh" 
+                    dataKey="kwh" 
+                    fill="#8884d8" 
+                    name="kWh"
+                    radius={[4, 4, 0, 0]}
+                  />
+                  <Bar 
+                    yAxisId="euro" 
+                    dataKey="euro" 
+                    fill="#82ca9d" 
+                    name="Euro"
+                    radius={[4, 4, 0, 0]}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </Suspense>
           </CardContent>
         </Card>
       </div>

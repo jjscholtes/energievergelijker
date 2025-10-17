@@ -3,11 +3,11 @@
 import { Suspense, lazy } from 'react';
 import { Header } from '@/components/home/Header';
 import { HeroSectionWithResults } from '@/components/home/HeroSectionWithResults';
-import { DynamicPricingHero } from '@/components/DynamicPricingHero';
-import { BatteryPromotion } from '@/components/home/BatteryPromotion';
 import { Footer } from '@/components/home/Footer';
 
 // Lazy load components that are below the fold
+const DynamicPricingHero = lazy(() => import('@/components/DynamicPricingHero').then(module => ({ default: module.DynamicPricingHero })));
+const BatteryPromotion = lazy(() => import('@/components/home/BatteryPromotion').then(module => ({ default: module.BatteryPromotion })));
 const ArticlesSection = lazy(() => import('@/components/articles/ArticlesSection').then(module => ({ default: module.default })));
 const FAQ = lazy(() => import('@/components/FAQ').then(module => ({ default: module.FAQ })));
 
@@ -31,12 +31,16 @@ export default function Home() {
         {/* Prijs Informatie */}
         <section className="py-16 bg-gradient-to-br from-emerald-50 via-white to-teal-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <DynamicPricingHero />
+            <Suspense fallback={<LoadingSpinner />}>
+              <DynamicPricingHero />
+            </Suspense>
           </div>
         </section>
         
         {/* Thuis Accu Promotie */}
-        <BatteryPromotion />
+        <Suspense fallback={<LoadingSpinner />}>
+          <BatteryPromotion />
+        </Suspense>
         
         {/* Lazy loaded sections */}
         <Suspense fallback={<LoadingSpinner />}>
