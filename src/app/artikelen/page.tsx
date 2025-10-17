@@ -53,6 +53,17 @@ export default function ArtikelenPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-teal-50">
       <Header />
 
+      {/* Breadcrumb */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <Link 
+          href="/"
+          className="inline-flex items-center gap-2 text-gray-600 hover:text-emerald-600 transition-colors group"
+        >
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+          <span className="text-sm font-medium">Terug naar home</span>
+        </Link>
+      </div>
+
       {/* Page Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-12">
