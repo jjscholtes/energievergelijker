@@ -4,7 +4,6 @@ import React from 'react';
 import { FileText, TrendingDown, Sun, Battery } from 'lucide-react';
 
 interface SummaryBoxProps {
-  year: number;
   averagePrice: number;
   cheapestSeason: string;
   cheapestSeasonPrice: number;
@@ -14,7 +13,6 @@ interface SummaryBoxProps {
 }
 
 export function DynamicPricingSummaryBox({
-  year,
   averagePrice,
   cheapestSeason,
   cheapestSeasonPrice,

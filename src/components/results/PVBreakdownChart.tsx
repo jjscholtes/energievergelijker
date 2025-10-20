@@ -161,14 +161,14 @@ export function PVBreakdownChart({ pvData }: PVBreakdownChartProps) {
                     cy="50%"
                     outerRadius={100}
                     dataKey="value"
-                    label={({ name, value }: any) => `${name}: ${value.toFixed(0)} kWh`}
+                    label={({ name, value }: { name: string; value: number }) => `${name}: ${value.toFixed(0)} kWh`}
                   >
                     {pieData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.fill} />
                     ))}
                   </Pie>
                   <Tooltip 
-                    formatter={(value: any, name: any, props: any) => [
+                    formatter={(value: number, name: string, props: { payload: { euro: number } }) => [
                       `${value.toFixed(0)} kWh (€${props.payload.euro.toFixed(0)})`,
                       name
                     ]}
@@ -193,7 +193,7 @@ export function PVBreakdownChart({ pvData }: PVBreakdownChartProps) {
                   <YAxis yAxisId="kwh" orientation="left" />
                   <YAxis yAxisId="euro" orientation="right" />
                   <Tooltip 
-                    formatter={(value: any, name: any) => [
+                    formatter={(value: number, name: string) => [
                       name === 'kwh' ? `${value.toFixed(0)} kWh` : `€${value.toFixed(0)}`,
                       name === 'kwh' ? 'kWh' : 'Euro'
                     ]}

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Table, TrendingDown, Clock } from 'lucide-react';
+import { Table, Clock } from 'lucide-react';
 
 export function DynamicPricingComparisonTables() {
   return (

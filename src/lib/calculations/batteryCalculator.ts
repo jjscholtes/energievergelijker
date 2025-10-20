@@ -15,7 +15,6 @@ import {
 } from '@/types/battery';
 import {
   berekenTerugleverkosten,
-  TERUGLEVERKOSTEN_STAFFEL,
 } from './terugleverkosten';
 import {
   BATTERY_DYNAMIC_2025,
@@ -25,7 +24,6 @@ import {
 } from '@/lib/constants';
 
 const ENERGIEBELASTING_STROOM = ENERGY_CONSTANTS.ENERGY_TAX_STROOM_PER_KWH;
-const HEFFINGSKORTING = ENERGY_CONSTANTS.ENERGY_TAX_REDUCTION;
 const BTW = 0.21;
 const DEGRADATIE_START_JAAR = 10;
 
@@ -167,8 +165,7 @@ function analyseerEigenverbruik(
 
 function berekenArbitrageVoordeel(
   arbitrageStats: ArbitrageStats,
-  tarief: TariefContext,
-  input: BatteryInput
+  tarief: TariefContext
 ): number {
   // De bruto arbitrage winst is al berekend in jaarlijkseWinst
   // We hoeven hier alleen de dynamische contract specifieke kosten af te trekken
@@ -268,7 +265,7 @@ function createScenario(
 
   let arbitrageVoordeel = 0;
   if (scenarioType === 'dynamisch') {
-    arbitrageVoordeel = berekenArbitrageVoordeel(arbitrageStats, tarief, input);
+    arbitrageVoordeel = berekenArbitrageVoordeel(arbitrageStats, tarief);
   }
 
   const savings: SavingsBreakdown = {

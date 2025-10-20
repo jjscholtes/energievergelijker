@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { CheckCircle, Smartphone, TrendingUp, Clock, Shield, Zap } from 'lucide-react';
+import Link from 'next/link';
 
 const steps = [
   {
@@ -139,12 +140,12 @@ export function DynamicPricingGettingStarted() {
           <p className="text-emerald-100 mb-4">
             Gebruik onze energievergelijker om de beste dynamische contracten te vergelijken
           </p>
-          <a
+          <Link
             href="/"
             className="inline-block bg-white text-emerald-600 px-8 py-3 rounded-lg font-bold hover:bg-emerald-50 transition-colors shadow-lg"
           >
             Vergelijk Energiecontracten
-          </a>
+          </Link>
         </div>
       </div>
     </section>

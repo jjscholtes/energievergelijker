@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp, HelpCircle } from 'lucide-react';
+import Link from 'next/link';
 
 interface FAQItem {
   question: string;
@@ -124,7 +125,7 @@ export function DynamicPricingFAQ() {
 
       <div className="mt-8 p-6 bg-gradient-to-r from-blue-50 to-emerald-50 border border-emerald-200 rounded-xl">
         <p className="text-center text-gray-700">
-          <strong>Nog meer vragen?</strong> Bekijk onze <a href="/" className="text-emerald-600 hover:text-emerald-700 font-semibold underline">energievergelijker</a> om te zien welk contract het beste bij je past.
+          <strong>Nog meer vragen?</strong> Bekijk onze <Link href="/" className="text-emerald-600 hover:text-emerald-700 font-semibold underline">energievergelijker</Link> om te zien welk contract het beste bij je past.
         </p>
       </div>
     </section>

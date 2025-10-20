@@ -4,7 +4,6 @@ import { useState, lazy, Suspense } from 'react';
 import { BatteryCalculationResult, ChartDataPoint } from '@/types/battery';
 import { Card } from '@/components/ui/card';
 import {
-  Battery,
   TrendingUp,
   TrendingDown,
   CheckCircle,
@@ -306,8 +305,8 @@ export function BatteryResults({ result }: BatteryResultsProps) {
                   label={{ value: 'Cumulatieve cashflow (€)', angle: -90, position: 'insideLeft' }}
                 />
                 <Tooltip 
-                  formatter={(value: any) => [`€${Math.round(value)}`, '']}
-                  labelFormatter={(label: any) => `Jaar ${label}`}
+                  formatter={(value: number) => [`€${Math.round(value)}`, '']}
+                  labelFormatter={(label: number) => `Jaar ${label}`}
                 />
                 <Legend />
                 <ReferenceLine y={0} stroke="#666" strokeDasharray="3 3" />
@@ -350,7 +349,7 @@ export function BatteryResults({ result }: BatteryResultsProps) {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="naam" />
                 <YAxis label={{ value: 'Besparing (€/jaar)', angle: -90, position: 'insideLeft' }} />
-                <Tooltip formatter={(value: any) => `€${Math.round(value)}`} />
+                <Tooltip formatter={(value: number) => `€${Math.round(value)}`} />
                 <Legend />
                 <Bar dataKey="eigenverbruik" stackId="a" fill="#10B981" name="Eigenverbruik" />
                 <Bar dataKey="terugleverkosten" stackId="a" fill="#F59E0B" name="Terugleverkosten" />

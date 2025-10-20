@@ -91,7 +91,7 @@ export function DynamicResults({ result, isLoading }: DynamicResultsProps) {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" />
                     <YAxis />
-                    <Tooltip formatter={(value: any) => [`€${value.toFixed(0)}`, 'Kosten']} />
+                    <Tooltip formatter={(value: number) => [`€${value.toFixed(0)}`, 'Kosten']} />
                     <Bar dataKey="value" fill="#3b82f6" />
                   </BarChart>
                 </ResponsiveContainer>

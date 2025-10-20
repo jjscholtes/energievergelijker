@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useMemo, lazy, Suspense } from 'react';
-import { TrendingDown, Clock, Sun, Moon, BarChart3, Info, ArrowLeft, Calendar, DollarSign, FileText, Image as ImageIcon } from 'lucide-react';
-import Link from 'next/link';
+import { TrendingDown, Clock, Sun, Moon, BarChart3, Info, Calendar, DollarSign, FileText, Image as ImageIcon } from 'lucide-react';
 import Image from 'next/image';
 import { Header } from '@/components/home/Header';
 import { getMonthlyData, getHourlyDataForMonth, getDailyDataForMonth, MonthlyStats } from '@/lib/data/monthlyPriceData';
@@ -481,11 +480,11 @@ export function DynamicPricingPage() {
                         tickLine={{ stroke: '#D1D5DB' }}
                       />
                     <Tooltip
-                      formatter={(value: any) => [
+                      formatter={(value: number) => [
                         `€${value.toFixed(3)}/kWh`,
                         'Prijs (excl. belasting)'
                       ]}
-                      labelFormatter={(label: any) => `Uur: ${label}:00`}
+                      labelFormatter={(label: number) => `Uur: ${label}:00`}
                     />
                       <Line 
                         type="monotone" 
@@ -526,11 +525,11 @@ export function DynamicPricingPage() {
                         tickLine={{ stroke: '#D1D5DB' }}
                       />
                     <Tooltip
-                      formatter={(value: any) => [
+                      formatter={(value: number) => [
                         `€${value.toFixed(3)}/kWh`,
                         'Gemiddelde prijs'
                       ]}
-                      labelFormatter={(label: any) => `${label}`}
+                      labelFormatter={(label: string) => `${label}`}
                     />
                       <Bar
                         dataKey="price"
@@ -654,8 +653,8 @@ export function DynamicPricingPage() {
                         tickFormatter={(value) => `€${value.toFixed(3)}`}
                       />
                       <Tooltip 
-                        formatter={(value: any) => [`€${value.toFixed(3)}/kWh`, 'Gemiddelde Prijs']}
-                        labelFormatter={(label: any) => `Jaar ${label}`}
+                        formatter={(value: number) => [`€${value.toFixed(3)}/kWh`, 'Gemiddelde Prijs']}
+                        labelFormatter={(label: number) => `Jaar ${label}`}
                       />
                       <Line 
                         type="monotone" 

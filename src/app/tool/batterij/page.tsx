@@ -79,7 +79,7 @@ export default function BatterijPage() {
             <div className="flex flex-wrap justify-center gap-4 text-sm">
               <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full">
                 <CheckCircle className="w-4 h-4" />
-                <span>3 scenario's</span>
+                <span>3 scenario&apos;s</span>
               </div>
               <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full">
                 <TrendingUp className="w-4 h-4" />
@@ -105,7 +105,7 @@ export default function BatterijPage() {
                 <div className="text-sm text-gray-700 space-y-2">
                   <p>
                     <strong>Saldering eindigt op 1 januari 2027.</strong> Dat maakt een thuisbatterij interessanter 
-                    omdat je meer profijt hebt van zelfverbruik. Deze tool vergelijkt verschillende scenario's:
+                    omdat je meer profijt hebt van zelfverbruik. Deze tool vergelijkt verschillende scenario&apos;s:
                   </p>
                   <ul className="list-disc list-inside space-y-1 ml-4">
                     <li>Huidig (2024-2026): met volledige saldering</li>
