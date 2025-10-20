@@ -274,7 +274,7 @@ De markt verschuift van hoge, variabele teruglevering vergoedingen naar lage vas
     id: 'dynamische-contracten-voordelen',
     title: 'Waarom dynamische energiecontracten steeds populairder worden',
     summary: 'Dynamische energiecontracten volgen de spotmarktprijzen en kunnen aanzienlijke besparingen opleveren voor flexibele gebruikers. Ontdek de voor- en nadelen.',
-    imageUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=400&fit=crop&crop=center',
+    imageUrl: 'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=800&h=400&fit=crop&crop=center',
     content: `
 ## Wat zijn dynamische energiecontracten?
 
@@ -923,7 +923,7 @@ Voor flexibele huishoudens biedt dit nieuwe kansen om te besparen op hun energie
 De komende jaren zullen cruciaal zijn om je voor te bereiden op deze veranderingen. Wie nu investeert in slimme technologie en flexibele verbruikspatronen, zal straks het meest profiteren van de nieuwe nettarieven.
     `,
     author: 'Energievergelijker Redactie',
-    publishDate: '2025-01-15',
+    publishDate: '2025-10-20',
     category: 'analyse',
     readTime: 9,
     featured: true,
