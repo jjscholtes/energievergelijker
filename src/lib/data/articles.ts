@@ -2,6 +2,82 @@ import { Article } from '@/types/articles';
 
 export const articles: Article[] = [
   {
+    id: 'dynamische-energiecontracten-slim-besparen-2025',
+    title: 'Dynamische energiecontracten: slim besparen in een grillige markt',
+    summary: 'Door goedkope hernieuwbare stroom en slimme sturing worden dynamische energiecontracten anno 2025 voor steeds meer huishoudens de voordeligste keuze.',
+    imageUrl: 'https://images.unsplash.com/photo-1545239351-1141bd82e8a6?w=800&h=400&fit=crop&crop=center',
+    content: `# Dynamische energiecontracten: slim besparen in een grillige markt
+
+*Laat de stroomprijs voor je werken in plaats van andersom.*
+
+---
+
+## Een energiemarkt in beweging
+
+Sinds de prijspiek van 2022 is het speelveld compleet veranderd. Grootschalige wind- en zonneparken drukken de gemiddelde groothandelsprijs, maar zorgen óók voor flinke uur-tot-uur-schommelingen. Waar vaste contracten vroeger rust boden, betaal je nu al snel een risicopremie van 5-40% bovenop de marktprijs.
+
+> In 2024-2025 verdubbelde het aantal huishoudens met een dynamisch contract tot ruim **844.000**; een trend die volgens consultants Roland Berger en toezichthouder ACM voorlopig doorzet.
+
+---
+
+## Hoe zit het ook alweer met de contracttypes?
+
+| Contract | Prijsopbouw | Voor- en nadelen |
+| :--- | :--- | :--- |
+| **Vast (1-3 jr)** | Eén tarief, vooraf vastgezet | + Budgetzekerheid<br>– Duur door premie<br>– Boete bij tussentijds overstappen |
+| **Variabel (halfjaar)** | Tarief wijzigt 2× per jaar | + Geen boete<br>– Prijs volgt markt vertraagd |
+| **Dynamisch (per uur/dag)** | Tarief = echte beursprijs + kleine opslag | + Gemiddeld goedkoopst<br>+ Profiteert van zon & wind<br>– Vraagt flexibiliteit (slimme meter, apps) |
+
+---
+
+## Waarom dynamisch nu het voordeligst is
+
+* **Lagere inkoopkosten** – Leveranciers hoeven nauwelijks risico af te dekken, dus de opslag per kWh blijft laag.
+* **Overaanbod zonne- en windenergie** – Middagtarieven zakken geregeld onder € 0,10/kWh (soms zelfs negatief).
+* **Slimme technologie** – Apps sturen je warmtepomp, EV-lader of vaatwasser automatisch naar de goedkope uren. Een EV-bezitter bespaart zo tot **€ 700 per jaar** op laadkosten.
+* **Salderingsregeling op z’n retour** – Vanaf 2027 loont het extra om je eigen zonnestroom direct te verbruiken. Een dynamisch contract maakt dit spel van vraag en aanbod transparant en winstgevend.
+
+---
+
+## “Maar wat als de prijzen exploderen?”
+
+Roland Berger rekende diverse stress-scenario’s door. Pas bij een structurele stijging van de groothandelsprijs van **meer dan 84%** wordt een huidig vast tarief goedkoper dan een dynamisch contract. Ter vergelijking: de extreemste piek van 2022 zat op +65%.
+
+Daarnaast kun je jezelf beschermen:
+
+* **Stel een prijsplafond in via je app** – koop automatisch alleen in onder een maximumprijs.
+* **Kies een hybride aanpak** – sommige leveranciers bieden een mix, waarbij je een deel van je verbruik vastzet en de rest dynamisch laat meebewegen.
+
+---
+
+## De toekomst: flexibiliteit wordt goud waard
+
+De komende jaren wordt het balanceren van het stroomnet de grootste uitdaging. De netbeheerder verwacht dat de vraag naar capaciteit met 50% stijgt vóór 2030. Initiatieven zoals congestiemanagement zullen consumenten belonen die op daluren stroom afnemen of terugleveren. Ook thuisbatterijen en buurtbatterijen worden vanaf 2026 fiscaal aantrekkelijker. Het resultaat: hoe flexibeler jouw verbruik, hoe groter je voordeel.
+
+---
+
+## Praktische stappen voor de consument
+
+1. **Check je slimme meter** – Deze is een vereiste voor een dynamisch tarief.
+2. **Vergelijk aanbieders** – Let vooral op de vaste maandkosten en de opslag per kWh/m³. De verschillen kunnen oplopen tot € 10 per maand.
+3. **Installeer een energie-app** (zoals Jedlix, Stekker, of de app van je leverancier) om je verbruik slim te sturen.
+4. **Automatiseer je grootverbruikers** – Plan het opladen van je auto, de wasmachine, vaatwasser en boiler op de goedkoopste uren.
+5. **Evalueer elk kwartaal** – Blijven je besparingen achter bij de verwachting? Pas dan je instellingen of eventueel je contractmix aan.
+
+---
+
+### Samenvatting in één zin
+
+Dankzij goedkope, maar volatiele hernieuwbare stroom en slimme aansturing is een dynamisch energiecontract anno 2025 voor de meeste huishoudens de snelste route naar een lagere energierekening, zonder dat je aan comfort hoeft in te boeten.
+    `,
+    author: 'Energievergelijker Redactie',
+    publishDate: '2025-10-22',
+    category: 'analyse',
+    readTime: 7,
+    featured: true,
+    tags: ['dynamische contracten', 'energieprijzen', 'flexibiliteit', 'hernieuwbare energie', '2025']
+  },
+  {
     id: 'einde-salderingsregeling-2027',
     title: 'Einde van de salderingsregeling en stijgende energiebelastingen: wat betekent 2027 voor jouw energierekening?',
     summary: 'Vanaf 1 januari 2027 verdwijnt de salderingsregeling voor zonnepanelen. Tegelijkertijd stijgen energiebelastingen en netbeheerkosten. Wat betekent dit voor jouw energierekening en hoe bereid je je voor?',
