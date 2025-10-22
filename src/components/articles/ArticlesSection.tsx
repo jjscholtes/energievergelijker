@@ -32,7 +32,10 @@ export default function ArticlesSection() {
         <div className="mb-20">
           {/* Enhanced Articles Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mb-16">
-            {articles.slice(0, 3).map((article) => (
+            {[...articles]
+              .sort((a, b) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime())
+              .slice(0, 3)
+              .map((article) => (
               <ArticleCard 
                 key={article.id}
                 article={article} 

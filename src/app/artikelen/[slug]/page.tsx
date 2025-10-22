@@ -177,11 +177,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               <thead className="bg-gradient-to-r from-emerald-50 to-teal-50">
                 <tr>
                   {tableHeaders.map((header, idx) => {
-                    // Process bold text in table headers
-                    let processedHeader = header;
-                    processedHeader = processedHeader.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-gray-900">$1</strong>');
-                    processedHeader = processedHeader.replace(/\*(.*?)\*/g, '<em class="italic text-gray-800">$1</em>');
-                    
+                    const processedHeader = header
+                      .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-gray-900">$1</strong>')
+                      .replace(/\*(.*?)\*/g, '<em class="italic text-gray-800">$1</em>');
+
                     return (
                       <th key={idx} className="px-6 py-4 text-left font-semibold text-gray-800 border-b border-gray-200">
                         <span dangerouslySetInnerHTML={{ __html: processedHeader }} />
@@ -194,11 +193,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 {currentTable.map((row, rowIdx) => (
                   <tr key={rowIdx} className={rowIdx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                     {row.map((cell, cellIdx) => {
-                      // Process bold text in table cells
-                      let processedCell = cell;
-                      processedCell = processedCell.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-gray-900">$1</strong>');
-                      processedCell = processedCell.replace(/\*(.*?)\*/g, '<em class="italic text-gray-800">$1</em>');
-                      
+                      const processedCell = cell
+                        .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-gray-900">$1</strong>')
+                        .replace(/\*(.*?)\*/g, '<em class="italic text-gray-800">$1</em>');
+
                       return (
                         <td key={cellIdx} className="px-6 py-4 text-gray-700 border-b border-gray-100">
                           <span dangerouslySetInnerHTML={{ __html: processedCell }} />
@@ -336,19 +334,18 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           flushQuote();
           inTable = true;
         }
-        
+
         const cells = trimmedLine.split('|').slice(1, -1).map(cell => cell.trim());
-        
-        // Check if this is a header row (contains ---)
+
+        // Skip separator rows like | --- |
         if (cells.some(cell => cell.includes('---'))) {
-          return; // Skip separator rows
+          return;
         }
-        
-        // Check if this looks like a header (first row or contains bold text)
-        if (tableHeaders.length === 0 || cells.some(cell => cell.includes('**'))) {
-          tableHeaders = cells.map(cell => cell.replace(/\*\*/g, ''));
+
+        if (tableHeaders.length === 0) {
+          tableHeaders = cells;
         } else {
-          currentTable.push(cells.map(cell => cell.replace(/\*\*/g, '')));
+          currentTable.push(cells);
         }
         return;
       }

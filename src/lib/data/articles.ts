@@ -24,9 +24,9 @@ Sinds de prijspiek van 2022 is het speelveld compleet veranderd. Grootschalige w
 
 | Contract | Prijsopbouw | Voor- en nadelen |
 | :--- | :--- | :--- |
-| **Vast (1-3 jr)** | Eén tarief, vooraf vastgezet | + Budgetzekerheid<br>– Duur door premie<br>– Boete bij tussentijds overstappen |
-| **Variabel (halfjaar)** | Tarief wijzigt 2× per jaar | + Geen boete<br>– Prijs volgt markt vertraagd |
-| **Dynamisch (per uur/dag)** | Tarief = echte beursprijs + kleine opslag | + Gemiddeld goedkoopst<br>+ Profiteert van zon & wind<br>– Vraagt flexibiliteit (slimme meter, apps) |
+| **Vast (1-3 jr)** | Eén tarief, vooraf vastgezet | + Budgetzekerheid<br>- Duur door premie<br>- Boete bij tussentijds overstappen |
+| **Variabel (halfjaar)** | Tarief wijzigt 2× per jaar | + Geen boete<br>- Prijs volgt markt vertraagd |
+| **Dynamisch (per uur/dag)** | Tarief = echte beursprijs + kleine opslag | + Gemiddeld goedkoopst<br>+ Profiteert van zon & wind<br>- Vraagt flexibiliteit (slimme meter, apps) |
 
 ---
 
