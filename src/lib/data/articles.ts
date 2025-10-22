@@ -2,6 +2,75 @@ import { Article } from '@/types/articles';
 
 export const articles: Article[] = [
   {
+    id: 'paradox-energiemarkt-meer-goedkope-stroom-toch-duurder',
+    title: 'De paradox van de energiemarkt: meer goedkope stroom, toch een hogere rekening?',
+    summary: 'Waarom zorgen recordaantallen bijna-gratis uren op de stroommarkt toch voor een hogere gemiddelde elektriciteitsprijs — en wat betekent dit voor jouw contractkeuze?',
+    imageUrl: '/spotprijs-maandelijks-2022-2025.png',
+    content: `# De Paradox van de Energiemarkt: Meer Goedkope Stroom, Toch een Hogere Rekening?
+
+De Nederlandse energiemarkt vertoont een opmerkelijke paradox. Energie-expert Martien Visser deelde onlangs via Bluesky een scherpe observatie: we beleven dit jaar aanzienlijk meer uren met bijna gratis stroom, terwijl de gemiddelde elektriciteitsprijs juist fors is gestegen. Hoe is dit mogelijk? Laten we dieper in deze tegenstelling duiken.
+
+---
+
+## Steeds Meer Uren met (Bijna) Gratis Elektriciteit
+
+De kern van de observatie wordt visueel weergegeven in de #grafiekvandedag die Visser deelde. Deze grafiek toont het cumulatieve aantal uren per jaar waarin de day-ahead elektriciteitsprijs op of onder de 1 eurocent per kWh lag.
+
+![Cumulatieve uren met bijna gratis stroom per jaar](/spotprijs-maandelijks-2022-2025.png)
+
+De trend is onmiskenbaar:
+
+- **2022** – Slechts enkele uren met extreem lage prijzen.
+- **2023** – Een duidelijke stijging naar ongeveer 640 uur (bijna 7,5% van het jaar).
+- **2024** – Bijna 900 uur met spotgoedkope stroom.
+- **2025** – Tot half oktober al 938 uur, goed voor ruim 13% van de tijd.
+
+Deze toename is direct te koppelen aan de snelle groei van zon- en windenergie. Op zonnige of winderige momenten is er een overvloed aan stroom beschikbaar. Omdat die energie niet altijd opgeslagen kan worden en het aanbod de vraag overstijgt, kelderen de prijzen. Consumenten met een dynamisch energiecontract profiteren dan direct van deze "gratis" uren.
+
+---
+
+## De Keerzijde: Een Hogere Gemiddelde Prijs
+
+Hoe kan de gemiddelde prijs dan toch stijgen? Het antwoord zit in de toegenomen volatiliteit van de markt. Dezelfde hernieuwbare bronnen die voor extreem lage prijzen zorgen, zijn afhankelijk van het weer. Wanneer de zon niet schijnt en de wind niet waait, moet de vraag worden opgevangen door conventionele gas- en kolencentrales.
+
+Deze schaarstemomenten leiden tot scherpe prijspieken die vele malen hoger liggen dan de gemiddelde prijs. Zet je de extreem lage én extreem hoge uren naast elkaar, dan stijgt het gemiddelde ondanks alle gratis momenten alsnog.
+
+---
+
+## Wat Betekent Dit Voor Jouw Energiecontract?
+
+### Dynamische contracten
+* **Voordeel** – Je profiteert maximaal van goedkope of negatieve prijzen door verbruik te verschuiven.
+* **Let op** – Zonder slimme sturing loop je risico op dure uren. Automatisering en notificaties zijn cruciaal.
+
+### Vaste contracten
+* **Voordeel** – Volledige bescherming tegen piekprijzen.
+* **Let op** – Leveranciers prijzen het risico van volatiliteit in, waardoor je een premie betaalt.
+
+### Variabele contracten
+* **Voordeel** – Tarieven bewegen periodiek mee met de markt, zonder extreme uurvolatiliteit.
+* **Let op** – Je mist zowel de grootste meevallers als de bescherming tegen pieken.
+
+---
+
+## De Toekomst: Slimmer Omgaan met Energie
+
+De trend naar meer volatiliteit zal zich waarschijnlijk doorzetten naarmate het aandeel hernieuwbare energie groeit. Dat benadrukt de noodzaak van een flexibel energiesysteem:
+
+1. **Thuisbatterijen & opslag** – Vang overschotten op goedkope momenten op en gebruik ze wanneer prijzen hoog zijn.
+2. **Slimme aansturing** – Laat warmtepompen, EV-laders en huishoudelijke apparaten automatisch draaien tijdens goedkope uren.
+3. **Netverzwaring & congestiemanagement** – Netbeheerders werken aan prikkels om vraag en aanbod beter te balanceren.
+
+Voor consumenten wordt niet alleen het *hoeveel* belangrijk, maar vooral het *wanneer* van energieverbruik. De paradox van de energiemarkt is daarmee geen raadsel, maar een duidelijk signaal van de energietransitie in volle gang.
+    `,
+    author: 'Energievergelijker Redactie',
+    publishDate: '2025-10-22',
+    category: 'analyse',
+    readTime: 8,
+    featured: true,
+    tags: ['energieprijzen', 'dynamische contracten', 'hernieuwbare energie', 'volatiliteit', 'thuisbatterij', 'flexibiliteit']
+  },
+  {
     id: 'dynamische-energiecontracten-slim-besparen-2025',
     title: 'Dynamische energiecontracten: slim besparen in een grillige markt',
     summary: 'Door goedkope hernieuwbare stroom en slimme sturing worden dynamische energiecontracten anno 2025 voor steeds meer huishoudens de voordeligste keuze.',
