@@ -3,9 +3,9 @@ import { Article } from '@/types/articles';
 export const articles: Article[] = [
   {
     id: 'piekuren-betalen-loont-niet-meer-stroomprijzen-analyse',
-    title: 'Piekuren betalen loont niet meer: wat vier jaar stroomprijzen ons leren',
+    title: 'Piekuren zijn duurder dan ooit: waarom timing van je stroomverbruik nu cruciaal is',
     summary: 'Een grondige analyse van stroomprijzen tussen 2022 en 2025 toont dat timing van je stroomverbruik een steeds grotere impact heeft op je portemonnee. Het verschil is groter dan je denkt.',
-    imageUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=400&fit=crop&crop=center',
+    imageUrl: '/piekvsgemiddeld.png',
     content: `# Piekuren Betalen Loont Niet Meer: Wat Vier Jaar Stroomprijzen Ons Leren
 
 Wanneer zet jij de wasmachine aan? Of laad je de elektrische auto op? Voor veel Nederlanders was het antwoord tot voor kort simpel: "Wanneer het uitkomt." Maar een grondige analyse van stroomprijzen tussen 2022 en 2025 laat zien dat de timing van je stroomverbruik een steeds grotere impact heeft op je portemonnee. En het verschil is groter dan je denkt.
@@ -30,7 +30,7 @@ Alle overige uren worden beschouwd als daluren of "buiten-piek" momenten. Deze i
 
 Het jaar 2022 was buitengewoon, en dat is mild uitgedrukt. De Russische invasie van Oekraïne stuurde schokgolven door de Europese energiemarkt, met prijzen die door het dak schoten.
 
-![Maandgemiddelden 2022](/herfst-2024-uur-dag-prijzen.png)
+![Maandgemiddelden 2022](/maandgemiddelden_2022_piek_vs_off.png)
 
 Wat direct opvalt in de grafiek:
 - De **extreme piek in augustus**, waar zowel piek- als daluren ongekend duur waren
@@ -49,7 +49,7 @@ In 2022 werden veel Nederlanders zich voor het eerst echt bewust van hun stroomv
 
 Na de storm kwam de kalmte - relatief dan. In 2023 normaliseerden de prijzen, maar het verschil tussen piek en dal bleef duidelijk zichtbaar.
 
-![Maandgemiddelden 2023](/herfst-2024-uur-dag-prijzen.png)
+![Maandgemiddelden 2023](/maandgemiddelden_2023_piek_vs_off.png)
 
 **Belangrijkste ontwikkelingen:**
 - Piek-premie daalde naar **€0,031 per kWh** - de helft van 2022
@@ -64,7 +64,7 @@ Wat opviel was het toenemende aantal uren met zeer lage of zelfs negatieve prijz
 
 2024 markeerde een keerpunt in hoe we naar stroomprijzen moeten kijken. De massale uitrol van zonnepanelen en windparken begon zijn vruchten af te werpen - letterlijk.
 
-![Maandgemiddelden 2024](/herfst-2024-uur-dag-prijzen.png)
+![Maandgemiddelden 2024](/maandgemiddelden_2024_piek_vs_off.png)
 
 ### Het Fenomeen van Negatieve Prijzen
 
@@ -89,7 +89,7 @@ De piek-premie bleef stabiel op **€0,030 per kWh**, maar de reden veranderde: 
 
 De eerste negen maanden van 2025 laten zien dat de trend doorzet - sterker nog, versnelt.
 
-![Maandgemiddelden 2025](/herfst-2024-uur-dag-prijzen.png)
+![Maandgemiddelden 2025](/maandgemiddelden_2025_piek_vs_off.png)
 
 **Wat zien we in 2025?**
 - Piek-premie stijgt licht naar **€0,033 per kWh**
