@@ -5,7 +5,7 @@ export const articles: Article[] = [
     id: 'paradox-energiemarkt-meer-goedkope-stroom-toch-duurder',
     title: 'De paradox van de energiemarkt: meer goedkope stroom, toch een hogere rekening?',
     summary: 'Waarom zorgen recordaantallen bijna-gratis uren op de stroommarkt toch voor een hogere gemiddelde elektriciteitsprijs — en wat betekent dit voor jouw contractkeuze?',
-    imageUrl: '/spotprijs-maandelijks-2022-2025.png',
+    imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=400&fit=crop&crop=center',
     content: `# De Paradox van de Energiemarkt: Meer Goedkope Stroom, Toch een Hogere Rekening?
 
 De Nederlandse energiemarkt vertoont een opmerkelijke paradox. Energie-expert Martien Visser deelde onlangs via Bluesky een scherpe observatie: we beleven dit jaar aanzienlijk meer uren met bijna gratis stroom, terwijl de gemiddelde elektriciteitsprijs juist fors is gestegen. Hoe is dit mogelijk? Laten we dieper in deze tegenstelling duiken.
