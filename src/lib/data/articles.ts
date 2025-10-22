@@ -2,6 +2,197 @@ import { Article } from '@/types/articles';
 
 export const articles: Article[] = [
   {
+    id: 'piekuren-betalen-loont-niet-meer-stroomprijzen-analyse',
+    title: 'Piekuren betalen loont niet meer: wat vier jaar stroomprijzen ons leren',
+    summary: 'Een grondige analyse van stroomprijzen tussen 2022 en 2025 toont dat timing van je stroomverbruik een steeds grotere impact heeft op je portemonnee. Het verschil is groter dan je denkt.',
+    imageUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=400&fit=crop&crop=center',
+    content: `# Piekuren Betalen Loont Niet Meer: Wat Vier Jaar Stroomprijzen Ons Leren
+
+Wanneer zet jij de wasmachine aan? Of laad je de elektrische auto op? Voor veel Nederlanders was het antwoord tot voor kort simpel: "Wanneer het uitkomt." Maar een grondige analyse van stroomprijzen tussen 2022 en 2025 laat zien dat de timing van je stroomverbruik een steeds grotere impact heeft op je portemonnee. En het verschil is groter dan je denkt.
+
+In de afgelopen vier jaar hebben we een energiemarkt gezien die drastisch is veranderd. Van de extreme prijspieken tijdens de energiecrisis in 2022 tot de opmars van hernieuwbare energie die soms leidt tot *negatieve* stroomprijzen. Maar één ding blijft constant: **tijdens piekuren betaal je structureel meer**.
+
+---
+
+## De Methodologie: Wanneer zijn de Piekuren?
+
+Voor deze analyse zijn piekuren gedefinieerd als:
+- **Ochtendspits:** 07:00 - 09:59 uur
+- **Avondspits:** 16:00 - 20:59 uur
+
+Alle overige uren worden beschouwd als daluren of "buiten-piek" momenten. Deze indeling weerspiegelt het natuurlijke ritme van Nederland: wanneer we opstaan, ontbijten en naar werk gaan, en wanneer we thuiskomen, koken en ontspannen.
+
+> **Waarom deze tijden?** Dit zijn de momenten waarop de vraag naar elektriciteit piekt doordat miljoenen huishoudens en bedrijven tegelijkertijd stroom gebruiken. En zoals bij elk schaars product geldt: hogere vraag betekent hogere prijzen.
+
+---
+
+## 2022: Het Jaar van de Energiecrisis
+
+Het jaar 2022 was buitengewoon, en dat is mild uitgedrukt. De Russische invasie van Oekraïne stuurde schokgolven door de Europese energiemarkt, met prijzen die door het dak schoten.
+
+![Maandgemiddelden 2022](/herfst-2024-uur-dag-prijzen.png)
+
+Wat direct opvalt in de grafiek:
+- De **extreme piek in augustus**, waar zowel piek- als daluren ongekend duur waren
+- Een gemiddelde piek-premie van **€0,061 per kWh** - het hoogste van alle onderzochte jaren
+- Het verschil tussen piek en dal was in sommige maanden dramatisch groot
+
+*Voor een gemiddeld huishouden betekende dit dat het verschil tussen slim en onhandig laden wel €100-200 per jaar kon schelen.*
+
+### De Menselijke Impact
+
+In 2022 werden veel Nederlanders zich voor het eerst echt bewust van hun stroomverbruik. Waar energie voorheen een onzichtbare kostenpost was, werd het plotseling een significante uitgave. Mensen begonnen apps te gebruiken, timers in te stellen en echt na te denken over wanneer ze hun droger aanzetten.
+
+---
+
+## 2023: Normalisatie met een Nieuw Normaal
+
+Na de storm kwam de kalmte - relatief dan. In 2023 normaliseerden de prijzen, maar het verschil tussen piek en dal bleef duidelijk zichtbaar.
+
+![Maandgemiddelden 2023](/herfst-2024-uur-dag-prijzen.png)
+
+**Belangrijkste ontwikkelingen:**
+- Piek-premie daalde naar **€0,031 per kWh** - de helft van 2022
+- Prijzen volgden een voorspelbaar seizoenspatroon: hoger in winter, lager in zomer
+- Het verschil tussen piek en dal bleef in *alle maanden* positief
+
+Wat opviel was het toenemende aantal uren met zeer lage of zelfs negatieve prijzen, met name tijdens daluren. Dit was een voorbode van wat komen zou.
+
+---
+
+## 2024: De Opkomst van Negatieve Prijzen
+
+2024 markeerde een keerpunt in hoe we naar stroomprijzen moeten kijken. De massale uitrol van zonnepanelen en windparken begon zijn vruchten af te werpen - letterlijk.
+
+![Maandgemiddelden 2024](/herfst-2024-uur-dag-prijzen.png)
+
+### Het Fenomeen van Negatieve Prijzen
+
+Stel je voor: je krijgt *betaald* om stroom te gebruiken. Klinkt als een sprookje, maar het gebeurt steeds vaker:
+
+| Jaar | Negatieve uren (daluren) | Negatieve uren (piekuren) |
+|------|-------------------------|---------------------------|
+| 2022 | 1,3% | 0,2% |
+| 2023 | 4,6% | 0,5% |
+| 2024 | 6,6% | 1,8% |
+| 2025 YTD | 10,1% | 3,2% |
+
+*In 2024 had ongeveer 1 op de 15 daluren een negatieve prijs - een tienvoudige toename sinds 2022.*
+
+> **Waarom negatieve prijzen?** Op zonnige, winderige dagen produceren zonnepanelen en windmolens soms meer stroom dan we kunnen verbruiken. Het elektriciteitsnet moet in balans blijven, dus leveranciers betalen letterlijk om overtollige stroom kwijt te raken.
+
+De piek-premie bleef stabiel op **€0,030 per kWh**, maar de reden veranderde: niet alleen omdat piekuren duurder werden, maar vooral omdat daluren goedkoper werden.
+
+---
+
+## 2025: Een Trend Die Zich Versterkt
+
+De eerste negen maanden van 2025 laten zien dat de trend doorzet - sterker nog, versnelt.
+
+![Maandgemiddelden 2025](/herfst-2024-uur-dag-prijzen.png)
+
+**Wat zien we in 2025?**
+- Piek-premie stijgt licht naar **€0,033 per kWh**
+- Maar liefst **10,1%** van alle daluren heeft een negatieve prijs
+- Het seizoenspatroon blijft intact: hoogste premie in september, laagste in juni
+
+### De Paradox van Hernieuwbare Energie
+
+We zitten in een interessante paradox: meer hernieuwbare energie is geweldig voor het klimaat en duwt de gemiddelde stroomprijs omlaag, maar vergroot tegelijkertijd het verschil tussen piek en dal. Want zonnepanelen produceren op zondag middag stroom, niet op maandag avond wanneer iedereen kookt.
+
+---
+
+## Het Seizoenspatroon: Waarom September het Duurste is
+
+In alle vier de jaren is er een consistent patroon zichtbaar:
+
+**Hoogste piek-premie:**
+- 🍂 September-oktober: verhoogde vraag door terugkeer van vakantie, korter daglicht
+- ❄️ Winter: hogere totale vraag door verwarming en verlichting
+
+**Laagste piek-premie:**
+- ☀️ Mei-juni: lange dagen, minder vraag naar verlichting en verwarming
+- 🌞 Zomer: overvloed aan zonne-energie
+
+Dit betekent dat de voordelen van slim laden het grootst zijn in de nazomer en herfst - precies wanneer veel mensen hun vakantiebudget willen aanvullen.
+
+---
+
+## Wat Betekent Dit Voor Jouw Portemonnee?
+
+Laten we het concreet maken. Stel je hebt een dynamisch contract en verbruikt 3.000 kWh per jaar. Met een piek-premie van €0,033:
+
+**Scenario 1: Alles tijdens piekuren**
+- Totale meerkosten: €99 per jaar
+
+**Scenario 2: 70% buiten piekuren**
+- Besparing: ongeveer €70 per jaar
+
+**Scenario 3: Slim laden met negatieve prijzen**
+- Potentiële besparing: €100+ per jaar
+
+*En dit zijn conservatieve schattingen. Voor huishoudens met elektrisch rijden of een warmtepomp kunnen de bedragen twee tot drie keer zo hoog zijn.*
+
+---
+
+## Praktische Tips: Hoe Profiteer je van Dit Inzicht?
+
+### 1. Investeer in een Dynamisch Contract
+Als je nog een vast tarief hebt, overweeg de overstap. De besparingen kunnen substantieel zijn, mits je flexibel bent in je verbruik.
+
+### 2. Programmeer je Grote Verbruikers
+- **Wasmachine en droger:** draai 's nachts of overdag
+- **Vaatwasser:** start na 21:00 uur
+- **Elektrische auto:** laad tussen 23:00 en 07:00 uur
+
+### 3. Gebruik een Slimme App
+Veel energieleveranciers bieden apps die je waarschuwen voor goedkope uren. Sommige geven zelfs seintjes wanneer prijzen negatief zijn.
+
+### 4. Denk Seizoensgebonden
+In september-oktober loont slim laden het meest. In mei-juni is het verschil kleiner en heb je meer vrijheid.
+
+### 5. Overweeg een Thuisbatterij
+Voor early adopters: een thuisbatterij laat je stroom opslaan tijdens negatieve prijzen en gebruiken tijdens pieken. De terugverdientijd wordt steeds korter.
+
+---
+
+## De Blik Vooruit: Wat Kunnen We Verwachten?
+
+Drie trends die we de komende jaren waarschijnlijk zullen zien:
+
+**📈 Meer Volatiliteit**  
+Naarmate het aandeel hernieuwbare energie groeit, zullen prijsverschillen tussen piek en dal waarschijnlijk groter worden. Winderige, zonnige dagen geven extreme daluren, terwijl windstille avonden tot prijspieken kunnen leiden.
+
+**🔋 Batterijen als Gamechanger**  
+Zowel grootschalige batterijparken als thuisbatterijen zullen steeds meer invloed krijgen. Ze kunnen overtollige stroom opslaan en tijdens pieken leveren, wat de extremen dempt.
+
+**🏘️ Lokale Energiegemeenschappen**  
+Steeds meer wijken en dorpen gaan samen hun energie beheren, met lokale opslag en slim verbruik. Dit kan de druk op het landelijke net verminderen.
+
+---
+
+## Conclusie: De Nieuwe Realiteit van Stroomverbruik
+
+De afgelopen vier jaar hebben ons één ding glashelder geleerd: **timing is alles**. Het tijdperk van "stroom is stroom" is voorbij. We leven nu in een wereld waar de markt je beloont voor flexibiliteit en bestraft voor onwrikbaarheid.
+
+De goede nieuws? Met een beetje planning en de juiste hulpmiddelen is het helemaal niet moeilijk om te profiteren van deze nieuwe realiteit. Sterker nog, voor veel huishoudens voelt het bevrijdend om meer controle te hebben over hun energiekosten.
+
+De piek-premie is niet iets abstracts - het is een concrete kans om te besparen. Of je nu €50 of €200 per jaar wilt besparen, de data laat zien dat het verschil maken loont. En met de toenemende rol van hernieuwbare energie en batterijen wordt dat verschil alleen maar groter.
+
+*Dus de volgende keer dat je je wasmachine wilt aanzetten: kijk even op de klok. Je portemonnee zal je dankbaar zijn.*
+
+---
+
+**Over deze analyse:** De data is gebaseerd op dagelijkse uurprijzen van de Nederlandse stroommarkt tussen januari 2022 en september 2025. Piekuren zijn gedefinieerd als 07:00-09:59 en 16:00-20:59 uur. Alle bedragen zijn exclusief BTW en leveringskosten.
+    `,
+    author: 'Energievergelijker Redactie',
+    publishDate: '2025-10-22',
+    category: 'analyse',
+    readTime: 12,
+    featured: true,
+    tags: ['piekuren', 'stroomprijzen', 'dynamische contracten', 'besparen', 'timing', 'energiecrisis', 'negatieve prijzen', 'seizoenspatroon']
+  },
+  {
     id: 'paradox-energiemarkt-meer-goedkope-stroom-toch-duurder',
     title: 'De paradox van de energiemarkt: meer goedkope stroom, toch een hogere rekening?',
     summary: 'Waarom zorgen recordaantallen bijna-gratis uren op de stroommarkt toch voor een hogere gemiddelde elektriciteitsprijs — en wat betekent dit voor jouw contractkeuze?',
@@ -15,8 +206,6 @@ De Nederlandse energiemarkt vertoont een opmerkelijke paradox. Energie-expert Ma
 ## Steeds Meer Uren met (Bijna) Gratis Elektriciteit
 
 De kern van de observatie wordt visueel weergegeven in de #grafiekvandedag die Visser deelde. Deze grafiek toont het cumulatieve aantal uren per jaar waarin de day-ahead elektriciteitsprijs op of onder de 1 eurocent per kWh lag.
-
-![Cumulatieve uren met bijna gratis stroom per jaar](/spotprijs-maandelijks-2022-2025.png)
 
 De trend is onmiskenbaar:
 
@@ -32,6 +221,8 @@ Deze toename is direct te koppelen aan de snelle groei van zon- en windenergie. 
 ## De Keerzijde: Een Hogere Gemiddelde Prijs
 
 Hoe kan de gemiddelde prijs dan toch stijgen? Het antwoord zit in de toegenomen volatiliteit van de markt. Dezelfde hernieuwbare bronnen die voor extreem lage prijzen zorgen, zijn afhankelijk van het weer. Wanneer de zon niet schijnt en de wind niet waait, moet de vraag worden opgevangen door conventionele gas- en kolencentrales.
+
+![Gemiddelde day-ahead prijs per maand per jaar](/spotprijs-maandelijks-2022-2025.png)
 
 Deze schaarstemomenten leiden tot scherpe prijspieken die vele malen hoger liggen dan de gemiddelde prijs. Zet je de extreem lage én extreem hoge uren naast elkaar, dan stijgt het gemiddelde ondanks alle gratis momenten alsnog.
 

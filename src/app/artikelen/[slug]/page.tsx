@@ -362,6 +362,36 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         return;
       }
 
+      // Handle images
+      if (trimmedLine.startsWith('![') && trimmedLine.includes('](') && trimmedLine.endsWith(')')) {
+        flushList();
+        flushTable();
+        flushQuote();
+        
+        const imageMatch = trimmedLine.match(/!\[(.*?)\]\((.*?)\)/);
+        if (imageMatch) {
+          const [, altText, imageSrc] = imageMatch;
+          elements.push(
+            <div key={`image-${index}`} className="my-8">
+              <div className="relative rounded-xl overflow-hidden shadow-lg">
+                <img
+                  src={imageSrc}
+                  alt={altText}
+                  className="w-full h-auto"
+                  loading="lazy"
+                />
+              </div>
+              {altText && (
+                <p className="text-sm text-gray-500 mt-2 text-center italic">
+                  {altText}
+                </p>
+              )}
+            </div>
+          );
+        }
+        return;
+      }
+
       // Handle regular paragraphs
       if (trimmedLine !== '') {
         flushList();
