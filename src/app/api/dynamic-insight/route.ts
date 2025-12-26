@@ -14,6 +14,14 @@ export interface DynamicInsightRequest {
   persons?: number;
   fromDate?: string;
   tillDate?: string;
+  // Zonnepanelen
+  hasSolar?: boolean;
+  solarProduction?: number;
+  selfConsumptionPercentage?: number;
+  // Elektrische Auto
+  hasEV?: boolean;
+  evKwhPerYear?: number;
+  smartCharging?: boolean;
 }
 
 export interface HourlyCost {
@@ -65,6 +73,16 @@ export interface DynamicInsightResponse {
   cheapestMonth: { month: number; name: string; avgPrice: number };
   expensiveMonth: { month: number; name: string; avgPrice: number };
   
+  // Zonnepanelen
+  solarSavings?: number;
+  solarSelfConsumption?: number;
+  solarFeedIn?: number;
+  feedInRevenue?: number;
+  
+  // EV
+  evCost?: number;
+  evSmartChargingSavings?: number;
+  
   // Meta
   period: { from: string; till: string };
   lastUpdated: string;
@@ -84,6 +102,31 @@ interface EnergyZeroResponse {
 const ENERGY_TAX = 0.1316; // €/kWh including VAT
 const SUPPLIER_MARKUP = 0.025; // €/kWh typical dynamic contract markup
 const FIXED_PRICE = 0.28; // €/kWh typical fixed contract all-in price
+const FEED_IN_MARKUP = 0.02; // €/kWh supplier margin on feed-in
+
+// Solar production profile by month (relative, sums to ~1.0)
+const SOLAR_MONTHLY_PROFILE = [
+  0.03, // Jan
+  0.05, // Feb
+  0.08, // Mar
+  0.11, // Apr
+  0.13, // May
+  0.14, // Jun
+  0.14, // Jul
+  0.12, // Aug
+  0.09, // Sep
+  0.06, // Oct
+  0.03, // Nov
+  0.02, // Dec
+];
+
+// Solar hourly production profile (relative to daily production)
+const SOLAR_HOURLY_PROFILE = [
+  0, 0, 0, 0, 0, 0.01, // 0-5
+  0.03, 0.06, 0.09, 0.11, 0.13, 0.14, // 6-11
+  0.14, 0.13, 0.11, 0.09, 0.06, 0.03, // 12-17
+  0.01, 0, 0, 0, 0, 0 // 18-23
+];
 
 const monthNames = [
   'Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni',
@@ -100,7 +143,15 @@ export async function POST(request: Request) {
       buildYear,
       persons,
       fromDate,
-      tillDate
+      tillDate,
+      // Zonnepanelen
+      hasSolar,
+      solarProduction = 0,
+      selfConsumptionPercentage = 30,
+      // EV
+      hasEV,
+      evKwhPerYear = 0,
+      smartCharging = true,
     } = body;
     
     // Validate inputs
@@ -244,9 +295,113 @@ export async function POST(request: Request) {
     const expensiveMonth = sortedByPrice[sortedByPrice.length - 1];
     
     // Compare with fixed contract
-    const fixedContractCost = totalConsumption * FIXED_PRICE;
+    let fixedContractCost = totalConsumption * FIXED_PRICE;
+    
+    // ===== ZONNEPANELEN BEREKENING =====
+    let solarSavings = 0;
+    let solarSelfConsumption = 0;
+    let solarFeedIn = 0;
+    let feedInRevenue = 0;
+    
+    if (hasSolar && solarProduction > 0) {
+      // Bereken maandelijkse productie en eigenverbruik
+      solarSelfConsumption = solarProduction * (selfConsumptionPercentage / 100);
+      solarFeedIn = solarProduction - solarSelfConsumption;
+      
+      // Bereken besparingen per maand/uur
+      let monthlyFeedInRevenue = 0;
+      let monthlySelfConsumptionSavings = 0;
+      
+      for (let month = 0; month < 12; month++) {
+        const monthlyProduction = solarProduction * SOLAR_MONTHLY_PROFILE[month];
+        const monthlyDays = daysInMonth[month];
+        const dailyProduction = monthlyProduction / monthlyDays;
+        
+        for (let hour = 0; hour < 24; hour++) {
+          const hourlyProduction = dailyProduction * SOLAR_HOURLY_PROFILE[hour];
+          const key = `${month}-${hour}`;
+          const spotPrice = avgPriceByMonthHour.get(key) ?? 0.10;
+          
+          // Eigenverbruik bespaart alle-in prijs
+          const hourSelfConsumption = hourlyProduction * (selfConsumptionPercentage / 100) * monthlyDays;
+          const allInPrice = spotPrice + SUPPLIER_MARKUP + ENERGY_TAX;
+          monthlySelfConsumptionSavings += hourSelfConsumption * allInPrice;
+          
+          // Teruglevering: spotprijs minus marge (kan negatief zijn!)
+          const hourFeedIn = hourlyProduction * ((100 - selfConsumptionPercentage) / 100) * monthlyDays;
+          const feedInPrice = Math.max(0, spotPrice - FEED_IN_MARKUP); // Minimaal €0
+          monthlyFeedInRevenue += hourFeedIn * feedInPrice;
+        }
+      }
+      
+      solarSavings = monthlySelfConsumptionSavings;
+      feedInRevenue = monthlyFeedInRevenue;
+      
+      // Pas totale kosten aan
+      totalCost -= solarSavings;
+      totalCost -= feedInRevenue;
+      
+      // Fixed contract vergelijking: hier zou saldering gelden (nog wel tot 2027)
+      const saldeerPrijs = FIXED_PRICE; // Bij vast contract krijg je zelfde prijs terug
+      fixedContractCost -= solarProduction * saldeerPrijs * 0.9; // 90% effectief door timing
+    }
+    
+    // ===== EV BEREKENING =====
+    let evCost = 0;
+    let evSmartChargingSavings = 0;
+    
+    if (hasEV && evKwhPerYear > 0) {
+      // Bereken EV kosten per maand
+      const evKwhPerMonth = evKwhPerYear / 12;
+      
+      if (smartCharging) {
+        // Slim laden: laad in de 6 goedkoopste uren per dag
+        for (let month = 0; month < 12; month++) {
+          // Vind de 6 goedkoopste uren per maand
+          const hourPrices: { hour: number; price: number }[] = [];
+          for (let hour = 0; hour < 24; hour++) {
+            const key = `${month}-${hour}`;
+            const spotPrice = avgPriceByMonthHour.get(key) ?? 0.10;
+            hourPrices.push({ hour, price: spotPrice });
+          }
+          hourPrices.sort((a, b) => a.price - b.price);
+          const cheapestHours = hourPrices.slice(0, 6);
+          
+          // Bereken kosten voor slim laden (verspreid over 6 goedkoopste uren)
+          const avgCheapPrice = cheapestHours.reduce((sum, h) => sum + h.price, 0) / 6;
+          const allInCheapPrice = avgCheapPrice + SUPPLIER_MARKUP + ENERGY_TAX;
+          evCost += evKwhPerMonth * allInCheapPrice;
+          
+          // Bereken wat het zou kosten zonder slim laden (gemiddelde prijs)
+          const avgMonthPrice = hourPrices.reduce((sum, h) => sum + h.price, 0) / 24;
+          const allInAvgPrice = avgMonthPrice + SUPPLIER_MARKUP + ENERGY_TAX;
+          evSmartChargingSavings += evKwhPerMonth * (allInAvgPrice - allInCheapPrice);
+        }
+      } else {
+        // Normaal laden: gemiddelde prijs
+        for (let month = 0; month < 12; month++) {
+          let monthPriceSum = 0;
+          for (let hour = 0; hour < 24; hour++) {
+            const key = `${month}-${hour}`;
+            const spotPrice = avgPriceByMonthHour.get(key) ?? 0.10;
+            monthPriceSum += spotPrice;
+          }
+          const avgMonthPrice = monthPriceSum / 24;
+          const allInPrice = avgMonthPrice + SUPPLIER_MARKUP + ENERGY_TAX;
+          evCost += evKwhPerMonth * allInPrice;
+        }
+      }
+      
+      // Voeg EV kosten toe aan totaal
+      totalCost += evCost;
+      totalConsumption += evKwhPerYear;
+      
+      // Fixed contract: EV tegen vaste prijs
+      fixedContractCost += evKwhPerYear * FIXED_PRICE;
+    }
+    
     const savings = fixedContractCost - totalCost;
-    const savingsPercentage = (savings / fixedContractCost) * 100;
+    const savingsPercentage = fixedContractCost > 0 ? (savings / fixedContractCost) * 100 : 0;
     
     const response: DynamicInsightResponse = {
       totalCost,
@@ -273,6 +428,20 @@ export async function POST(request: Request) {
         name: expensiveMonth.monthName,
         avgPrice: expensiveMonth.averagePrice,
       },
+      
+      // Zonnepanelen
+      ...(hasSolar && solarProduction > 0 ? {
+        solarSavings,
+        solarSelfConsumption,
+        solarFeedIn,
+        feedInRevenue,
+      } : {}),
+      
+      // EV
+      ...(hasEV && evKwhPerYear > 0 ? {
+        evCost,
+        evSmartChargingSavings,
+      } : {}),
       
       period: {
         from: from.toISOString().split('T')[0],

@@ -19,6 +19,9 @@ import {
   ChevronRight,
   CheckCircle,
   AlertCircle,
+  Car,
+  BatteryCharging,
+  Leaf,
 } from 'lucide-react';
 import {
   BarChart,
@@ -64,6 +67,14 @@ interface CalculationResult {
   cheapestMonth: { month: number; name: string; avgPrice: number };
   expensiveMonth: { month: number; name: string; avgPrice: number };
   period: { from: string; till: string };
+  // Zonnepanelen
+  solarSavings?: number;
+  solarSelfConsumption?: number;
+  solarFeedIn?: number;
+  feedInRevenue?: number;
+  // EV
+  evCost?: number;
+  evSmartChargingSavings?: number;
 }
 
 export function DynamischInzichtTool() {
@@ -78,6 +89,16 @@ export function DynamischInzichtTool() {
   const [buildYear, setBuildYear] = useState<BuildYearRange>('2006-2016');
   const [persons, setPersons] = useState<number | undefined>(undefined);
   
+  // Zonnepanelen
+  const [hasSolar, setHasSolar] = useState<boolean>(false);
+  const [solarProduction, setSolarProduction] = useState<number>(4000);
+  const [selfConsumptionPercentage, setSelfConsumptionPercentage] = useState<number>(30);
+  
+  // Elektrische Auto
+  const [hasEV, setHasEV] = useState<boolean>(false);
+  const [evKwhPerYear, setEvKwhPerYear] = useState<number>(3000);
+  const [smartCharging, setSmartCharging] = useState<boolean>(true);
+  
   const handleCalculate = async () => {
     setLoading(true);
     setError(null);
@@ -91,6 +112,14 @@ export function DynamischInzichtTool() {
           heatingType,
           buildYear,
           persons: persons || undefined,
+          // Zonnepanelen
+          hasSolar,
+          solarProduction: hasSolar ? solarProduction : 0,
+          selfConsumptionPercentage: hasSolar ? selfConsumptionPercentage : 0,
+          // Elektrische Auto
+          hasEV,
+          evKwhPerYear: hasEV ? evKwhPerYear : 0,
+          smartCharging: hasEV ? smartCharging : false,
         }),
       });
       
@@ -224,6 +253,130 @@ export function DynamischInzichtTool() {
                     );
                   })}
                 </div>
+              </div>
+
+              {/* Zonnepanelen Toggle */}
+              <div className="border-t border-gray-200 pt-6">
+                <div 
+                  onClick={() => setHasSolar(!hasSolar)}
+                  className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                    hasSolar 
+                      ? 'border-yellow-500 bg-yellow-50 ring-2 ring-yellow-200' 
+                      : 'border-gray-200 hover:border-yellow-300'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Sun className={`w-6 h-6 ${hasSolar ? 'text-yellow-600' : 'text-gray-400'}`} />
+                      <div>
+                        <div className="font-semibold text-gray-900">Zonnepanelen</div>
+                        <div className="text-sm text-gray-500">Inclusief teruglevering en eigenverbruik</div>
+                      </div>
+                    </div>
+                    <div className={`w-12 h-6 rounded-full transition-all ${hasSolar ? 'bg-yellow-500' : 'bg-gray-300'}`}>
+                      <div className={`w-5 h-5 bg-white rounded-full shadow transform transition-transform mt-0.5 ${hasSolar ? 'translate-x-6 ml-0.5' : 'translate-x-0.5'}`} />
+                    </div>
+                  </div>
+                </div>
+
+                {hasSolar && (
+                  <div className="mt-4 p-4 bg-yellow-50 rounded-xl space-y-4 border border-yellow-200">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Jaarproductie (kWh)
+                      </label>
+                      <input
+                        type="number"
+                        value={solarProduction}
+                        onChange={(e) => setSolarProduction(Number(e.target.value))}
+                        min={500}
+                        max={20000}
+                        className="w-full px-4 py-3 border-2 border-yellow-200 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
+                        placeholder="Bijv. 4000"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">Typisch: 8 panelen ≈ 3.000 kWh/jaar</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Eigenverbruik percentage: {selfConsumptionPercentage}%
+                      </label>
+                      <input
+                        type="range"
+                        value={selfConsumptionPercentage}
+                        onChange={(e) => setSelfConsumptionPercentage(Number(e.target.value))}
+                        min={10}
+                        max={80}
+                        className="w-full accent-yellow-500"
+                      />
+                      <div className="flex justify-between text-xs text-gray-500">
+                        <span>10% (weinig thuis)</span>
+                        <span>80% (thuiswerker + batterij)</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* EV Toggle */}
+              <div>
+                <div 
+                  onClick={() => setHasEV(!hasEV)}
+                  className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                    hasEV 
+                      ? 'border-green-500 bg-green-50 ring-2 ring-green-200' 
+                      : 'border-gray-200 hover:border-green-300'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Car className={`w-6 h-6 ${hasEV ? 'text-green-600' : 'text-gray-400'}`} />
+                      <div>
+                        <div className="font-semibold text-gray-900">Elektrische Auto</div>
+                        <div className="text-sm text-gray-500">Thuis laden met slim laden simulatie</div>
+                      </div>
+                    </div>
+                    <div className={`w-12 h-6 rounded-full transition-all ${hasEV ? 'bg-green-500' : 'bg-gray-300'}`}>
+                      <div className={`w-5 h-5 bg-white rounded-full shadow transform transition-transform mt-0.5 ${hasEV ? 'translate-x-6 ml-0.5' : 'translate-x-0.5'}`} />
+                    </div>
+                  </div>
+                </div>
+
+                {hasEV && (
+                  <div className="mt-4 p-4 bg-green-50 rounded-xl space-y-4 border border-green-200">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Thuisladen per jaar (kWh)
+                      </label>
+                      <input
+                        type="number"
+                        value={evKwhPerYear}
+                        onChange={(e) => setEvKwhPerYear(Number(e.target.value))}
+                        min={500}
+                        max={10000}
+                        className="w-full px-4 py-3 border-2 border-green-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                        placeholder="Bijv. 3000"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">15.000 km ≈ 3.000 kWh (5 kWh/km)</p>
+                    </div>
+                    <div 
+                      onClick={() => setSmartCharging(!smartCharging)}
+                      className={`p-3 rounded-lg cursor-pointer transition-all flex items-center justify-between ${
+                        smartCharging ? 'bg-green-100 border-2 border-green-300' : 'bg-white border-2 border-gray-200'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <BatteryCharging className={`w-5 h-5 ${smartCharging ? 'text-green-600' : 'text-gray-400'}`} />
+                        <div>
+                          <div className="font-medium text-gray-900">Slim Laden</div>
+                          <div className="text-xs text-gray-500">Automatisch laden in goedkoopste uren</div>
+                        </div>
+                      </div>
+                      <div className={`w-10 h-5 rounded-full transition-all ${smartCharging ? 'bg-green-500' : 'bg-gray-300'}`}>
+                        <div className={`w-4 h-4 bg-white rounded-full shadow transform transition-transform mt-0.5 ${smartCharging ? 'translate-x-5 ml-0.5' : 'translate-x-0.5'}`} />
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <button
@@ -394,6 +547,76 @@ export function DynamischInzichtTool() {
                 </div>
               </div>
             </div>
+
+            {/* Zonnepanelen Results */}
+            {result.solarSavings !== undefined && (
+              <div className="bg-gradient-to-br from-yellow-50 to-amber-50 rounded-2xl shadow-lg p-6 border border-yellow-200">
+                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <Sun className="w-5 h-5 text-yellow-600" />
+                  Zonnepanelen Impact
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div className="p-4 bg-white/70 rounded-xl">
+                    <div className="text-sm text-gray-500 mb-1">Eigenverbruik</div>
+                    <div className="text-2xl font-bold text-yellow-700">{result.solarSelfConsumption?.toFixed(0)} kWh</div>
+                    <div className="text-sm text-gray-500">Direct verbruikt</div>
+                  </div>
+                  <div className="p-4 bg-white/70 rounded-xl">
+                    <div className="text-sm text-gray-500 mb-1">Teruglevering</div>
+                    <div className="text-2xl font-bold text-amber-600">{result.solarFeedIn?.toFixed(0)} kWh</div>
+                    <div className="text-sm text-gray-500">Naar het net</div>
+                  </div>
+                  <div className="p-4 bg-white/70 rounded-xl">
+                    <div className="text-sm text-green-600 mb-1">Bespaard (eigen)</div>
+                    <div className="text-2xl font-bold text-green-600">€{result.solarSavings?.toFixed(0)}</div>
+                    <div className="text-sm text-green-600">Niet gekocht</div>
+                  </div>
+                  <div className="p-4 bg-white/70 rounded-xl">
+                    <div className="text-sm text-blue-600 mb-1">Terugleveropbrengst</div>
+                    <div className="text-2xl font-bold text-blue-600">€{result.feedInRevenue?.toFixed(0)}</div>
+                    <div className="text-sm text-blue-600">Excl. saldering</div>
+                  </div>
+                </div>
+                <p className="text-sm text-gray-600 mt-4 p-3 bg-yellow-100 rounded-lg">
+                  <strong>💡 Let op:</strong> Na 2027 vervalt saldering. Met dynamisch contract ontvang je de spotprijs minus marge voor teruglevering. Dit kan bij negatieve prijzen nadelig uitpakken!
+                </p>
+              </div>
+            )}
+
+            {/* EV Results */}
+            {result.evCost !== undefined && (
+              <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl shadow-lg p-6 border border-green-200">
+                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <Car className="w-5 h-5 text-green-600" />
+                  Elektrische Auto Kosten
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="p-4 bg-white/70 rounded-xl">
+                    <div className="text-sm text-gray-500 mb-1">EV Laadkosten</div>
+                    <div className="text-2xl font-bold text-gray-800">€{result.evCost?.toFixed(0)}</div>
+                    <div className="text-sm text-gray-500">Per jaar thuis laden</div>
+                  </div>
+                  {(result.evSmartChargingSavings ?? 0) > 0 && (
+                    <div className="p-4 bg-green-100 rounded-xl">
+                      <div className="flex items-center gap-2 text-green-600 mb-1">
+                        <BatteryCharging className="w-4 h-4" />
+                        <span className="text-sm">Slim Laden Besparing</span>
+                      </div>
+                      <div className="text-2xl font-bold text-green-600">€{result.evSmartChargingSavings?.toFixed(0)}</div>
+                      <div className="text-sm text-green-600">Door laden in goedkoopste uren</div>
+                    </div>
+                  )}
+                  <div className="p-4 bg-white/70 rounded-xl">
+                    <div className="text-sm text-gray-500 mb-1">Kosten per kWh</div>
+                    <div className="text-2xl font-bold text-gray-800">€{evKwhPerYear > 0 ? ((result.evCost ?? 0) / evKwhPerYear).toFixed(2) : '0.00'}</div>
+                    <div className="text-sm text-gray-500">Gemiddeld met slim laden</div>
+                  </div>
+                </div>
+                <p className="text-sm text-gray-600 mt-4 p-3 bg-green-100 rounded-lg">
+                  <strong>⚡ Slim laden tip:</strong> Door te laden in de 6 goedkoopste uren per dag (meestal &apos;s nachts) bespaar je met dynamisch tot 30% op laadkosten!
+                </p>
+              </div>
+            )}
 
             {/* Monthly Chart */}
             <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
