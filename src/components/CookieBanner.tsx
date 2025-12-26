@@ -3,6 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import { Cookie, Settings, Check, X } from 'lucide-react';
 
+// Type declaration for gtag
+declare global {
+  interface Window {
+    gtag?: (command: string, action: string, params?: Record<string, string>) => void;
+  }
+}
+
 export function CookieBanner() {
   const [showBanner, setShowBanner] = useState(false);
   const [showSettings, setShowSettings] = useState(false);

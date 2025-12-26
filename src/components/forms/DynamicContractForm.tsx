@@ -163,7 +163,7 @@ export function DynamicContractForm({ onCalculate, isLoading }: DynamicContractF
                 <select
                   id="year"
                   value={formData.year}
-                  onChange={(e) => handleInputChange('year', e.target.value)}
+                  onChange={(e) => handleInputChange('year', e.target.value as '2024' | '2025')}
                   className="w-full p-2 border border-gray-300 rounded-md"
                 >
                   <option value="2024">2024</option>

@@ -62,7 +62,8 @@ export function StandaloneContractForm({ onContractsChange, onDynamicContractsCh
         csvData2025: '', // Wordt later ingevuld in de berekening
         terugleververgoeding: newContract.tarieven.terugleververgoeding,
         maandelijkseVergoeding: newContract.vasteLeveringskosten,
-        opslagPerKwh: 0.02, // Default opslag
+        opslagPerKwh: 0.02, // Default opslag afname
+        opslagInvoeding: 0.023, // Default opslag invoeding
         tarieven: newContract.tarieven
       };
       
@@ -316,7 +317,7 @@ export function StandaloneContractForm({ onContractsChange, onDynamicContractsCh
                         <h4 className="font-semibold text-gray-900">{contract.leverancier}</h4>
                         <p className="text-sm text-gray-600">{contract.productNaam}</p>
                         <div className="text-xs text-gray-500 mt-1">
-                          <div>Stroom: €{contract.tarieven.stroomKalePrijs.toFixed(3)}/kWh</div>
+                          <div>Stroom: €{(contract.tarieven.stroomKalePrijs ?? 0).toFixed(3)}/kWh</div>
                           <div>Gas: €{contract.tarieven.gasKalePrijs.toFixed(3)}/m³</div>
                           <div>Teruglevering: €{contract.tarieven.terugleververgoeding.toFixed(3)}/kWh</div>
                         </div>

@@ -58,6 +58,9 @@ export interface BerekeningResult {
     productNaam: string;
     type: string;
     kortingEenmalig?: number;
+    opslagPerKwh?: number;           // €/kWh voor afname (dynamisch)
+    opslagInvoeding?: number;        // €/kWh voor invoeding (dynamisch)
+    maandelijkseVergoeding?: number; // €/maand (dynamisch)
     tarieven?: {
       stroomKalePrijs?: number;
       stroomKalePrijsPiek?: number;

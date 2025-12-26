@@ -112,7 +112,7 @@ function parseCSV(csv: string): Record<string, number> {
           }
         });
       },
-      error: (error) => {
+      error: (error: unknown) => {
         throw new Error(`CSV parse fout: ${error instanceof Error ? error.message : 'Onbekende fout'}`);
       }
     });

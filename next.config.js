@@ -1,11 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
@@ -38,12 +32,6 @@ const nextConfig = {
   // Optimize package imports for better tree-shaking
   experimental: {
     optimizePackageImports: ['recharts', 'lucide-react', '@radix-ui/react-select', '@radix-ui/react-slider'],
-  },
-  // Module optimization
-  modularizeImports: {
-    'recharts': {
-      transform: 'recharts/lib/{{member}}',
-    },
   },
   async headers() {
     return [

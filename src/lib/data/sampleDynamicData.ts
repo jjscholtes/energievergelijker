@@ -69,7 +69,12 @@ export const dynamicContracts: DynamicContractData[] = [
     klanttevredenheid: 8.5,
     terugleververgoeding: 0.0, // Dynamische contracten gebruiken spotprijs
     maandelijkseVergoeding: 5.99, // €/maand
-    opslagPerKwh: 0.02 // €/kWh voor afname
+    opslagPerKwh: 0.02, // €/kWh voor afname
+    opslagInvoeding: 0.023, // €/kWh voor invoeding
+    tarieven: {
+      gasKalePrijs: 0.63,
+      terugleververgoeding: 0.0
+    }
   },
   {
     leverancier: "Zonneplan",
@@ -84,7 +89,12 @@ export const dynamicContracts: DynamicContractData[] = [
     klanttevredenheid: 8.2,
     terugleververgoeding: 0.0, // Dynamische contracten gebruiken spotprijs
     maandelijkseVergoeding: 4.99, // €/maand
-    opslagPerKwh: 0.015 // €/kWh voor afname
+    opslagPerKwh: 0.015, // €/kWh voor afname
+    opslagInvoeding: 0.02, // €/kWh voor invoeding
+    tarieven: {
+      gasKalePrijs: 0.60,
+      terugleververgoeding: 0.0
+    }
   },
   {
     leverancier: "Frank Energie",
@@ -99,7 +109,12 @@ export const dynamicContracts: DynamicContractData[] = [
     klanttevredenheid: 8.0,
     terugleververgoeding: 0.0, // Dynamische contracten gebruiken spotprijs
     maandelijkseVergoeding: 6.99, // €/maand
-    opslagPerKwh: 0.025 // €/kWh voor afname
+    opslagPerKwh: 0.025, // €/kWh voor afname
+    opslagInvoeding: 0.025, // €/kWh voor invoeding
+    tarieven: {
+      gasKalePrijs: 0.65,
+      terugleververgoeding: 0.0
+    }
   }
 ];
 

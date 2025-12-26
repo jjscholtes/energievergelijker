@@ -1,8 +1,10 @@
 'use client';
 
-import { useState, lazy, Suspense } from 'react';
+import { useEffect, useMemo, useState, lazy, Suspense, type ReactNode } from 'react';
 import { BatteryCalculationResult, ChartDataPoint } from '@/types/battery';
-import { Card } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 import {
   TrendingUp,
   TrendingDown,
@@ -12,6 +14,26 @@ import {
   ChevronDown,
   ChevronUp,
 } from 'lucide-react';
+
+type ScenarioKey = keyof BatteryCalculationResult['scenarios'];
+
+const euroFormatter = new Intl.NumberFormat('nl-NL', {
+  style: 'currency',
+  currency: 'EUR',
+  maximumFractionDigits: 0,
+  minimumFractionDigits: 0,
+});
+
+const euroFormatterPrecise = new Intl.NumberFormat('nl-NL', {
+  style: 'currency',
+  currency: 'EUR',
+  maximumFractionDigits: 2,
+});
+
+const lastValue = (values: number[]) => (values.length ? values[values.length - 1] : 0);
+
+const getCashflowValue = (values: number[], index: number) =>
+  index >= 0 && index < values.length ? values[index] : lastValue(values);
 
 // Lazy load Recharts
 const LineChart = lazy(() => import('recharts').then(mod => ({ default: mod.LineChart })));
@@ -32,21 +54,42 @@ interface BatteryResultsProps {
 
 export function BatteryResults({ result }: BatteryResultsProps) {
   const [showAssumptions, setShowAssumptions] = useState(false);
-  
+  const [activeScenarioKey, setActiveScenarioKey] = useState<ScenarioKey>(result.aanbeveling.besteScenario);
+
+  useEffect(() => {
+    setActiveScenarioKey(result.aanbeveling.besteScenario);
+  }, [result.aanbeveling.besteScenario]);
+
   const { scenarios, aanbeveling, eigenverbruikImpact, arbitrageStats, aannamen } = result;
 
-  // Prepare chart data
+  const scenarioMap = useMemo(
+    () =>
+      ({
+        huidig: scenarios.huidig,
+        na2027: scenarios.na2027,
+        dynamischOptimaal: scenarios.dynamischOptimaal,
+      }) as const,
+    [scenarios]
+  );
+
+  const scenarioEntries = useMemo(
+    () => (Object.keys(scenarioMap) as ScenarioKey[]).map(key => ({ key, data: scenarioMap[key] })),
+    [scenarioMap]
+  );
+
+  const activeScenario = scenarioMap[activeScenarioKey];
+  const besteScenario = scenarioMap[result.aanbeveling.besteScenario];
+
   const cashflowData: ChartDataPoint[] = [];
   for (let i = 0; i <= 15; i++) {
     cashflowData.push({
       jaar: i,
-      huidig: i === 0 ? 0 : scenarios.huidig.cashflowPerJaar[i - 1],
-      na2027: i === 0 ? 0 : scenarios.na2027.cashflowPerJaar[i - 1],
-      dynamisch: i === 0 ? 0 : scenarios.dynamischOptimaal.cashflowPerJaar[i - 1],
+      huidig: i === 0 ? 0 : getCashflowValue(scenarios.huidig.cashflowPerJaar, i - 1),
+      na2027: i === 0 ? 0 : getCashflowValue(scenarios.na2027.cashflowPerJaar, i - 1),
+      dynamisch: i === 0 ? 0 : getCashflowValue(scenarios.dynamischOptimaal.cashflowPerJaar, i - 1),
     });
   }
 
-  // Prepare savings breakdown data
   const savingsData = [
     {
       naam: 'Huidig',
@@ -68,159 +111,94 @@ export function BatteryResults({ result }: BatteryResultsProps) {
     },
   ];
 
+  const cashflowYearFive =
+    activeScenario.cashflowPerJaar[Math.min(4, activeScenario.cashflowPerJaar.length - 1)] ?? 0;
+
+  const kpiCards = [
+    {
+      title: 'Jaarlijkse besparing',
+      value: euroFormatter.format(Math.round(activeScenario.jaarlijkseBesparing.totaal)),
+      subtitle: `Verhoogd eigenverbruik + arbitrage (${activeScenario.naam})`,
+      tone: activeScenario.jaarlijkseBesparing.totaal >= 0 ? 'positive' : 'negative',
+    },
+    {
+      title: 'Terugverdientijd',
+      value: formatYears(activeScenario.terugverdientijd),
+      subtitle: activeScenario.rendabel ? 'Binnen 15 jaar levensduur' : 'Let op: buiten economische levensduur',
+      tone: activeScenario.rendabel ? 'positive' : 'warning',
+    },
+    {
+      title: 'Cashflow jaar 5',
+      value: euroFormatter.format(Math.round(cashflowYearFive)),
+      subtitle: 'Cumulatieve cashflow in jaar 5',
+      tone: cashflowYearFive >= 0 ? 'positive' : 'neutral',
+    },
+    {
+      title: 'Totale impact (15 jaar)',
+      value: euroFormatter.format(Math.round(activeScenario.totaleBesparingOver15Jaar)),
+      subtitle: 'Na investering + degradatie',
+      tone: activeScenario.totaleBesparingOver15Jaar >= 0 ? 'positive' : 'negative',
+    },
+  ] as const;
+
   return (
     <div className="space-y-8">
-      {/* Aanbeveling Header */}
-      <Card className={`p-6 ${aanbeveling.isRendabel ? 'bg-emerald-50 border-emerald-200' : 'bg-orange-50 border-orange-200'}`}>
-        <div className="flex items-start gap-4">
-          {aanbeveling.isRendabel ? (
-            <CheckCircle className="w-8 h-8 text-emerald-600 flex-shrink-0" />
-          ) : (
-            <AlertTriangle className="w-8 h-8 text-orange-600 flex-shrink-0" />
-          )}
-          <div className="flex-1">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              {aanbeveling.isRendabel ? 'Potentieel Interessant' : 'Beperkt Rendabel'}
-            </h2>
-            <p className="text-lg text-gray-700 mb-3">
-              {aanbeveling.korteSamenvatting}
-            </p>
-            {aanbeveling.waarschuwingen.length > 0 && (
-              <div className="space-y-1">
-                {aanbeveling.waarschuwingen.map((waarschuwing, index) => (
-                  <p key={index} className="text-sm text-gray-600 flex items-start gap-2">
-                    <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                    <span>{waarschuwing}</span>
-                  </p>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      </Card>
+      <RecommendationBanner
+        aanbeveling={aanbeveling}
+        besteScenario={besteScenario}
+      />
 
-      {/* Scenario Cards */}
-      <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Scenario Vergelijking</h2>
-        <div className="grid md:grid-cols-3 gap-6">
-          {/* Scenario 1: Huidig */}
-          <Card className="p-6 hover:shadow-lg transition-shadow">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-lg font-semibold">{scenarios.huidig.naam}</h3>
-              {scenarios.huidig.badge && (
-                <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">
-                  {scenarios.huidig.badge}
-                </span>
-              )}
-            </div>
-            <p className="text-sm text-gray-600 mb-4">{scenarios.huidig.beschrijving}</p>
-            
-            <div className="space-y-3">
-              <div>
-                <p className="text-sm text-gray-500">Jaarlijkse besparing</p>
-                <p className="text-2xl font-bold text-emerald-600">
-                  €{Math.round(scenarios.huidig.jaarlijkseBesparing.totaal)}
-                </p>
-              </div>
-              
-              <div>
-                <p className="text-sm text-gray-500">Terugverdientijd</p>
-                <p className="text-2xl font-bold">
-                  {scenarios.huidig.terugverdientijd === Infinity 
-                    ? '> 30 jaar' 
-                    : `${scenarios.huidig.terugverdientijd} jaar`}
-                </p>
-              </div>
-              
-              <div>
-                <p className="text-sm text-gray-500">Totaal over 15 jaar</p>
-                <p className={`text-lg font-bold ${scenarios.huidig.totaleBesparingOver15Jaar > 0 ? 'text-emerald-600' : 'text-red-600'}`}>
-                  {scenarios.huidig.totaleBesparingOver15Jaar > 0 ? '+' : ''}
-                  €{Math.round(scenarios.huidig.totaleBesparingOver15Jaar)}
-                </p>
-              </div>
-            </div>
-          </Card>
-
-          {/* Scenario 2: Na 2027 */}
-          <Card className="p-6 hover:shadow-lg transition-shadow border-2 border-orange-200">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-lg font-semibold">{scenarios.na2027.naam}</h3>
-              {scenarios.na2027.badge && (
-                <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-bold">
-                  {scenarios.na2027.badge}
-                </span>
-              )}
-            </div>
-            <p className="text-sm text-gray-600 mb-4">{scenarios.na2027.beschrijving}</p>
-            
-            <div className="space-y-3">
-              <div>
-                <p className="text-sm text-gray-500">Jaarlijkse besparing</p>
-                <p className="text-2xl font-bold text-emerald-600">
-                  €{Math.round(scenarios.na2027.jaarlijkseBesparing.totaal)}
-                </p>
-              </div>
-              
-              <div>
-                <p className="text-sm text-gray-500">Terugverdientijd</p>
-                <p className="text-2xl font-bold">
-                  {scenarios.na2027.terugverdientijd === Infinity 
-                    ? '> 30 jaar' 
-                    : `${scenarios.na2027.terugverdientijd} jaar`}
-                </p>
-              </div>
-              
-              <div>
-                <p className="text-sm text-gray-500">Totaal over 15 jaar</p>
-                <p className={`text-lg font-bold ${scenarios.na2027.totaleBesparingOver15Jaar > 0 ? 'text-emerald-600' : 'text-red-600'}`}>
-                  {scenarios.na2027.totaleBesparingOver15Jaar > 0 ? '+' : ''}
-                  €{Math.round(scenarios.na2027.totaleBesparingOver15Jaar)}
-                </p>
-              </div>
-            </div>
-          </Card>
-
-          {/* Scenario 3: Dynamisch */}
-          <Card className="p-6 hover:shadow-lg transition-shadow border-2 border-emerald-200">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-lg font-semibold">{scenarios.dynamischOptimaal.naam}</h3>
-              {scenarios.dynamischOptimaal.badge && (
-                <span className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold">
-                  {scenarios.dynamischOptimaal.badge}
-                </span>
-              )}
-            </div>
-            <p className="text-sm text-gray-600 mb-4">{scenarios.dynamischOptimaal.beschrijving}</p>
-            
-            <div className="space-y-3">
-              <div>
-                <p className="text-sm text-gray-500">Jaarlijkse besparing</p>
-                <p className="text-2xl font-bold text-emerald-600">
-                  €{Math.round(scenarios.dynamischOptimaal.jaarlijkseBesparing.totaal)}
-                </p>
-              </div>
-              
-              <div>
-                <p className="text-sm text-gray-500">Terugverdientijd</p>
-                <p className="text-2xl font-bold">
-                  {scenarios.dynamischOptimaal.terugverdientijd === Infinity 
-                    ? '> 30 jaar' 
-                    : `${scenarios.dynamischOptimaal.terugverdientijd} jaar`}
-                </p>
-              </div>
-              
-              <div>
-                <p className="text-sm text-gray-500">Totaal over 15 jaar</p>
-                <p className={`text-lg font-bold ${scenarios.dynamischOptimaal.totaleBesparingOver15Jaar > 0 ? 'text-emerald-600' : 'text-red-600'}`}>
-                  {scenarios.dynamischOptimaal.totaleBesparingOver15Jaar > 0 ? '+' : ''}
-                  €{Math.round(scenarios.dynamischOptimaal.totaleBesparingOver15Jaar)}
-                </p>
-              </div>
-            </div>
-          </Card>
-        </div>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {kpiCards.map(card => (
+          <KpiCard key={card.title} {...card} />
+        ))}
       </div>
+
+      <Card className="border border-slate-200">
+        <CardHeader className="pb-0">
+          <CardTitle className="text-xl">Vergelijk scenario’s</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Kies een scenario om details, cashflow en besparingen door te rekenen.
+          </p>
+        </CardHeader>
+        <CardContent className="space-y-6 pt-6">
+          <div className="flex flex-wrap gap-3">
+            {scenarioEntries.map(({ key, data }) => (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setActiveScenarioKey(key)}
+                className={cn(
+                  'flex flex-1 min-w-[200px] items-start justify-between rounded-xl border px-4 py-3 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500',
+                  activeScenarioKey === key
+                    ? 'border-orange-500 bg-orange-50 text-orange-700 shadow-sm'
+                    : 'border-slate-200 bg-white text-slate-600 hover:border-orange-300'
+                )}
+              >
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-semibold">{data.naam}</span>
+                    {data.badge && (
+                      <Badge variant="secondary" className="bg-white/70 text-xs uppercase">
+                        {data.badge}
+                      </Badge>
+                    )}
+                  </div>
+                  <p className="mt-1 text-xs text-muted-foreground line-clamp-2">{data.beschrijving}</p>
+                </div>
+                <div className="ml-4 text-right">
+                  <div className="text-sm font-semibold text-emerald-600">
+                    {euroFormatter.format(Math.round(data.jaarlijkseBesparing.totaal))}
+                  </div>
+                  <div className="text-xs text-muted-foreground">{formatYears(data.terugverdientijd)}</div>
+                </div>
+              </button>
+            ))}
+          </div>
+
+          <ScenarioOverview scenario={activeScenario} />
+        </CardContent>
+      </Card>
 
       {/* Besparingen Breakdown */}
       <Card className="p-6">
@@ -233,9 +211,20 @@ export function BatteryResults({ result }: BatteryResultsProps) {
               <thead>
                 <tr className="border-b">
                   <th className="text-left py-2 font-semibold">Besparingsbron</th>
-                  <th className="text-right py-2 font-semibold">Huidig</th>
-                  <th className="text-right py-2 font-semibold">Na 2027</th>
-                  <th className="text-right py-2 font-semibold">Dynamisch</th>
+                  <th className={cn('text-right py-2 font-semibold', activeScenarioKey === 'huidig' && 'text-orange-600')}>
+                    Huidig
+                  </th>
+                  <th className={cn('text-right py-2 font-semibold', activeScenarioKey === 'na2027' && 'text-orange-600')}>
+                    Na 2027
+                  </th>
+                  <th
+                    className={cn(
+                      'text-right py-2 font-semibold',
+                      activeScenarioKey === 'dynamischOptimaal' && 'text-orange-600'
+                    )}
+                  >
+                    Dynamisch
+                  </th>
                 </tr>
               </thead>
               <tbody className="text-sm">
@@ -244,9 +233,17 @@ export function BatteryResults({ result }: BatteryResultsProps) {
                     <CheckCircle className="w-4 h-4 text-emerald-600" />
                     Verhoogd eigenverbruik
                   </td>
-                  <td className="text-right">€{Math.round(scenarios.huidig.jaarlijkseBesparing.verhoogdEigenverbruik)}</td>
-                  <td className="text-right">€{Math.round(scenarios.na2027.jaarlijkseBesparing.verhoogdEigenverbruik)}</td>
-                  <td className="text-right">€{Math.round(scenarios.dynamischOptimaal.jaarlijkseBesparing.verhoogdEigenverbruik)}</td>
+                  <td className={valueCellClass('huidig', activeScenarioKey)}>
+                    {euroFormatter.format(Math.round(scenarios.huidig.jaarlijkseBesparing.verhoogdEigenverbruik))}
+                  </td>
+                  <td className={valueCellClass('na2027', activeScenarioKey)}>
+                    {euroFormatter.format(Math.round(scenarios.na2027.jaarlijkseBesparing.verhoogdEigenverbruik))}
+                  </td>
+                  <td className={valueCellClass('dynamischOptimaal', activeScenarioKey)}>
+                    {euroFormatter.format(
+                      Math.round(scenarios.dynamischOptimaal.jaarlijkseBesparing.verhoogdEigenverbruik)
+                    )}
+                  </td>
                 </tr>
                 {(
                   scenarios.huidig.jaarlijkseBesparing.vermedenTerugleverkosten > 0 ||
@@ -258,9 +255,17 @@ export function BatteryResults({ result }: BatteryResultsProps) {
                       <CheckCircle className="w-4 h-4 text-emerald-600" />
                       Vermeden terugleverkosten
                     </td>
-                    <td className="text-right">€{Math.round(scenarios.huidig.jaarlijkseBesparing.vermedenTerugleverkosten)}</td>
-                    <td className="text-right">€{Math.round(scenarios.na2027.jaarlijkseBesparing.vermedenTerugleverkosten)}</td>
-                    <td className="text-right">€{Math.round(scenarios.dynamischOptimaal.jaarlijkseBesparing.vermedenTerugleverkosten)}</td>
+                    <td className={valueCellClass('huidig', activeScenarioKey)}>
+                      {euroFormatter.format(Math.round(scenarios.huidig.jaarlijkseBesparing.vermedenTerugleverkosten))}
+                    </td>
+                    <td className={valueCellClass('na2027', activeScenarioKey)}>
+                      {euroFormatter.format(Math.round(scenarios.na2027.jaarlijkseBesparing.vermedenTerugleverkosten))}
+                    </td>
+                    <td className={valueCellClass('dynamischOptimaal', activeScenarioKey)}>
+                      {euroFormatter.format(
+                        Math.round(scenarios.dynamischOptimaal.jaarlijkseBesparing.vermedenTerugleverkosten)
+                      )}
+                    </td>
                   </tr>
                 )}
                 <tr className="border-b">
@@ -268,15 +273,27 @@ export function BatteryResults({ result }: BatteryResultsProps) {
                     <CheckCircle className="w-4 h-4 text-emerald-600" />
                     Arbitrage voordeel
                   </td>
-                  <td className="text-right">€{Math.round(scenarios.huidig.jaarlijkseBesparing.arbitrageVoordeel)}</td>
-                  <td className="text-right">€{Math.round(scenarios.na2027.jaarlijkseBesparing.arbitrageVoordeel)}</td>
-                  <td className="text-right">€{Math.round(scenarios.dynamischOptimaal.jaarlijkseBesparing.arbitrageVoordeel)}</td>
+                  <td className={valueCellClass('huidig', activeScenarioKey)}>
+                    {euroFormatter.format(Math.round(scenarios.huidig.jaarlijkseBesparing.arbitrageVoordeel))}
+                  </td>
+                  <td className={valueCellClass('na2027', activeScenarioKey)}>
+                    {euroFormatter.format(Math.round(scenarios.na2027.jaarlijkseBesparing.arbitrageVoordeel))}
+                  </td>
+                  <td className={valueCellClass('dynamischOptimaal', activeScenarioKey)}>
+                    {euroFormatter.format(Math.round(scenarios.dynamischOptimaal.jaarlijkseBesparing.arbitrageVoordeel))}
+                  </td>
                 </tr>
                 <tr className="font-bold">
                   <td className="py-3">Totaal per jaar</td>
-                  <td className="text-right text-emerald-600">€{Math.round(scenarios.huidig.jaarlijkseBesparing.totaal)}</td>
-                  <td className="text-right text-emerald-600">€{Math.round(scenarios.na2027.jaarlijkseBesparing.totaal)}</td>
-                  <td className="text-right text-emerald-600">€{Math.round(scenarios.dynamischOptimaal.jaarlijkseBesparing.totaal)}</td>
+                  <td className={totalCellClass('huidig', activeScenarioKey)}>
+                    {euroFormatter.format(Math.round(scenarios.huidig.jaarlijkseBesparing.totaal))}
+                  </td>
+                  <td className={totalCellClass('na2027', activeScenarioKey)}>
+                    {euroFormatter.format(Math.round(scenarios.na2027.jaarlijkseBesparing.totaal))}
+                  </td>
+                  <td className={totalCellClass('dynamischOptimaal', activeScenarioKey)}>
+                    {euroFormatter.format(Math.round(scenarios.dynamischOptimaal.jaarlijkseBesparing.totaal))}
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -305,8 +322,8 @@ export function BatteryResults({ result }: BatteryResultsProps) {
                   label={{ value: 'Cumulatieve cashflow (€)', angle: -90, position: 'insideLeft' }}
                 />
                 <Tooltip 
-                  formatter={(value: number) => [`€${Math.round(value)}`, '']}
-                  labelFormatter={(label: number) => `Jaar ${label}`}
+                  formatter={(value) => [`€${Math.round(Number(value))}`, '']}
+                  labelFormatter={(label) => `Jaar ${label}`}
                 />
                 <Legend />
                 <ReferenceLine y={0} stroke="#666" strokeDasharray="3 3" />
@@ -315,6 +332,7 @@ export function BatteryResults({ result }: BatteryResultsProps) {
                   dataKey="huidig" 
                   stroke="#3B82F6" 
                   strokeWidth={2}
+                  strokeOpacity={activeScenarioKey === 'huidig' ? 1 : 0.35}
                   name="Huidig (met saldering)"
                 />
                 <Line 
@@ -322,6 +340,7 @@ export function BatteryResults({ result }: BatteryResultsProps) {
                   dataKey="na2027" 
                   stroke="#F97316" 
                   strokeWidth={2}
+                  strokeOpacity={activeScenarioKey === 'na2027' ? 1 : 0.35}
                   name="Na 2027 (geen saldering)"
                 />
                 <Line 
@@ -329,6 +348,7 @@ export function BatteryResults({ result }: BatteryResultsProps) {
                   dataKey="dynamisch" 
                   stroke="#10B981" 
                   strokeWidth={2}
+                  strokeOpacity={activeScenarioKey === 'dynamischOptimaal' ? 1 : 0.35}
                   name="Dynamisch + Arbitrage"
                 />
               </LineChart>
@@ -349,7 +369,7 @@ export function BatteryResults({ result }: BatteryResultsProps) {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="naam" />
                 <YAxis label={{ value: 'Besparing (€/jaar)', angle: -90, position: 'insideLeft' }} />
-                <Tooltip formatter={(value: number) => `€${Math.round(value)}`} />
+                <Tooltip formatter={(value) => `€${Math.round(Number(value))}`} />
                 <Legend />
                 <Bar dataKey="eigenverbruik" stackId="a" fill="#10B981" name="Eigenverbruik" />
                 <Bar dataKey="terugleverkosten" stackId="a" fill="#F59E0B" name="Terugleverkosten" />
@@ -481,6 +501,218 @@ export function BatteryResults({ result }: BatteryResultsProps) {
         )}
       </Card>
     </div>
+  );
+}
+
+function valueCellClass(column: ScenarioKey, active: ScenarioKey) {
+  return cn(
+    'text-right',
+    column === active && 'font-semibold text-orange-600'
+  );
+}
+
+function totalCellClass(column: ScenarioKey, active: ScenarioKey) {
+  return cn(
+    'text-right text-emerald-600',
+    column === active && 'text-orange-600'
+  );
+}
+
+function formatYears(years: number) {
+  if (years === Infinity) {
+    return '> 30 jaar';
+  }
+  return `${years} jaar`;
+}
+
+interface RecommendationBannerProps {
+  aanbeveling: BatteryCalculationResult['aanbeveling'];
+  besteScenario: BatteryCalculationResult['scenarios'][ScenarioKey];
+}
+
+function RecommendationBanner({ aanbeveling, besteScenario }: RecommendationBannerProps) {
+  return (
+    <Card
+      className={cn(
+        'p-6',
+        aanbeveling.isRendabel ? 'bg-emerald-50 border-emerald-200' : 'bg-orange-50 border-orange-200'
+      )}
+    >
+      <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+        <div className="flex flex-1 items-start gap-4">
+          {aanbeveling.isRendabel ? (
+            <CheckCircle className="w-8 h-8 text-emerald-600 flex-shrink-0" />
+          ) : (
+            <AlertTriangle className="w-8 h-8 text-orange-600 flex-shrink-0" />
+          )}
+          <div className="flex-1">
+            <div className="flex items-center gap-2">
+              <h2 className="text-2xl font-bold text-gray-900">
+                {aanbeveling.isRendabel ? 'Potentieel interessant' : 'Beperkt rendabel'}
+              </h2>
+              <Badge variant="secondary" className="bg-white/80 text-xs uppercase tracking-wide">
+                Beste: {besteScenario.naam}
+              </Badge>
+            </div>
+            <p className="text-lg text-gray-700 mt-2">{aanbeveling.korteSamenvatting}</p>
+            {aanbeveling.waarschuwingen.length > 0 && (
+              <div className="mt-3 space-y-1">
+                {aanbeveling.waarschuwingen.map((waarschuwing, index) => (
+                  <p key={index} className="flex items-start gap-2 text-sm text-gray-600">
+                    <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                    <span>{waarschuwing}</span>
+                  </p>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="rounded-lg border border-white/40 bg-white/70 px-4 py-3 text-sm text-slate-700 shadow-sm">
+          <div className="font-semibold text-slate-800">Samenvatting beste scenario</div>
+          <div className="mt-2 space-y-1">
+            <div className="flex items-center justify-between">
+              <span>Jaarlijkse besparing</span>
+              <span className="font-semibold text-emerald-600">
+                {euroFormatter.format(Math.round(besteScenario.jaarlijkseBesparing.totaal))}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>Terugverdientijd</span>
+              <span className="font-semibold">{formatYears(besteScenario.terugverdientijd)}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>Totaal over 15 jaar</span>
+              <span className="font-semibold text-emerald-600">
+                {euroFormatter.format(Math.round(besteScenario.totaleBesparingOver15Jaar))}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+interface KpiCardProps {
+  title: string;
+  value: string;
+  subtitle?: string;
+  tone?: 'positive' | 'negative' | 'warning' | 'neutral';
+}
+
+function KpiCard({ title, value, subtitle, tone = 'neutral' }: KpiCardProps) {
+  const toneClass =
+    tone === 'positive'
+      ? 'text-emerald-600'
+      : tone === 'negative'
+      ? 'text-red-600'
+      : tone === 'warning'
+      ? 'text-orange-600'
+      : 'text-slate-800';
+
+  return (
+    <Card className="border border-slate-200 bg-white">
+      <div className="space-y-2 p-5">
+        <p className="text-sm font-medium text-muted-foreground">{title}</p>
+        <p className={cn('text-3xl font-semibold', toneClass)}>{value}</p>
+        {subtitle && <p className="text-xs text-muted-foreground">{subtitle}</p>}
+      </div>
+    </Card>
+  );
+}
+
+function ScenarioOverview({
+  scenario,
+}: {
+  scenario: BatteryCalculationResult['scenarios'][ScenarioKey];
+}) {
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+        <div className="max-w-2xl">
+          <div className="flex items-center gap-2">
+            <h3 className="text-xl font-semibold text-slate-900">{scenario.naam}</h3>
+            {scenario.badge && (
+              <Badge variant="outline" className="border-orange-300 text-orange-600">
+                {scenario.badge}
+              </Badge>
+            )}
+          </div>
+          <p className="mt-2 text-sm text-muted-foreground">{scenario.beschrijving}</p>
+          <div className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
+            <ScenarioDetail
+              label="Jaarlijkse besparing"
+              value={euroFormatterPrecise.format(scenario.jaarlijkseBesparing.totaal)}
+              icon={<TrendingUp className="h-4 w-4 text-emerald-600" />}
+            />
+            <ScenarioDetail
+              label="Terugverdientijd"
+              value={formatYears(scenario.terugverdientijd)}
+              icon={<ClockIcon />}
+            />
+            <ScenarioDetail
+              label="Totale cashflow (15 jaar)"
+              value={euroFormatterPrecise.format(scenario.totaleBesparingOver15Jaar)}
+              icon={<WalletIcon />}
+            />
+            <ScenarioDetail
+              label="Rendabel binnen 15 jaar"
+              value={scenario.rendabel ? 'Ja' : 'Nee'}
+              icon={scenario.rendabel ? <CheckCircle className="h-4 w-4 text-emerald-600" /> : <AlertTriangle className="h-4 w-4 text-orange-500" />}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ScenarioDetail({ label, value, icon }: { label: string; value: string; icon: ReactNode }) {
+  return (
+    <div className="flex items-start gap-3 rounded-lg border border-slate-100 bg-slate-50 px-3 py-2">
+      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm">
+        {icon}
+      </div>
+      <div>
+        <p className="text-xs font-medium text-muted-foreground">{label}</p>
+        <p className="text-sm font-semibold text-slate-900">{value}</p>
+      </div>
+    </div>
+  );
+}
+
+function ClockIcon() {
+  return (
+    <svg
+      className="h-4 w-4 text-slate-500"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <path d="M12 6v6l4 2" />
+    </svg>
+  );
+}
+
+function WalletIcon() {
+  return (
+    <svg
+      className="h-4 w-4 text-emerald-600"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M20 7H4a2 2 0 0 0-2 2v8c0 1.1.9 2 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Z" />
+      <path d="M16 3H4a2 2 0 0 0-2 2v2h18" />
+      <path d="M18 12h2" />
+    </svg>
   );
 }
 

@@ -1,26 +1,48 @@
 /**
- * Type definities voor thuisaccu terugverdientijd calculator
+ * Type definitions for home battery payback calculator
  */
 
+/**
+ * Battery specifications and characteristics
+ */
 export interface BatteryProfile {
-  capaciteitKwh: number;           // Capaciteit in kWh (bijv. 10 kWh)
-  prijsEuro: number;                // Aanschafprijs inclusief installatie (€)
-  roundTripEfficiency: number;      // Rendement heen-en-terug (0.90 = 90%)
-  garantieJaren: number;            // Garantie periode in jaren
-  degradatiePerJaar: number;        // Capaciteitsverlies per jaar (0.02 = 2%)
+  /** Battery capacity in kWh (e.g., 10 kWh) */
+  capaciteitKwh: number;
+  /** Purchase price including installation (€) */
+  prijsEuro: number;
+  /** Round-trip efficiency (0.90 = 90%) */
+  roundTripEfficiency: number;
+  /** Warranty period in years */
+  garantieJaren: number;
+  /** Annual capacity degradation rate (0.02 = 2% per year) */
+  degradatiePerJaar: number;
 }
 
+/**
+ * Complete input data for battery payback calculation
+ */
 export interface BatteryInput {
+  /** Battery specifications */
   battery: BatteryProfile;
+  /** Whether user has solar panels */
   heeftZonnepanelen: boolean;
-  pvOpwekKwh?: number;              // Jaarlijkse PV opbrengst
-  huidigEigenverbruikPercentage?: number;  // Huidig eigenverbruik % (zonder accu)
-  eigenverbruikMetAccuPercentage?: number; // Eigenverbruik % met accu
-  jaarverbruikStroom: number;       // Totaal jaarverbruik in kWh
+  /** Annual PV generation in kWh (only if heeftZonnepanelen = true) */
+  pvOpwekKwh?: number;
+  /** Current self-consumption percentage without battery (e.g., 30%) */
+  huidigEigenverbruikPercentage?: number;
+  /** Self-consumption percentage with battery (e.g., 60%) */
+  eigenverbruikMetAccuPercentage?: number;
+  /** Total annual electricity consumption in kWh */
+  jaarverbruikStroom: number;
+  /** Contract type: fixed or dynamic pricing */
   contractType: 'vast' | 'dynamisch';
-  stroomKalePrijs: number;          // €/kWh
-  terugleververgoeding: number;     // €/kWh
-  netbeheerder?: string;            // Voor netbeheerkosten lookup
+  /** Base electricity price in €/kWh */
+  stroomKalePrijs: number;
+  /** Feed-in tariff in €/kWh */
+  terugleververgoeding: number;
+  /** Grid operator name for cost lookup (optional) */
+  netbeheerder?: string;
+  /** Postal code for regional calculations (optional) */
   postcode?: string;
 }
 

@@ -312,7 +312,6 @@ export function DynamicPricingPage() {
           
           return (
             <DynamicPricingSummaryBox
-              year={selectedYear}
               averagePrice={weightedAverage.weightedAverage}
               cheapestSeason={cheapest?.season || 'Zomer'}
               cheapestSeasonPrice={cheapest?.average || 0.065}
@@ -480,11 +479,11 @@ export function DynamicPricingPage() {
                         tickLine={{ stroke: '#D1D5DB' }}
                       />
                     <Tooltip
-                      formatter={(value: number) => [
-                        `€${value.toFixed(3)}/kWh`,
+                      formatter={(value) => [
+                        `€${Number(value).toFixed(3)}/kWh`,
                         'Prijs (excl. belasting)'
                       ]}
-                      labelFormatter={(label: number) => `Uur: ${label}:00`}
+                      labelFormatter={(label) => `Uur: ${label}:00`}
                     />
                       <Line 
                         type="monotone" 
@@ -525,11 +524,11 @@ export function DynamicPricingPage() {
                         tickLine={{ stroke: '#D1D5DB' }}
                       />
                     <Tooltip
-                      formatter={(value: number) => [
-                        `€${value.toFixed(3)}/kWh`,
+                      formatter={(value) => [
+                        `€${Number(value).toFixed(3)}/kWh`,
                         'Gemiddelde prijs'
                       ]}
-                      labelFormatter={(label: string) => `${label}`}
+                      labelFormatter={(label) => `${label}`}
                     />
                       <Bar
                         dataKey="price"
@@ -653,8 +652,8 @@ export function DynamicPricingPage() {
                         tickFormatter={(value) => `€${value.toFixed(3)}`}
                       />
                       <Tooltip 
-                        formatter={(value: number) => [`€${value.toFixed(3)}/kWh`, 'Gemiddelde Prijs']}
-                        labelFormatter={(label: number) => `Jaar ${label}`}
+                        formatter={(value) => [`€${Number(value).toFixed(3)}/kWh`, 'Gemiddelde Prijs']}
+                        labelFormatter={(label) => `Jaar ${label}`}
                       />
                       <Line 
                         type="monotone" 

@@ -23,9 +23,20 @@ import {
   ENERGY_CONSTANTS,
 } from '@/lib/constants';
 
+// Constants
 const ENERGIEBELASTING_STROOM = ENERGY_CONSTANTS.ENERGY_TAX_STROOM_PER_KWH;
 const BTW = 0.21;
 const DEGRADATIE_START_JAAR = 10;
+const MAX_PAYBACK_YEARS = 30;
+const CASHFLOW_YEARS = 15;
+const RENTABLE_PAYBACK_THRESHOLD = 15;
+
+// Arbitrage constants
+const BASE_CYCLES_WITH_SOLAR = 220;
+const BASE_CYCLES_WITHOUT_SOLAR = 260;
+const MAX_ANNUAL_CYCLES = 300;
+const NEGATIVE_PRICE_BONUS_THRESHOLD = 500;
+const NEGATIVE_PRICE_BONUS_CYCLES = 20;
 
 interface TariefContext {
   contractType: 'vast' | 'dynamisch';
@@ -180,11 +191,19 @@ function berekenArbitrageVoordeel(
   return Math.max(0, arbitrageStats.jaarlijkseWinst - vasteKosten);
 }
 
+/**
+ * Calculate cumulative cashflow over time with degradation
+ * @param aanschafprijs - Initial investment cost
+ * @param jaarlijkseBesparing - Annual savings in first year
+ * @param degradatiePerJaar - Annual degradation rate (0.02 = 2%)
+ * @param jaren - Number of years to calculate (default: 15)
+ * @returns Array of cumulative cashflow values per year
+ */
 function calculateCashflow(
   aanschafprijs: number,
   jaarlijkseBesparing: number,
   degradatiePerJaar: number,
-  jaren: number = 15
+  jaren: number = CASHFLOW_YEARS
 ): number[] {
   const cashflow: number[] = [];
   let cumulatief = -aanschafprijs;
@@ -205,6 +224,13 @@ function calculateCashflow(
   return cashflow;
 }
 
+/**
+ * Calculate payback period in years
+ * @param aanschafprijs - Initial investment cost
+ * @param jaarlijkseBesparing - Annual savings in first year
+ * @param degradatiePerJaar - Annual degradation rate (0.02 = 2%)
+ * @returns Number of years to break even, or Infinity if never
+ */
 function calculatePaybackPeriod(
   aanschafprijs: number,
   jaarlijkseBesparing: number,
@@ -215,7 +241,7 @@ function calculatePaybackPeriod(
   let cumulatief = -aanschafprijs;
   let jaar = 0;
 
-  while (cumulatief < 0 && jaar < 30) {
+  while (cumulatief < 0 && jaar < MAX_PAYBACK_YEARS) {
     jaar++;
     let besparingDitJaar = jaarlijkseBesparing;
 
@@ -366,11 +392,11 @@ function berekenArbitrageValue(
 
   const gemiddeldeSpread = p20Hoog - p20Laag;
 
-  let aantalCycliPerJaar = heeftZonnepanelen ? 220 : 260;
-  if (negatievePrijsUren > 500) {
-    aantalCycliPerJaar += 20;
+  let aantalCycliPerJaar = heeftZonnepanelen ? BASE_CYCLES_WITH_SOLAR : BASE_CYCLES_WITHOUT_SOLAR;
+  if (negatievePrijsUren > NEGATIVE_PRICE_BONUS_THRESHOLD) {
+    aantalCycliPerJaar += NEGATIVE_PRICE_BONUS_CYCLES;
   }
-  aantalCycliPerJaar = Math.min(aantalCycliPerJaar, 300);
+  aantalCycliPerJaar = Math.min(aantalCycliPerJaar, MAX_ANNUAL_CYCLES);
 
   const winstPerCyclus = capaciteitKwh * gemiddeldeSpread * roundTripEfficiency;
   const jaarlijkseWinst = winstPerCyclus * aantalCycliPerJaar;
@@ -476,21 +502,22 @@ export async function calculateBatteryScenarios(
     huidige.scenario.terugverdientijd < beste.scenario.terugverdientijd ? huidige : beste
   ).key;
 
-  const bestTvt = scenarios.find(s => s.key === besteScenario)!.scenario.terugverdientijd;
+    const bestTvt = scenarios.find(s => s.key === besteScenario)!.scenario.terugverdientijd;
 
   let korteSamenvatting = '';
   const waarschuwingen: string[] = [];
 
+  // Generate summary based on payback period
   if (bestTvt < 8) {
     korteSamenvatting = 'Kansrijk! De terugverdientijd is gunstig, vooral na 2027 zonder saldering.';
   } else if (bestTvt < 12) {
     korteSamenvatting = 'Marginaal rendabel. Resultaat hangt sterk af van prijsontwikkeling.';
     waarschuwingen.push('Businesscase is gevoelig voor aannames en gedrag.');
-  } else if (bestTvt < 15) {
+  } else if (bestTvt < RENTABLE_PAYBACK_THRESHOLD) {
     korteSamenvatting = 'Beperkt rendabel binnen levensduur. Goed monitoren na 2027.';
     waarschuwingen.push('Weinig buffer bij tegenslag of lagere spreads.');
   } else {
-    korteSamenvatting = 'Waarschijnlijk niet terugverdiend binnen 15 jaar levensduur.';
+    korteSamenvatting = `Waarschijnlijk niet terugverdiend binnen ${CASHFLOW_YEARS} jaar levensduur.`;
     waarschuwingen.push('Overweeg kleinere accu of uitstel tot prijzen veranderen.');
   }
 

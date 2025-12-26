@@ -201,7 +201,7 @@ export function UserInputForm() {
                   <select
                     id="aansluitingElektriciteit"
                     value={formData.aansluitingElektriciteit}
-                    onChange={(e) => handleInputChange('aansluitingElektriciteit', e.target.value)}
+                    onChange={(e) => handleInputChange('aansluitingElektriciteit', e.target.value as '1x25A' | '1x35A' | '3x25A' | '3x35A' | '3x50A')}
                     className="w-full h-12 px-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="1x25A">1x25A</option>
@@ -220,7 +220,7 @@ export function UserInputForm() {
                     <select
                       id="aansluitingGas"
                       value={formData.aansluitingGas}
-                      onChange={(e) => handleInputChange('aansluitingGas', e.target.value)}
+                      onChange={(e) => handleInputChange('aansluitingGas', e.target.value as 'G4' | 'G6' | 'G10' | 'G16' | 'G25')}
                       className="w-full h-12 px-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >
                       <option value="G4">G4</option>

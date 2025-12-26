@@ -1,359 +1,826 @@
 'use client';
 
-import { useState } from 'react';
-import { Battery, AlertCircle } from 'lucide-react';
-import { Card } from '@/components/ui/card';
+import { useMemo, useState } from 'react';
+import {
+  Battery,
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  Info,
+  Loader2,
+} from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Slider } from '@/components/ui/slider';
+import { cn } from '@/lib/utils';
 import { BatteryInput, BatteryProfile } from '@/types/battery';
+import {
+  basicsSchema,
+  solarSchema,
+  batterySchema,
+  dynamicSchema,
+  type StepKey,
+} from '@/lib/validation/batterySchemas';
+import { defaultWizardState, stepFields, type WizardState } from '@/lib/utils/formTransformers';
 
 interface BatteryInputFormProps {
   onCalculate: (input: BatteryInput) => void;
   isCalculating?: boolean;
 }
 
-export function BatteryInputForm({ onCalculate, isCalculating = false }: BatteryInputFormProps) {
-  // Battery specs
-  const [prijsEuro, setPrijsEuro] = useState<string>('5000');
-  const [capaciteitKwh, setCapaciteitKwh] = useState<string>('10');
-  
-  // Zonnepanelen
-  const [heeftZonnepanelen, setHeeftZonnepanelen] = useState<boolean>(true);
-  const [pvOpwekKwh, setPvOpwekKwh] = useState<string>('4000');
-  const [huidigEigenverbruik, setHuidigEigenverbruik] = useState<string>('30');
-  const [eigenverbruikMetAccu, setEigenverbruikMetAccu] = useState<string>('60');
-  
-  // Verbruik en contract
-  const [jaarverbruikStroom, setJaarverbruikStroom] = useState<string>('3500');
-  const [contractType, setContractType] = useState<'vast' | 'dynamisch'>('vast');
-  const [stroomKalePrijs, setStroomKalePrijs] = useState<string>('0.12');
-  const [terugleververgoeding, setTerugleververgoeding] = useState<string>('0.05');
-  
-  const [errors, setErrors] = useState<string[]>([]);
+interface StepDefinition {
+  key: StepKey;
+  title: string;
+  description: string;
+  optional?: boolean;
+}
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    const validationErrors: string[] = [];
-    
-    // Validaties
-    const prijs = parseFloat(prijsEuro);
-    const capaciteit = parseFloat(capaciteitKwh);
-    const verbruik = parseFloat(jaarverbruikStroom);
-    const prijs_kwh = parseFloat(stroomKalePrijs);
-    const vergoeding = parseFloat(terugleververgoeding);
-    
-    if (isNaN(prijs) || prijs < 1000 || prijs > 20000) {
-      validationErrors.push('Prijs moet tussen €1.000 en €20.000 zijn');
+const steps: StepDefinition[] = [
+  { key: 'basics', title: 'Basisgegevens', description: 'Verbruik en zonnepanelen' },
+  { key: 'solar', title: 'Zonnepanelen & flex', description: 'PV-opwekking en flexibele lasten' },
+  { key: 'battery', title: 'Accugegevens', description: 'Capaciteit, investering en efficiëntie' },
+  { key: 'dynamic', title: 'Contract & bevestiging', description: 'Tarieven, arbitrage en samenvatting' },
+];
+
+export function BatteryInputForm({ onCalculate, isCalculating = false }: BatteryInputFormProps) {
+  const [stepIndex, setStepIndex] = useState(0);
+  const [formState, setFormState] = useState<WizardState>(defaultWizardState);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const hasSolar = formState.basics.heeftZonnepanelen;
+
+  const activeSteps = useMemo(() => {
+    if (hasSolar) {
+      return steps;
     }
-    
-    if (isNaN(capaciteit) || capaciteit < 5 || capaciteit > 30) {
-      validationErrors.push('Capaciteit moet tussen 5 en 30 kWh zijn');
+    return steps.filter(step => step.key !== 'solar');
+  }, [hasSolar]);
+
+  const activeStepIndex = Math.min(stepIndex, activeSteps.length - 1);
+  const activeStep = activeSteps[activeStepIndex];
+
+  const validateStep = (stepKey: StepKey) => {
+    if (stepKey === 'solar' && !hasSolar) {
+      clearErrorsForStep(stepKey);
+      return true;
     }
+
+    const schema = {
+      basics: basicsSchema,
+      solar: solarSchema,
+      battery: batterySchema,
+      dynamic: dynamicSchema,
+    }[stepKey];
+
+    const value = formState[stepKey] as unknown;
     
-    if (isNaN(verbruik) || verbruik < 500 || verbruik > 15000) {
-      validationErrors.push('Jaarverbruik moet tussen 500 en 15.000 kWh zijn');
-    }
-    
-    if (isNaN(prijs_kwh) || prijs_kwh < 0.05 || prijs_kwh > 0.50) {
-      validationErrors.push('Stroomprijs moet tussen €0,05 en €0,50 per kWh zijn');
-    }
-    
-    if (heeftZonnepanelen) {
-      const pvOpwek = parseFloat(pvOpwekKwh);
-      const eigenverbruikOud = parseFloat(huidigEigenverbruik);
-      const eigenverbruikNieuw = parseFloat(eigenverbruikMetAccu);
-      
-      if (isNaN(pvOpwek) || pvOpwek < 1000 || pvOpwek > 20000) {
-        validationErrors.push('PV opwek moet tussen 1.000 en 20.000 kWh zijn');
+    try {
+      const result = schema.safeParse(value);
+
+      if (!result.success) {
+        const stepErrors: Record<string, string> = {};
+        
+        // Properly handle Zod error structure
+        if (result.error?.issues) {
+          result.error.issues.forEach(issue => {
+            const field = issue.path[0];
+            if (typeof field === 'string') {
+              stepErrors[field] = issue.message;
+            }
+          });
+        } else {
+          // Fallback for unexpected error structure
+          console.error('Unexpected validation error structure:', result.error);
+          stepErrors['_form'] = 'Er is een validatiefout opgetreden. Controleer alle velden.';
+        }
+
+        setErrors(prev => ({
+          ...prev,
+          ...stepErrors,
+        }));
+        return false;
       }
-      
-      if (isNaN(eigenverbruikOud) || eigenverbruikOud < 10 || eigenverbruikOud > 80) {
-        validationErrors.push('Huidig eigenverbruik moet tussen 10% en 80% zijn');
-      }
-      
-      if (isNaN(eigenverbruikNieuw) || eigenverbruikNieuw < 30 || eigenverbruikNieuw > 95) {
-        validationErrors.push('Eigenverbruik met accu moet tussen 30% en 95% zijn');
-      }
-      
-      if (eigenverbruikNieuw <= eigenverbruikOud) {
-        validationErrors.push('Eigenverbruik met accu moet hoger zijn dan zonder');
-      }
+
+      clearErrorsForStep(stepKey);
+      return true;
+    } catch (error) {
+      console.error('Validation exception:', error);
+      setErrors(prev => ({
+        ...prev,
+        _form: 'Er is een onverwachte fout opgetreden bij validatie.',
+      }));
+      return false;
     }
-    
-    if (validationErrors.length > 0) {
-      setErrors(validationErrors);
+  };
+
+  const clearErrorsForStep = (stepKey: StepKey) => {
+    setErrors(prev => {
+      const next = { ...prev };
+      stepFields[stepKey].forEach(field => {
+        delete next[field];
+      });
+      return next;
+    });
+  };
+
+  const handleNext = () => {
+    if (!validateStep(activeStep.key)) {
+      return;
+    }
+    setStepIndex(prev => Math.min(prev + 1, activeSteps.length - 1));
+  };
+
+  const handlePrevious = () => {
+    setStepIndex(prev => Math.max(prev - 1, 0));
+  };
+
+  const handleCalculate = () => {
+    const validations = (hasSolar ? steps : steps.filter(step => step.key !== 'solar')).map(step =>
+      validateStep(step.key)
+    );
+
+    if (validations.includes(false)) {
       return;
     }
     
-    setErrors([]);
-    
-    // Maak battery profile
-    const battery: BatteryProfile = {
-      capaciteitKwh: capaciteit,
-      prijsEuro: prijs,
-      roundTripEfficiency: 0.90, // 90% standaard
-      garantieJaren: 10,
-      degradatiePerJaar: 0.02, // 2% per jaar
+    const basics = basicsSchema.parse(formState.basics);
+
+    const solar = hasSolar ? solarSchema.parse(formState.solar) : null;
+    const battery = batterySchema.parse(formState.battery);
+    const dynamic = dynamicSchema.parse(formState.dynamic);
+
+    const batteryProfile: BatteryProfile = {
+      capaciteitKwh: battery.capaciteitKwh,
+      prijsEuro: battery.prijsEuro,
+      roundTripEfficiency: battery.roundTripEfficiency / 100,
+      garantieJaren: battery.garantieJaren,
+      degradatiePerJaar: battery.degradatie / 100,
     };
-    
-    // Maak input object
+
+    const stroomKalePrijs =
+      dynamic.contractType === 'dynamisch'
+        ? (dynamic.stroomPrijsCent + dynamic.opslagAfnameCent) / 100
+        : dynamic.stroomPrijsCent / 100;
+
+    const terugleververgoeding =
+      dynamic.contractType === 'dynamisch'
+        ? Math.max(0, dynamic.stroomPrijsCent - dynamic.opslagInvoedingCent) / 100
+        : dynamic.terugleververgoedingCent / 100;
+
+    const totaalVerbruik =
+      (Number(basics.jaarverbruikStroomPiek) || 0) + (Number(basics.jaarverbruikStroomDal) || 0);
+
     const input: BatteryInput = {
-      battery,
-      heeftZonnepanelen,
-      pvOpwekKwh: heeftZonnepanelen ? parseFloat(pvOpwekKwh) : undefined,
-      huidigEigenverbruikPercentage: heeftZonnepanelen ? parseFloat(huidigEigenverbruik) : undefined,
-      eigenverbruikMetAccuPercentage: heeftZonnepanelen ? parseFloat(eigenverbruikMetAccu) : undefined,
-      jaarverbruikStroom: verbruik,
-      contractType,
-      stroomKalePrijs: prijs_kwh,
-      terugleververgoeding: vergoeding,
+      battery: batteryProfile,
+      heeftZonnepanelen: basics.heeftZonnepanelen,
+      pvOpwekKwh: basics.heeftZonnepanelen ? solar?.pvOpwekKwh : undefined,
+      huidigEigenverbruikPercentage: basics.heeftZonnepanelen ? solar?.eigenverbruikZonder : undefined,
+      eigenverbruikMetAccuPercentage: basics.heeftZonnepanelen ? solar?.eigenverbruikMet : undefined,
+      jaarverbruikStroom: totaalVerbruik,
+      contractType: dynamic.contractType,
+      stroomKalePrijs,
+      terugleververgoeding,
     };
     
     onCalculate(input);
   };
 
-  const handleContractTypeChange = (value: 'vast' | 'dynamisch') => {
-    setContractType(value);
-    if (value === 'dynamisch') {
-      setStroomKalePrijs((prev) => (prev === '' || prev === '0.12' ? '0.10' : prev));
-    }
+  const updateFormState = <K extends StepKey, F extends keyof WizardState[K]>(
+    step: K,
+    field: F,
+    value: WizardState[K][F]
+  ) => {
+    setFormState(prev => ({
+      ...prev,
+      [step]: {
+        ...prev[step],
+        [field]: value,
+      },
+    }));
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Accu Specificaties */}
-      <Card className="p-6">
-        <div className="flex items-center gap-2 mb-4">
-          <Battery className="w-5 h-5 text-orange-600" />
-          <h3 className="text-lg font-semibold">Accu Specificaties</h3>
+    <div className="space-y-6">
+      <WizardStepIndicator
+        steps={activeSteps}
+        currentIndex={activeStepIndex}
+        completedCount={activeStepIndex}
+      />
+
+      <Card className="border border-orange-200 shadow-md">
+        <CardHeader className="pb-4">
+          <CardTitle className="flex items-center justify-between text-xl">
+            <span>{activeStep.title}</span>
+            <Badge variant="outline" className="text-xs uppercase tracking-wide">
+              Stap {activeStepIndex + 1} van {activeSteps.length}
+            </Badge>
+          </CardTitle>
+          <p className="text-sm text-muted-foreground">{activeStep.description}</p>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {activeStep.key === 'basics' && (
+            <StepBasics
+              data={formState.basics}
+              errors={errors}
+              onChange={(field, value) => updateFormState('basics', field, value)}
+            />
+          )}
+
+          {activeStep.key === 'solar' && (
+            <StepSolar
+              data={formState.solar}
+              errors={errors}
+              onChange={(field, value) => updateFormState('solar', field, value)}
+            />
+          )}
+
+          {activeStep.key === 'battery' && (
+            <StepBattery
+              data={formState.battery}
+              errors={errors}
+              onChange={(field, value) => updateFormState('battery', field, value)}
+            />
+          )}
+
+          {activeStep.key === 'dynamic' && (
+            <StepDynamic
+              data={formState.dynamic}
+              errors={errors}
+              onChange={(field, value) => updateFormState('dynamic', field, value)}
+              basicsData={formState.basics}
+              solarData={formState.solar}
+              batteryData={formState.battery}
+            />
+          )}
+
+          <WizardNavigation
+            isFirst={activeStepIndex === 0}
+            isLast={activeStepIndex === activeSteps.length - 1}
+            onPrevious={handlePrevious}
+            onNext={handleNext}
+            onSubmit={handleCalculate}
+            isSubmitting={isCalculating}
+          />
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+interface WizardStepIndicatorProps {
+  steps: StepDefinition[];
+  currentIndex: number;
+  completedCount: number;
+}
+
+function WizardStepIndicator({ steps, currentIndex, completedCount }: WizardStepIndicatorProps) {
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between text-xs uppercase tracking-wide text-muted-foreground">
+        <span>Stap {currentIndex + 1} van {steps.length}</span>
+        <span>functie vóór vorm</span>
+      </div>
+      <div className="flex items-center gap-3">
+        {steps.map((step, index) => {
+          const isActive = index === currentIndex;
+          const isCompleted = index < completedCount;
+          return (
+            <div key={step.key} className="flex-1">
+              <div
+                className={cn(
+                  'flex items-center justify-center rounded-full border-2 px-3 py-2 text-xs font-semibold transition-all',
+                  isActive && 'border-orange-500 bg-orange-50 text-orange-700',
+                  !isActive && 'border-slate-200 bg-white text-slate-500',
+                  isCompleted && 'border-emerald-500 bg-emerald-50 text-emerald-700'
+                )}
+              >
+                {isCompleted ? (
+                  <CheckCircle2 className="mr-2 h-3.5 w-3.5" />
+                ) : (
+                  <span className="mr-2 text-[10px]">{index + 1}</span>
+                )}
+                <span className="truncate">{step.title}</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <div className="h-2 rounded-full bg-orange-100">
+        <div
+          className="h-full rounded-full bg-gradient-to-r from-orange-500 to-red-500 transition-all"
+          style={{ width: `${((currentIndex + 1) / steps.length) * 100}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
+interface StepProps<T> {
+  data: T;
+  errors: Record<string, string>;
+  onChange: <K extends keyof T>(field: K, value: T[K]) => void;
+}
+
+type BasicsData = WizardState['basics'];
+
+function StepBasics({ data, errors, onChange }: StepProps<BasicsData>) {
+  const piek = Number(data.jaarverbruikStroomPiek) || 0;
+  const dal = Number(data.jaarverbruikStroomDal) || 0;
+  const totaal = piek + dal;
+
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div>
+          <Label htmlFor="jaarverbruikStroomPiek">Verbruik piekuren (kWh)</Label>
+          <Input
+            id="jaarverbruikStroomPiek"
+            type="number"
+            value={data.jaarverbruikStroomPiek}
+            onChange={event => onChange('jaarverbruikStroomPiek', event.target.value)}
+            min={0}
+            max={25000}
+          />
+          {errors.jaarverbruikStroomPiek && <ErrorLabel>{errors.jaarverbruikStroomPiek}</ErrorLabel>}
+          <p className="mt-1 text-xs text-muted-foreground">Normaal tarief (daguren)</p>
         </div>
-        
-        <div className="grid md:grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="prijsEuro">Aanschafprijs (incl. installatie)</Label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">€</span>
+        <div>
+          <Label htmlFor="jaarverbruikStroomDal">Verbruik daluren (kWh)</Label>
+          <Input
+            id="jaarverbruikStroomDal"
+            type="number"
+            value={data.jaarverbruikStroomDal}
+            onChange={event => onChange('jaarverbruikStroomDal', event.target.value)}
+            min={0}
+            max={25000}
+          />
+          {errors.jaarverbruikStroomDal && <ErrorLabel>{errors.jaarverbruikStroomDal}</ErrorLabel>}
+          <p className="mt-1 text-xs text-muted-foreground">Laag tarief (nacht/weekend)</p>
+        </div>
+        <div>
+          <Label htmlFor="jaarverbruikGas">Jaarverbruik gas (optioneel)</Label>
+          <Input
+            id="jaarverbruikGas"
+            type="number"
+            value={data.jaarverbruikGas}
+            onChange={event => onChange('jaarverbruikGas', event.target.value)}
+            placeholder="1200"
+          />
+          {errors.jaarverbruikGas && <ErrorLabel>{errors.jaarverbruikGas}</ErrorLabel>}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="rounded-lg border border-slate-200 bg-white p-4">
+          <p className="text-sm font-semibold text-slate-800">Totaal verbruik</p>
+          <p className="text-2xl font-bold text-orange-600">{totaal.toLocaleString('nl-NL')} kWh</p>
+          <p className="mt-1 text-xs text-muted-foreground">Minimaal 500 kWh · Maximaal 25.000 kWh</p>
+        </div>
+        <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+          <Label className="flex items-center justify-between">
+            <div>
+              <div className="font-semibold">Ik heb zonnepanelen</div>
+              <p className="text-sm text-muted-foreground">Hierdoor kunnen we eigenverbruik en saldering meenemen.</p>
+            </div>
+            <input
+              type="checkbox"
+              className="h-5 w-5 rounded border-slate-300 accent-orange-500"
+              checked={data.heeftZonnepanelen}
+              onChange={event => onChange('heeftZonnepanelen', event.target.checked)}
+            />
+          </Label>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+type SolarData = WizardState['solar'];
+
+function StepSolar({ data, errors, onChange }: StepProps<SolarData>) {
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div>
+          <Label htmlFor="pvOpwekKwh">Jaarlijkse PV-opwekking (kWh)</Label>
+          <Input
+            id="pvOpwekKwh"
+            type="number"
+            value={data.pvOpwekKwh}
+            onChange={event => onChange('pvOpwekKwh', event.target.value)}
+            min={0}
+            max={40000}
+          />
+          {errors.pvOpwekKwh && <ErrorLabel>{errors.pvOpwekKwh}</ErrorLabel>}
+        </div>
+        <div>
+          <Label>Eigenverbruik zonder accu</Label>
+          <Slider
+            value={[data.eigenverbruikZonder]}
+            min={10}
+            max={80}
+            onValueChange={value => onChange('eigenverbruikZonder', value[0])}
+          />
+          {errors.eigenverbruikZonder && <ErrorLabel>{errors.eigenverbruikZonder}</ErrorLabel>}
+          <p className="mt-1 text-xs text-muted-foreground">{data.eigenverbruikZonder}% direct gebruik</p>
+        </div>
+        <div>
+          <Label>Eigenverbruik met accu</Label>
+          <Slider
+            value={[data.eigenverbruikMet]}
+            min={30}
+            max={95}
+            onValueChange={value => onChange('eigenverbruikMet', value[0])}
+          />
+          {errors.eigenverbruikMet && <ErrorLabel>{errors.eigenverbruikMet}</ErrorLabel>}
+          <p className="mt-1 text-xs text-muted-foreground">{data.eigenverbruikMet}% met slim laden</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div>
+          <Label>EV flexibel laden</Label>
+          <Slider
+            value={[data.evFlexPct]}
+            min={0}
+            max={100}
+            onValueChange={value => onChange('evFlexPct', value[0])}
+          />
+          <p className="mt-1 text-xs text-muted-foreground">{data.evFlexPct}% van het laden is verschuifbaar</p>
+        </div>
+        <div>
+          <Label>Warmtepomp flexibiliteit</Label>
+          <Slider
+            value={[data.wpFlexPct]}
+            min={0}
+            max={60}
+            onValueChange={value => onChange('wpFlexPct', value[0])}
+          />
+          <p className="mt-1 text-xs text-muted-foreground">{data.wpFlexPct}% buffer binnen comfort</p>
+        </div>
+        <div>
+          <Label htmlFor="maxFlexvermogen">Max. flexibel vermogen (kW)</Label>
+          <Input
+            id="maxFlexvermogen"
+            type="number"
+            value={data.maxFlexvermogen}
+            onChange={event => onChange('maxFlexvermogen', event.target.value)}
+            min={0}
+            max={25}
+            step="0.5"
+          />
+          {errors.maxFlexvermogen && <ErrorLabel>{errors.maxFlexvermogen}</ErrorLabel>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+type BatteryData = WizardState['battery'];
+
+function StepBattery({ data, errors, onChange }: StepProps<BatteryData>) {
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div>
+          <Label htmlFor="capaciteitKwh">Accu capaciteit (kWh)</Label>
+          <Input
+            id="capaciteitKwh"
+            type="number"
+            value={data.capaciteitKwh}
+            onChange={event => onChange('capaciteitKwh', event.target.value)}
+            min={0.1}
+            max={30}
+            step="0.1"
+          />
+          {errors.capaciteitKwh && <ErrorLabel>{errors.capaciteitKwh}</ErrorLabel>}
+        </div>
+        <div>
+          <Label htmlFor="prijsEuro">Investering (incl. installatie)</Label>
               <Input
                 id="prijsEuro"
                 type="number"
-                value={prijsEuro}
-                onChange={(e) => setPrijsEuro(e.target.value)}
-                className="pl-8"
-                min="1000"
-                max="20000"
+            value={data.prijsEuro}
+            onChange={event => onChange('prijsEuro', event.target.value)}
+            min={500}
+            max={25000}
                 step="100"
               />
-            </div>
-            <p className="text-sm text-gray-500 mt-1">Gemiddeld: €4.000 - €6.000</p>
-          </div>
-          
-          <div>
-            <Label htmlFor="capaciteitKwh">Capaciteit</Label>
-            <div className="relative">
-              <Input
-                id="capaciteitKwh"
-                type="number"
-                value={capaciteitKwh}
-                onChange={(e) => setCapaciteitKwh(e.target.value)}
-                className="pr-12"
-                min="5"
-                max="30"
-                step="0.5"
-              />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">kWh</span>
-            </div>
-            <p className="text-sm text-gray-500 mt-1">Typisch: 10-15 kWh</p>
-          </div>
+          {errors.prijsEuro && <ErrorLabel>{errors.prijsEuro}</ErrorLabel>}
         </div>
-      </Card>
+        <div>
+          <Label htmlFor="maxLaadvermogen">Max. laad/ontlaadvermogen (kW)</Label>
+          <Input
+            id="maxLaadvermogen"
+            type="number"
+            value={data.maxLaadvermogen}
+            onChange={event => onChange('maxLaadvermogen', event.target.value)}
+            min={0.1}
+            max={25}
+            step="0.1"
+          />
+          {errors.maxLaadvermogen && <ErrorLabel>{errors.maxLaadvermogen}</ErrorLabel>}
+        </div>
+      </div>
 
-      {/* Zonnepanelen */}
-      <Card className="p-6">
-        <h3 className="text-lg font-semibold mb-4">Zonnepanelen</h3>
-        
-        <div className="mb-4">
-          <Label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={heeftZonnepanelen}
-              onChange={(e) => setHeeftZonnepanelen(e.target.checked)}
-              className="w-4 h-4 rounded border-gray-300"
-            />
-            <span>Ik heb zonnepanelen</span>
-          </Label>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div>
+          <Label>Rondritrendement</Label>
+          <Slider
+            value={[data.roundTripEfficiency]}
+            min={70}
+            max={98}
+            onValueChange={value => onChange('roundTripEfficiency', value[0])}
+          />
+          {errors.roundTripEfficiency && <ErrorLabel>{errors.roundTripEfficiency}</ErrorLabel>}
+          <p className="mt-1 text-xs text-muted-foreground">{data.roundTripEfficiency}%</p>
         </div>
-        
-        {heeftZonnepanelen && (
-          <div className="grid md:grid-cols-3 gap-4">
-            <div>
-              <Label htmlFor="pvOpwekKwh">Jaarlijkse opbrengst</Label>
-              <div className="relative">
-                <Input
-                  id="pvOpwekKwh"
-                  type="number"
-                  value={pvOpwekKwh}
-                  onChange={(e) => setPvOpwekKwh(e.target.value)}
-                  className="pr-12"
-                  min="1000"
-                  max="20000"
-                />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">kWh</span>
-              </div>
-            </div>
-            
-            <div>
-              <Label htmlFor="huidigEigenverbruik">Huidig eigenverbruik</Label>
-              <div className="relative">
-                <Input
-                  id="huidigEigenverbruik"
-                  type="number"
-                  value={huidigEigenverbruik}
-                  onChange={(e) => setHuidigEigenverbruik(e.target.value)}
-                  className="pr-8"
-                  min="10"
-                  max="80"
-                />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">%</span>
-              </div>
-              <p className="text-sm text-gray-500 mt-1">Zonder accu: ~30%</p>
-            </div>
-            
-            <div>
-              <Label htmlFor="eigenverbruikMetAccu">Met accu</Label>
-              <div className="relative">
-                <Input
-                  id="eigenverbruikMetAccu"
-                  type="number"
-                  value={eigenverbruikMetAccu}
-                  onChange={(e) => setEigenverbruikMetAccu(e.target.value)}
-                  className="pr-8"
-                  min="30"
-                  max="95"
-                />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">%</span>
-              </div>
-              <p className="text-sm text-gray-500 mt-1">Met accu: ~60%</p>
-            </div>
-          </div>
-        )}
-      </Card>
+        <div>
+          <Label>Degradatie per jaar</Label>
+          <Slider
+            value={[data.degradatie]}
+            min={0.5}
+            max={5}
+            step={0.1}
+            onValueChange={value => onChange('degradatie', value[0])}
+          />
+          {errors.degradatie && <ErrorLabel>{errors.degradatie}</ErrorLabel>}
+          <p className="mt-1 text-xs text-muted-foreground">{data.degradatie.toFixed(1)}% na startjaar</p>
+        </div>
+        <div>
+          <Label htmlFor="degradatieStartJaar">Degradatie start in jaar</Label>
+          <Input
+            id="degradatieStartJaar"
+            type="number"
+            value={data.degradatieStartJaar}
+            onChange={event => onChange('degradatieStartJaar', event.target.value)}
+            min={5}
+            max={15}
+          />
+          {errors.degradatieStartJaar && <ErrorLabel>{errors.degradatieStartJaar}</ErrorLabel>}
+        </div>
+      </div>
 
-      {/* Verbruik en Contract */}
-      <Card className="p-6">
-        <h3 className="text-lg font-semibold mb-4">Verbruik en Contract</h3>
-        
-        <div className="grid md:grid-cols-2 gap-4 mb-4">
-          <div>
-            <Label htmlFor="jaarverbruikStroom">Jaarverbruik stroom</Label>
-            <div className="relative">
-              <Input
-                id="jaarverbruikStroom"
-                type="number"
-                value={jaarverbruikStroom}
-                onChange={(e) => setJaarverbruikStroom(e.target.value)}
-                className="pr-12"
-                min="500"
-                max="15000"
-              />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">kWh</span>
-            </div>
-            <p className="text-sm text-gray-500 mt-1">Gemiddeld: 2.500-4.000 kWh</p>
-          </div>
-          
-          <div>
-            <Label htmlFor="contractType">Contract type</Label>
-            <select
-              id="contractType"
-              value={contractType}
-              onChange={(e) => handleContractTypeChange(e.target.value as 'vast' | 'dynamisch')}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-            >
-              <option value="vast">Vast contract</option>
-              <option value="dynamisch">Dynamisch contract</option>
-            </select>
-            <p className="text-sm text-gray-500 mt-1">
-              {contractType === 'dynamisch' ? 'Met arbitrage voordelen' : 'Geen arbitrage'}
-            </p>
-          </div>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div>
+          <Label htmlFor="garantieJaren">Garantie (jaren)</Label>
+          <Input
+            id="garantieJaren"
+            type="number"
+            value={data.garantieJaren}
+            onChange={event => onChange('garantieJaren', event.target.value)}
+            min={5}
+            max={25}
+          />
+          {errors.garantieJaren && <ErrorLabel>{errors.garantieJaren}</ErrorLabel>}
         </div>
-        
-        <div className="grid md:grid-cols-2 gap-4">
+      </div>
+    </div>
+  );
+}
+
+type DynamicData = WizardState['dynamic'];
+
+interface StepDynamicProps extends StepProps<DynamicData> {
+  basicsData: WizardState['basics'];
+  solarData: WizardState['solar'];
+  batteryData: WizardState['battery'];
+}
+
+function StepDynamic({ data, errors, onChange, basicsData, solarData, batteryData }: StepDynamicProps) {
+  const piekVerbruik = Number(basicsData.jaarverbruikStroomPiek) || 0;
+  const dalVerbruik = Number(basicsData.jaarverbruikStroomDal) || 0;
+  const totaalVerbruik = piekVerbruik + dalVerbruik;
+
+  const summaryItems = [
+    {
+      label: 'Jaarverbruik stroom',
+      value: `${totaalVerbruik.toLocaleString('nl-NL')} kWh (piek ${piekVerbruik.toLocaleString('nl-NL')} / dal ${dalVerbruik.toLocaleString('nl-NL')})`,
+    },
+    {
+      label: 'Accu',
+      value: `${batteryData.capaciteitKwh} kWh • €${batteryData.prijsEuro}`,
+    },
+    {
+      label: 'Eigenverbruik met accu',
+      value: basicsData.heeftZonnepanelen ? `${solarData.eigenverbruikMet}%` : 'n.v.t.',
+    },
+  ];
+
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[2fr_1fr]">
+        <div className="space-y-4">
           <div>
-            <Label htmlFor="stroomKalePrijs">Stroomprijs (kale prijs)</Label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">€</span>
-              <Input
-                id="stroomKalePrijs"
-                type="number"
-                value={stroomKalePrijs}
-                onChange={(e) => setStroomKalePrijs(e.target.value)}
-                className="pl-8"
-                min="0.05"
-                max="0.50"
-                step="0.01"
-              />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">/kWh</span>
+            <Label>Contracttype</Label>
+            <div className="mt-2 flex gap-3">
+              {(['vast', 'dynamisch'] as const).map(option => (
+                <button
+                  key={option}
+                  type="button"
+                  onClick={() => onChange('contractType', option)}
+                  className={cn(
+                    'flex-1 rounded-lg border px-4 py-3 text-sm font-semibold transition',
+                    data.contractType === option
+                      ? 'border-orange-500 bg-orange-50 text-orange-700'
+                      : 'border-slate-200 bg-white text-slate-600 hover:border-orange-300'
+                  )}
+                >
+                  {option === 'vast' ? 'Vast contract' : 'Dynamisch contract'}
+                </button>
+              ))}
             </div>
           </div>
           
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <div>
-            <Label htmlFor="terugleververgoeding">Terugleververgoeding</Label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">€</span>
+              <Label>All-in kale prijs (ct/kWh)</Label>
               <Input
-                id="terugleververgoeding"
+                value={data.stroomPrijsCent}
+                onChange={event => onChange('stroomPrijsCent', event.target.value)}
                 type="number"
-                value={terugleververgoeding}
-                onChange={(e) => setTerugleververgoeding(e.target.value)}
-                className="pl-8"
-                min="0.01"
-                max="0.30"
-                step="0.01"
+                step="0.1"
               />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">/kWh</span>
+              {errors.stroomPrijsCent && <ErrorLabel>{errors.stroomPrijsCent}</ErrorLabel>}
+            </div>
+            <div>
+              <Label>Terugleververgoeding (ct/kWh)</Label>
+              <Input
+                value={data.terugleververgoedingCent}
+                onChange={event => onChange('terugleververgoedingCent', event.target.value)}
+                type="number"
+                step="0.1"
+              />
+              {errors.terugleververgoedingCent && <ErrorLabel>{errors.terugleververgoedingCent}</ErrorLabel>}
+        </div>
+            <div>
+              <Label htmlFor="vasteKostenMaand">Vaste kosten (€/maand)</Label>
+              <Input
+                id="vasteKostenMaand"
+                value={data.vasteKostenMaand}
+                onChange={event => onChange('vasteKostenMaand', event.target.value)}
+                type="number"
+                step="0.1"
+              />
+              {errors.vasteKostenMaand && <ErrorLabel>{errors.vasteKostenMaand}</ErrorLabel>}
+            </div>
+          </div>
+
+          {data.contractType === 'dynamisch' && (
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+              <div>
+                <Label>Opslag afname (ct/kWh)</Label>
+                <Input
+                  value={data.opslagAfnameCent}
+                  onChange={event => onChange('opslagAfnameCent', event.target.value)}
+                  type="number"
+                  step="0.1"
+                />
+                {errors.opslagAfnameCent && <ErrorLabel>{errors.opslagAfnameCent}</ErrorLabel>}
+              </div>
+            <div>
+                <Label>Opslag invoeding (ct/kWh)</Label>
+                <Input
+                  value={data.opslagInvoedingCent}
+                  onChange={event => onChange('opslagInvoedingCent', event.target.value)}
+                  type="number"
+                  step="0.1"
+                />
+                {errors.opslagInvoedingCent && <ErrorLabel>{errors.opslagInvoedingCent}</ErrorLabel>}
+              </div>
+            <div>
+                <Label>Laaddrempel (ct/kWh)</Label>
+                <Input
+                  value={data.laadDrempelCent}
+                  onChange={event => onChange('laadDrempelCent', event.target.value)}
+                  type="number"
+                  step="0.1"
+                />
+                {errors.laadDrempelCent && <ErrorLabel>{errors.laadDrempelCent}</ErrorLabel>}
+              </div>
+          <div>
+                <Label>Ontlaaddrempel (ct/kWh)</Label>
+              <Input
+                  value={data.ontlaadDrempelCent}
+                  onChange={event => onChange('ontlaadDrempelCent', event.target.value)}
+                type="number"
+                  step="0.1"
+                />
+                {errors.ontlaadDrempelCent && <ErrorLabel>{errors.ontlaadDrempelCent}</ErrorLabel>}
+              </div>
+            </div>
+          )}
+          
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div>
+              <Label htmlFor="maandelijkseVergoeding">Maandelijkse vergoeding dynamisch (€/maand)</Label>
+              <Input
+                id="maandelijkseVergoeding"
+                value={data.maandelijkseVergoeding}
+                onChange={event => onChange('maandelijkseVergoeding', event.target.value)}
+                type="number"
+                step="0.1"
+              />
+              {errors.maandelijkseVergoeding && <ErrorLabel>{errors.maandelijkseVergoeding}</ErrorLabel>}
             </div>
           </div>
         </div>
-      </Card>
 
-      {/* Errors */}
-      {errors.length > 0 && (
-        <Card className="p-4 bg-red-50 border-red-200">
-          <div className="flex items-start gap-2">
-            <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-            <div>
-              <h4 className="font-semibold text-red-900 mb-1">Validatie fouten:</h4>
-              <ul className="text-sm text-red-800 space-y-1">
-                {errors.map((error, index) => (
-                  <li key={index}>• {error}</li>
+        <div className="space-y-4">
+          <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+            <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-800">
+              <Info className="h-4 w-4 text-orange-500" />
+              Controleer je invoer
+            </div>
+            <ul className="space-y-2 text-sm text-slate-600">
+              {summaryItems.map(item => (
+                <li key={item.label} className="flex items-center justify-between">
+                  <span>{item.label}</span>
+                  <span className="font-semibold text-slate-800">{item.value}</span>
+                </li>
                 ))}
               </ul>
             </div>
           </div>
-        </Card>
-      )}
+      </div>
+    </div>
+  );
+}
 
-      {/* Submit Button */}
+interface WizardNavigationProps {
+  isFirst: boolean;
+  isLast: boolean;
+  onPrevious: () => void;
+  onNext: () => void;
+  onSubmit: () => void;
+  isSubmitting: boolean;
+}
+
+function WizardNavigation({
+  isFirst,
+  isLast,
+  onPrevious,
+  onNext,
+  onSubmit,
+  isSubmitting,
+}: WizardNavigationProps) {
+  return (
+    <div className="flex flex-col gap-3 border-t border-slate-200 pt-4 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        {!isFirst && (
+          <Button
+            type="button"
+            variant="ghost"
+            className="flex items-center gap-2"
+            onClick={onPrevious}
+          >
+            <ChevronLeft className="h-4 w-4" />
+            Vorige stap
+          </Button>
+        )}
+      </div>
+
+      <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:justify-end">
+        {!isLast && (
+          <Button
+            type="button"
+            onClick={onNext}
+            className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600"
+          >
+            Volgende stap
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        )}
+
+        {isLast && (
       <Button
-        type="submit"
-        disabled={isCalculating}
-        className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white py-6 text-lg font-semibold"
-      >
-        {isCalculating ? (
-          <>
-            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2" />
+            type="button"
+            onClick={onSubmit}
+            disabled={isSubmitting}
+            className="flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:from-emerald-600 hover:to-teal-600"
+          >
+            {isSubmitting ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
             Berekenen...
           </>
         ) : (
           <>
-            <Battery className="w-5 h-5 mr-2" />
-            Bereken Terugverdientijd
+                <Battery className="h-4 w-4" />
+                Bereken terugverdientijd
           </>
         )}
       </Button>
-    </form>
+        )}
+      </div>
+    </div>
   );
+}
+
+function ErrorLabel({ children }: { children: string }) {
+  return <p className="mt-1 text-xs font-medium text-red-600">{children}</p>;
 }
 

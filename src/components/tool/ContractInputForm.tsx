@@ -19,8 +19,13 @@ interface ContractInputFormProps {
   onAddContract: (contract: ContractData | DynamicContractData) => void;
 }
 
+// Combined type for form state that supports both contract types
+type CombinedContractData = Omit<ContractData, 'type'> & Omit<DynamicContractData, 'type'> & {
+  type: "vast" | "variabel" | "dynamisch";
+};
+
 export function ContractInputForm({ userProfile, onAddContract }: ContractInputFormProps) {
-  const [currentContract, setCurrentContract] = useState<Partial<ContractData>>({
+  const [currentContract, setCurrentContract] = useState<Partial<CombinedContractData>>({
     type: 'vast',
     looptijdMaanden: 12,
     vasteLeveringskosten: 7,
