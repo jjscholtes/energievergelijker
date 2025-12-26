@@ -6,6 +6,7 @@ import { HeroSectionWithResults } from '@/components/home/HeroSectionWithResults
 import { Footer } from '@/components/home/Footer';
 
 // Lazy load components that are below the fold
+const DayAheadPrices = lazy(() => import('@/components/DayAheadPrices').then(module => ({ default: module.DayAheadPrices })));
 const DynamicPricingHero = lazy(() => import('@/components/DynamicPricingHero').then(module => ({ default: module.DynamicPricingHero })));
 const BatteryPromotion = lazy(() => import('@/components/home/BatteryPromotion').then(module => ({ default: module.BatteryPromotion })));
 const ArticlesSection = lazy(() => import('@/components/articles/ArticlesSection').then(module => ({ default: module.default })));
@@ -28,7 +29,24 @@ export default function Home() {
       <main>
         <HeroSectionWithResults />
         
-        {/* Prijs Informatie */}
+        {/* Day-Ahead Prijzen */}
+        <section className="py-16 bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-10">
+              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+                Actuele Stroomprijzen
+              </h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                Live day-ahead prijzen van de EPEX spotmarkt. Elke dag automatisch bijgewerkt.
+              </p>
+            </div>
+            <Suspense fallback={<LoadingSpinner />}>
+              <DayAheadPrices />
+            </Suspense>
+          </div>
+        </section>
+        
+        {/* Dynamische Contracten Info */}
         <section className="py-16 bg-gradient-to-br from-emerald-50 via-white to-teal-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <Suspense fallback={<LoadingSpinner />}>
