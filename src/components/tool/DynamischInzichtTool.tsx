@@ -74,8 +74,7 @@ interface CalculationResult {
   solarSelfConsumption?: number;
   solarFeedIn?: number;
   feedInRevenue?: number;
-  // EV
-  evCost?: number;
+  // EV (verbruik zit al in totaal, dit is de besparing door slim laden)
   evSmartChargingSavings?: number;
 }
 
@@ -334,7 +333,7 @@ export function DynamischInzichtTool() {
                       <Car className={`w-6 h-6 ${hasEV ? 'text-green-600' : 'text-gray-400'}`} />
                       <div>
                         <div className="font-semibold text-gray-900">Elektrische Auto</div>
-                        <div className="text-sm text-gray-500">Thuis laden met slim laden simulatie</div>
+                        <div className="text-sm text-gray-500">Bereken besparing door slim laden</div>
                       </div>
                     </div>
                     <div className={`w-12 h-6 rounded-full transition-all ${hasEV ? 'bg-green-500' : 'bg-gray-300'}`}>
@@ -345,9 +344,14 @@ export function DynamischInzichtTool() {
 
                 {hasEV && (
                   <div className="mt-4 p-4 bg-green-50 rounded-xl space-y-4 border border-green-200">
+                    <div className="p-3 bg-green-100 rounded-lg text-sm text-green-800">
+                      <strong>💡 Toelichting:</strong> Je EV-verbruik zit al in je totale jaarverbruik hierboven. 
+                      Geef hieronder aan hoeveel kWh daarvan voor de auto is, zodat we kunnen berekenen 
+                      hoeveel je bespaart door slim te laden in de goedkoopste uren.
+                    </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Thuisladen per jaar (kWh)
+                        Hoeveel kWh van je totaal is EV-laden?
                       </label>
                       <input
                         type="number"
@@ -358,7 +362,7 @@ export function DynamischInzichtTool() {
                         className="w-full px-4 py-3 border-2 border-green-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500"
                         placeholder="Bijv. 3000"
                       />
-                      <p className="text-xs text-gray-500 mt-1">15.000 km ≈ 3.000 kWh (5 kWh/km)</p>
+                      <p className="text-xs text-gray-500 mt-1">Richtlijn: 15.000 km ≈ 3.000 kWh (gemiddeld 5 kWh per km)</p>
                     </div>
                     <div 
                       onClick={() => setSmartCharging(!smartCharging)}
@@ -369,8 +373,8 @@ export function DynamischInzichtTool() {
                       <div className="flex items-center gap-3">
                         <BatteryCharging className={`w-5 h-5 ${smartCharging ? 'text-green-600' : 'text-gray-400'}`} />
                         <div>
-                          <div className="font-medium text-gray-900">Slim Laden</div>
-                          <div className="text-xs text-gray-500">Automatisch laden in goedkoopste uren</div>
+                          <div className="font-medium text-gray-900">Slim Laden Actief</div>
+                          <div className="text-xs text-gray-500">Laden in de 6 goedkoopste uren per dag</div>
                         </div>
                       </div>
                       <div className={`w-10 h-5 rounded-full transition-all ${smartCharging ? 'bg-green-500' : 'bg-gray-300'}`}>
@@ -602,38 +606,34 @@ export function DynamischInzichtTool() {
               </div>
             )}
 
-            {/* EV Results */}
-            {result.evCost !== undefined && (
+            {/* EV Slim Laden Results */}
+            {(result.evSmartChargingSavings ?? 0) > 0 && (
               <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl shadow-lg p-6 border border-green-200">
                 <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                   <Car className="w-5 h-5 text-green-600" />
-                  Elektrische Auto Kosten
+                  Slim Laden Besparing
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="p-4 bg-white/70 rounded-xl">
-                    <div className="text-sm text-gray-500 mb-1">EV Laadkosten</div>
-                    <div className="text-2xl font-bold text-gray-800">€{result.evCost?.toFixed(0)}</div>
-                    <div className="text-sm text-gray-500">Per jaar thuis laden</div>
-                  </div>
-                  {(result.evSmartChargingSavings ?? 0) > 0 && (
-                    <div className="p-4 bg-green-100 rounded-xl">
-                      <div className="flex items-center gap-2 text-green-600 mb-1">
-                        <BatteryCharging className="w-4 h-4" />
-                        <span className="text-sm">Slim Laden Besparing</span>
-                      </div>
-                      <div className="text-2xl font-bold text-green-600">€{result.evSmartChargingSavings?.toFixed(0)}</div>
-                      <div className="text-sm text-green-600">Door laden in goedkoopste uren</div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-4 bg-green-100 rounded-xl">
+                    <div className="flex items-center gap-2 text-green-600 mb-1">
+                      <BatteryCharging className="w-4 h-4" />
+                      <span className="text-sm font-medium">Jaarlijkse Besparing</span>
                     </div>
-                  )}
+                    <div className="text-3xl font-bold text-green-600">€{result.evSmartChargingSavings?.toFixed(0)}</div>
+                    <div className="text-sm text-green-600">Door laden in goedkoopste uren</div>
+                  </div>
                   <div className="p-4 bg-white/70 rounded-xl">
-                    <div className="text-sm text-gray-500 mb-1">Kosten per kWh</div>
-                    <div className="text-2xl font-bold text-gray-800">€{evKwhPerYear > 0 ? ((result.evCost ?? 0) / evKwhPerYear).toFixed(2) : '0.00'}</div>
-                    <div className="text-sm text-gray-500">Gemiddeld met slim laden</div>
+                    <div className="text-sm text-gray-500 mb-1">Besparing per kWh</div>
+                    <div className="text-2xl font-bold text-gray-800">€{evKwhPerYear > 0 ? ((result.evSmartChargingSavings ?? 0) / evKwhPerYear).toFixed(3) : '0.00'}</div>
+                    <div className="text-sm text-gray-500">Verschil slim vs. normaal laden</div>
                   </div>
                 </div>
-                <p className="text-sm text-gray-600 mt-4 p-3 bg-green-100 rounded-lg">
-                  <strong>⚡ Slim laden tip:</strong> Door te laden in de 6 goedkoopste uren per dag (meestal &apos;s nachts) bespaar je met dynamisch tot 30% op laadkosten!
-                </p>
+                <div className="mt-4 p-3 bg-green-100 rounded-lg">
+                  <p className="text-sm text-green-800">
+                    <strong>⚡ Dit is al verrekend!</strong> De besparing door slim laden is al afgetrokken van je totale jaarkosten hierboven. 
+                    Door te laden in de 6 goedkoopste uren per dag (meestal &apos;s nachts) bespaar je flink met een dynamisch contract.
+                  </p>
+                </div>
               </div>
             )}
 

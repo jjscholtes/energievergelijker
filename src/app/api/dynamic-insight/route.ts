@@ -82,8 +82,7 @@ export interface DynamicInsightResponse {
   feedInRevenue?: number;
   solarMonthlyBreakdown?: { month: number; production: number; selfConsumption: number; feedIn: number; savings: number; feedInRevenue: number }[];
   
-  // EV
-  evCost?: number;
+  // EV (verbruik zit al in totaal, dit is de besparing door slim laden)
   evSmartChargingSavings?: number;
   
   // Meta
@@ -428,58 +427,42 @@ export async function POST(request: Request) {
       .reduce((sum, m) => sum + m.totalCost, 0);
     
     // ===== EV BEREKENING =====
-    let evCost = 0;
+    // Het EV-verbruik zit AL in het totale verbruik (adjustedKwh)
+    // De evKwhPerYear is een UITSPLITSING die aangeeft welk deel flexibel geladen kan worden
+    // We berekenen de BESPARING door slim laden vs normaal laden
     let evSmartChargingSavings = 0;
     
-    if (hasEV && evKwhPerYear > 0) {
-      // Bereken EV kosten per maand
+    if (hasEV && evKwhPerYear > 0 && smartCharging) {
       const evKwhPerMonth = evKwhPerYear / 12;
       
-      if (smartCharging) {
-        // Slim laden: laad in de 6 goedkoopste uren per dag
-        for (let month = 0; month < 12; month++) {
-          // Vind de 6 goedkoopste uren per maand
-          const hourPrices: { hour: number; price: number }[] = [];
-          for (let hour = 0; hour < 24; hour++) {
-            const key = `${month}-${hour}`;
-            const spotPrice = avgPriceByMonthHour.get(key) ?? 0.10;
-            hourPrices.push({ hour, price: spotPrice });
-          }
-          hourPrices.sort((a, b) => a.price - b.price);
-          const cheapestHours = hourPrices.slice(0, 6);
-          
-          // Bereken kosten voor slim laden (verspreid over 6 goedkoopste uren)
-          const avgCheapPrice = cheapestHours.reduce((sum, h) => sum + h.price, 0) / 6;
-          const allInCheapPrice = avgCheapPrice + SUPPLIER_MARKUP + ENERGY_TAX;
-          evCost += evKwhPerMonth * allInCheapPrice;
-          
-          // Bereken wat het zou kosten zonder slim laden (gemiddelde prijs)
-          const avgMonthPrice = hourPrices.reduce((sum, h) => sum + h.price, 0) / 24;
-          const allInAvgPrice = avgMonthPrice + SUPPLIER_MARKUP + ENERGY_TAX;
-          evSmartChargingSavings += evKwhPerMonth * (allInAvgPrice - allInCheapPrice);
+      for (let month = 0; month < 12; month++) {
+        // Vind alle uurprijzen voor deze maand
+        const hourPrices: { hour: number; price: number }[] = [];
+        for (let hour = 0; hour < 24; hour++) {
+          const key = `${month}-${hour}`;
+          const spotPrice = avgPriceByMonthHour.get(key) ?? 0.10;
+          hourPrices.push({ hour, price: spotPrice });
         }
-      } else {
-        // Normaal laden: gemiddelde prijs
-        for (let month = 0; month < 12; month++) {
-          let monthPriceSum = 0;
-          for (let hour = 0; hour < 24; hour++) {
-            const key = `${month}-${hour}`;
-            const spotPrice = avgPriceByMonthHour.get(key) ?? 0.10;
-            monthPriceSum += spotPrice;
-          }
-          const avgMonthPrice = monthPriceSum / 24;
-          const allInPrice = avgMonthPrice + SUPPLIER_MARKUP + ENERGY_TAX;
-          evCost += evKwhPerMonth * allInPrice;
-        }
+        
+        // Gemiddelde prijs (zonder slim laden)
+        const avgMonthPrice = hourPrices.reduce((sum, h) => sum + h.price, 0) / 24;
+        
+        // Goedkoopste 6 uren (met slim laden)
+        hourPrices.sort((a, b) => a.price - b.price);
+        const cheapestHours = hourPrices.slice(0, 6);
+        const avgCheapPrice = cheapestHours.reduce((sum, h) => sum + h.price, 0) / 6;
+        
+        // Besparing door slim laden (verschil in spotprijs, opslag en belasting zijn gelijk)
+        const priceDifference = avgMonthPrice - avgCheapPrice;
+        evSmartChargingSavings += evKwhPerMonth * priceDifference;
       }
       
-      // Voeg EV kosten toe aan totaal
-      totalCost += evCost;
-      totalConsumption += evKwhPerYear;
-      
-      // Fixed contract: EV tegen vaste prijs
-      fixedContractCost += evKwhPerYear * FIXED_PRICE;
+      // Trek de slim laden besparing af van de totale kosten
+      // (het EV-verbruik zat al in de normale berekening tegen gemiddelde prijs)
+      totalCost -= evSmartChargingSavings;
     }
+    
+    // Geen aanpassing aan fixedContractCost - EV zit al in het totaal
     
     // Bereken besparingen voor beide scenario's
     const savings = fixedContractCost - totalCost;
@@ -523,9 +506,8 @@ export async function POST(request: Request) {
         solarMonthlyBreakdown,
       } : {}),
       
-      // EV
-      ...(hasEV && evKwhPerYear > 0 ? {
-        evCost,
+      // EV (verbruik zit al in totaal, alleen besparing door slim laden tonen)
+      ...(hasEV && evKwhPerYear > 0 && smartCharging ? {
         evSmartChargingSavings,
       } : {}),
       
