@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Calculator, TrendingUp, Zap, Battery, ArrowRight } from 'lucide-react';
+import { Calculator, TrendingUp, Zap, Battery, ArrowRight, Thermometer } from 'lucide-react';
 import { Header } from '@/components/home/Header';
 
 interface ToolCardProps {
@@ -96,6 +96,21 @@ function ToolCard({ icon, title, description, features, href, badge, color }: To
 export default function ToolsPage() {
   const tools: ToolCardProps[] = [
     {
+      icon: <Thermometer className="w-8 h-8" />,
+      title: "Dynamische Energie Inzicht",
+      description: "Bereken je echte kosten met dynamische contracten. Speciaal voor warmtepompen en all-electric woningen.",
+      features: [
+        "Echte uurprijzen, geen gemiddelden",
+        "NEDU verbruiksprofielen",
+        "All-electric & warmtepomp simulatie",
+        "Winter vs. zomer analyse",
+        "Vergelijking met vast contract",
+      ],
+      href: "/tool/dynamisch-inzicht",
+      badge: "Nieuw",
+      color: "purple",
+    },
+    {
       icon: <Calculator className="w-8 h-8" />,
       title: "Contract Vergelijker",
       description: "Vergelijk verschillende energiecontracten en zie direct welk contract het beste bij jouw situatie past.",
@@ -112,16 +127,16 @@ export default function ToolsPage() {
     },
     {
       icon: <TrendingUp className="w-8 h-8" />,
-      title: "Dynamische Prijzen Checker",
-      description: "Bekijk actuele dynamische energieprijzen per uur en seizoen. Ontdek wanneer stroom het goedkoopst is.",
+      title: "Day-Ahead Prijzen",
+      description: "Bekijk live day-ahead stroomprijzen per uur. Historische data tot 1 jaar terug.",
       features: [
-        "Live uurprijzen en trends",
-        "Seizoensvergelijkingen",
-        "Realistische huishoudprofielen",
-        "EV-laden optimalisatie",
-        "Zonnepanelen teruglevering",
+        "Live EPEX spotprijzen",
+        "Prijzen vandaag én morgen",
+        "Historische prijsanalyse",
+        "Goedkoopste uren ontdekken",
+        "Slim laden optimalisatie",
       ],
-      href: "/dynamische-prijzen",
+      href: "/dayaheadprijzen",
       color: "emerald",
     },
     {
@@ -136,7 +151,6 @@ export default function ToolsPage() {
         "Cashflow visualisaties",
       ],
       href: "/tool/batterij",
-      badge: "Nieuw",
       color: "orange",
     },
   ];

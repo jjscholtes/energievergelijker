@@ -545,6 +545,22 @@ export function DayAheadPrijzenPage() {
               </div>
             )}
 
+            {/* CTA Section */}
+            <div className="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl p-8 text-white text-center">
+              <h3 className="text-2xl font-bold mb-4">Wat kosten dynamische prijzen voor jouw situatie?</h3>
+              <p className="text-purple-100 mb-6 max-w-2xl mx-auto">
+                Bereken je echte jaarkosten met onze Dynamische Energie Inzicht Tool. 
+                Speciaal ontwikkeld voor warmtepompen en all-electric woningen.
+              </p>
+              <a 
+                href="/tool/dynamisch-inzicht"
+                className="inline-flex items-center gap-2 bg-white text-purple-600 px-8 py-4 rounded-xl font-bold hover:bg-purple-50 transition-all shadow-lg"
+              >
+                Bereken Jouw Kosten
+                <Zap className="w-5 h-5" />
+              </a>
+            </div>
+
             {/* Info Section */}
             <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 lg:p-8 border border-blue-200">
               <div className="flex items-start gap-4">

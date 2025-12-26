@@ -229,13 +229,20 @@ export function DayAheadPrices() {
         </div>
       </div>
 
-      {/* CTA Button */}
-      <div className="text-center">
+      {/* CTA Buttons */}
+      <div className="flex flex-col sm:flex-row gap-4 justify-center">
         <Link 
           href="/dayaheadprijzen"
-          className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+          className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
         >
           <span>Bekijk Alle Prijzen</span>
+          <ArrowRight className="w-4 h-4" />
+        </Link>
+        <Link 
+          href="/tool/dynamisch-inzicht"
+          className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+        >
+          <span>Bereken Jouw Kosten</span>
           <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
