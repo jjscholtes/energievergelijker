@@ -7,7 +7,6 @@ import { Footer } from '@/components/home/Footer';
 
 // Lazy load components that are below the fold
 const DayAheadPrices = lazy(() => import('@/components/DayAheadPrices').then(module => ({ default: module.DayAheadPrices })));
-const DynamicPricingHero = lazy(() => import('@/components/DynamicPricingHero').then(module => ({ default: module.DynamicPricingHero })));
 const BatteryPromotion = lazy(() => import('@/components/home/BatteryPromotion').then(module => ({ default: module.BatteryPromotion })));
 const ArticlesSection = lazy(() => import('@/components/articles/ArticlesSection').then(module => ({ default: module.default })));
 const FAQ = lazy(() => import('@/components/FAQ').then(module => ({ default: module.FAQ })));
@@ -42,15 +41,6 @@ export default function Home() {
             </div>
             <Suspense fallback={<LoadingSpinner />}>
               <DayAheadPrices />
-            </Suspense>
-          </div>
-        </section>
-        
-        {/* Dynamische Contracten Info */}
-        <section className="py-16 bg-gradient-to-br from-emerald-50 via-white to-teal-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <Suspense fallback={<LoadingSpinner />}>
-              <DynamicPricingHero />
             </Suspense>
           </div>
         </section>
