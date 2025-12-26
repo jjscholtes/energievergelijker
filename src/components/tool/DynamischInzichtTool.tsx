@@ -593,9 +593,12 @@ export function DynamischInzichtTool() {
                     <div className="text-sm text-blue-600">Excl. saldering</div>
                   </div>
                 </div>
-                <p className="text-sm text-gray-600 mt-4 p-3 bg-yellow-100 rounded-lg">
-                  <strong>💡 Let op:</strong> Na 2027 vervalt saldering. Met dynamisch contract ontvang je de spotprijs minus marge voor teruglevering. Dit kan bij negatieve prijzen nadelig uitpakken!
-                </p>
+                <div className="mt-4 p-3 bg-green-100 rounded-lg">
+                  <p className="text-sm text-green-800">
+                    <strong>✅ Voordeel dynamisch:</strong> Je krijgt de spotprijs (~€0,06/kWh) terug voor teruglevering. 
+                    Bij veel vaste contracten betaal je juist terugleverkosten (~€0,09/kWh)!
+                  </p>
+                </div>
               </div>
             )}
 
@@ -806,13 +809,18 @@ export function DynamischInzichtTool() {
               </div>
               
               {hasSolar && result.savingsVsNoNetMetering !== undefined && (
-                <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-xl">
-                  <p className="text-sm text-amber-800">
-                    <strong>⚠️ Let op:</strong> Na 2027 vervalt saldering. Met een vast contract krijg je dan typisch maar €0,05-0,09/kWh terug voor teruggeleverde stroom. 
-                    {result.savingsVsNoNetMetering > 0 
-                      ? ` Met dynamisch bespaar je dan €${result.savingsVsNoNetMetering.toFixed(0)} per jaar.`
-                      : ` Dynamisch is dan ongeveer gelijk of €${Math.abs(result.savingsVsNoNetMetering).toFixed(0)} duurder.`
-                    }
+                <div className={`mt-4 p-4 rounded-xl ${result.savingsVsNoNetMetering > 0 ? 'bg-green-50 border border-green-200' : 'bg-amber-50 border border-amber-200'}`}>
+                  <p className={`text-sm ${result.savingsVsNoNetMetering > 0 ? 'text-green-800' : 'text-amber-800'}`}>
+                    {result.savingsVsNoNetMetering > 0 ? (
+                      <>
+                        <strong>💰 Dynamisch bespaart €{result.savingsVsNoNetMetering.toFixed(0)}/jaar!</strong> Bij veel vaste contracten betaal je terugleverkosten (~€0,09/kWh), 
+                        terwijl je bij dynamisch de spotprijs terugkrijgt (~€0,06/kWh). Dit scheelt al snel honderden euro&apos;s per jaar.
+                      </>
+                    ) : (
+                      <>
+                        <strong>⚠️ Let op:</strong> Na 2027 vervalt saldering. Dynamisch is dan ongeveer gelijk of €{Math.abs(result.savingsVsNoNetMetering).toFixed(0)} duurder dan vast.
+                      </>
+                    )}
                   </p>
                 </div>
               )}

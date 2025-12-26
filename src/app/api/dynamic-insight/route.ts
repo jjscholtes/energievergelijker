@@ -110,11 +110,14 @@ const FIXED_PRICE = 0.28; // €/kWh typical fixed contract all-in price
 // Dynamisch: je krijgt spotprijs - kleine marge (vaak €0.01-0.02)
 const DYNAMIC_FEED_IN_MARGIN = 0.015; // €/kWh afgetrokken van spotprijs
 
-// Vast contract: lage vaste terugleververgoeding 
-// Veel leveranciers geven €0.00-0.07/kWh, sommige rekenen zelfs terugleverkosten!
-// Gemiddeld is €0.03-0.05/kWh een realistische schatting
-// Bron: vergelijking energieleveranciers 2024/2025
-const FIXED_FEED_IN_RATE = 0.04; // €/kWh - gemiddelde terugleververgoeding vast contract
+// Vast contract teruglevering:
+// Veel leveranciers rekenen TERUGLEVERKOSTEN (€0.05-0.15/kWh) ipv een vergoeding!
+// Sommigen geven een kleine vergoeding (€0.00-0.07/kWh)
+// Netto effect: vaak NEGATIEF (je betaalt om terug te leveren)
+// Bron: AD.nl, Keuze.nl vergelijking 2024/2025
+const FIXED_FEED_IN_RATE = 0.04; // €/kWh - vergoeding (sommige leveranciers)
+const FIXED_FEED_IN_COSTS = 0.09; // €/kWh - terugleverkosten (veel leveranciers)
+// Netto: €0.04 - €0.09 = -€0.05/kWh (je BETAALT per teruggeleverde kWh!)
 
 // Solar production profile by month (relative, sums to ~1.0)
 const SOLAR_MONTHLY_PROFILE = [
@@ -402,11 +405,16 @@ export async function POST(request: Request) {
       const nettoAfname = Math.max(0, adjustedKwh - solarProduction);
       fixedContractCost = nettoAfname * FIXED_PRICE;
       
-      // Scenario 2: Zonder saldering (na 2027)
-      // Je betaalt voor ALLE afname, krijgt lage terugleververgoeding terug
+      // Scenario 2: Zonder saldering (na 2027 / of nu bij leverancier zonder saldering)
+      // Je betaalt voor ALLE afname, en vaak TERUGLEVERKOSTEN voor wat je teruglevert!
       // Eigenverbruik bespaart wel de volle prijs
       const fixedSelfConsumptionSavings = solarSelfConsumption * FIXED_PRICE;
-      const fixedFeedInRevenue = solarFeedIn * FIXED_FEED_IN_RATE; // Typisch €0,05-0,09/kWh
+      
+      // Netto terugleveropbrengst: vergoeding MINUS terugleverkosten
+      // Veel leveranciers: €0.04 vergoeding - €0.09 kosten = -€0.05/kWh (je BETAALT!)
+      const netFixedFeedInRate = FIXED_FEED_IN_RATE - FIXED_FEED_IN_COSTS; // Kan negatief zijn!
+      const fixedFeedInRevenue = solarFeedIn * netFixedFeedInRate;
+      
       fixedContractCostNoNetMetering = (adjustedKwh * FIXED_PRICE) - fixedSelfConsumptionSavings - fixedFeedInRevenue;
     }
     
