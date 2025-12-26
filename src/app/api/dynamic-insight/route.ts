@@ -78,6 +78,7 @@ export interface DynamicInsightResponse {
   solarSelfConsumption?: number;
   solarFeedIn?: number;
   feedInRevenue?: number;
+  solarMonthlyBreakdown?: { month: number; production: number; selfConsumption: number; feedIn: number; savings: number; feedInRevenue: number }[];
   
   // EV
   evCost?: number;
@@ -313,48 +314,87 @@ export async function POST(request: Request) {
     let solarFeedIn = 0;
     let feedInRevenue = 0;
     
+    // Maandelijkse solar breakdown voor resultaten
+    const solarMonthlyBreakdown: { month: number; production: number; selfConsumption: number; feedIn: number; savings: number; feedInRevenue: number }[] = [];
+    
     if (hasSolar && solarProduction > 0) {
-      // Bereken maandelijkse productie en eigenverbruik
+      // Totale eigenverbruik en teruglevering (voor samenvatting)
       solarSelfConsumption = solarProduction * (selfConsumptionPercentage / 100);
       solarFeedIn = solarProduction - solarSelfConsumption;
       
-      // Bereken besparingen per maand/uur
-      let monthlyFeedInRevenue = 0;
-      let monthlySelfConsumptionSavings = 0;
-      
+      // Bereken per maand en per uur
       for (let month = 0; month < 12; month++) {
         const monthlyProduction = solarProduction * SOLAR_MONTHLY_PROFILE[month];
         const monthlyDays = daysInMonth[month];
-        const dailyProduction = monthlyProduction / monthlyDays;
+        
+        let monthSelfConsumptionSavings = 0;
+        let monthFeedInRevenue = 0;
+        let monthSelfConsumptionKwh = 0;
+        let monthFeedInKwh = 0;
         
         for (let hour = 0; hour < 24; hour++) {
-          const hourlyProduction = dailyProduction * SOLAR_HOURLY_PROFILE[hour];
+          // Productie dit uur (kWh voor de hele maand)
+          const hourlyProductionPerDay = (monthlyProduction / monthlyDays) * SOLAR_HOURLY_PROFILE[hour];
+          const hourlyProductionMonth = hourlyProductionPerDay * monthlyDays;
+          
+          // Eigenverbruik dit uur
+          const hourSelfConsumption = hourlyProductionMonth * (selfConsumptionPercentage / 100);
+          monthSelfConsumptionKwh += hourSelfConsumption;
+          
+          // Teruglevering dit uur
+          const hourFeedIn = hourlyProductionMonth * ((100 - selfConsumptionPercentage) / 100);
+          monthFeedInKwh += hourFeedIn;
+          
+          // Prijs voor dit uur in deze maand
           const key = `${month}-${hour}`;
           const spotPrice = avgPriceByMonthHour.get(key) ?? 0.10;
           
-          // Eigenverbruik bespaart alle-in prijs
-          const hourSelfConsumption = hourlyProduction * (selfConsumptionPercentage / 100) * monthlyDays;
+          // Eigenverbruik bespaart: spotprijs + opslag + energiebelasting (hele all-in prijs)
           const allInPrice = spotPrice + SUPPLIER_MARKUP + ENERGY_TAX;
-          monthlySelfConsumptionSavings += hourSelfConsumption * allInPrice;
+          monthSelfConsumptionSavings += hourSelfConsumption * allInPrice;
           
-          // Teruglevering: spotprijs minus marge (kan negatief zijn!)
-          const hourFeedIn = hourlyProduction * ((100 - selfConsumptionPercentage) / 100) * monthlyDays;
-          const feedInPrice = Math.max(0, spotPrice - FEED_IN_MARKUP); // Minimaal €0
-          monthlyFeedInRevenue += hourFeedIn * feedInPrice;
+          // Teruglevering: je krijgt spotprijs minus leveranciersmarge vergoed
+          // Bij negatieve spotprijs moet je betalen, maar meeste leveranciers geven €0
+          const feedInPrice = Math.max(0, spotPrice - FEED_IN_MARKUP);
+          monthFeedInRevenue += hourFeedIn * feedInPrice;
         }
+        
+        // Update maandelijkse kosten met zonnepanelen impact
+        monthlySummary[month].totalCost -= monthSelfConsumptionSavings;
+        monthlySummary[month].totalCost -= monthFeedInRevenue;
+        
+        solarSavings += monthSelfConsumptionSavings;
+        feedInRevenue += monthFeedInRevenue;
+        
+        solarMonthlyBreakdown.push({
+          month,
+          production: monthlyProduction,
+          selfConsumption: monthSelfConsumptionKwh,
+          feedIn: monthFeedInKwh,
+          savings: monthSelfConsumptionSavings,
+          feedInRevenue: monthFeedInRevenue,
+        });
       }
-      
-      solarSavings = monthlySelfConsumptionSavings;
-      feedInRevenue = monthlyFeedInRevenue;
       
       // Pas totale kosten aan
       totalCost -= solarSavings;
       totalCost -= feedInRevenue;
       
-      // Fixed contract vergelijking: hier zou saldering gelden (nog wel tot 2027)
-      const saldeerPrijs = FIXED_PRICE; // Bij vast contract krijg je zelfde prijs terug
-      fixedContractCost -= solarProduction * saldeerPrijs * 0.9; // 90% effectief door timing
+      // Fixed contract vergelijking: saldering (geldt nog tot 2027)
+      // Met saldering krijg je dezelfde prijs terug als je betaalt
+      // Effectief betaal je alleen voor netto afname
+      const nettoAfname = Math.max(0, adjustedKwh - solarProduction);
+      fixedContractCost = nettoAfname * FIXED_PRICE;
     }
+    
+    // Herbereken seizoenskosten NA zonnepanelen correctie
+    const winterCostAfterSolar = monthlySummary
+      .filter(m => [0, 1, 11].includes(m.month))
+      .reduce((sum, m) => sum + m.totalCost, 0);
+    
+    const summerCostAfterSolar = monthlySummary
+      .filter(m => [5, 6, 7].includes(m.month))
+      .reduce((sum, m) => sum + m.totalCost, 0);
     
     // ===== EV BEREKENING =====
     let evCost = 0;
@@ -425,8 +465,8 @@ export async function POST(request: Request) {
       profileMix,
       monthlySummary,
       
-      winterCost,
-      summerCost,
+      winterCost: hasSolar ? winterCostAfterSolar : winterCost,
+      summerCost: hasSolar ? summerCostAfterSolar : summerCost,
       
       cheapestMonth: {
         month: cheapestMonth.month,
@@ -445,6 +485,7 @@ export async function POST(request: Request) {
         solarSelfConsumption,
         solarFeedIn,
         feedInRevenue,
+        solarMonthlyBreakdown,
       } : {}),
       
       // EV
