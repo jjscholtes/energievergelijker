@@ -54,7 +54,9 @@ interface CalculationResult {
   totalConsumption: number;
   averagePrice: number;
   fixedContractCost: number;
+  fixedContractCostNoNetMetering?: number;
   savings: number;
+  savingsVsNoNetMetering?: number;
   savingsPercentage: number;
   profileMix: {
     baseKwh: number;
@@ -490,17 +492,31 @@ export function DynamischInzichtTool() {
                 <div className="text-sm opacity-80 mt-2">Dynamisch contract</div>
               </div>
               
-              <div className={`rounded-2xl p-6 shadow-xl ${result.savings > 0 ? 'bg-green-50 border-2 border-green-200' : 'bg-orange-50 border-2 border-orange-200'}`}>
-                <div className={`text-sm font-medium mb-1 ${result.savings > 0 ? 'text-green-600' : 'text-orange-600'}`}>
-                  {result.savings > 0 ? 'Besparing t.o.v. vast' : 'Meerkosten t.o.v. vast'}
+              {hasSolar && result.savingsVsNoNetMetering !== undefined ? (
+                <div className={`rounded-2xl p-6 shadow-xl ${result.savingsVsNoNetMetering > 0 ? 'bg-green-50 border-2 border-green-200' : 'bg-orange-50 border-2 border-orange-200'}`}>
+                  <div className={`text-sm font-medium mb-1 ${result.savingsVsNoNetMetering > 0 ? 'text-green-600' : 'text-orange-600'}`}>
+                    vs Vast (na 2027)
+                  </div>
+                  <div className={`text-4xl font-bold ${result.savingsVsNoNetMetering > 0 ? 'text-green-600' : 'text-orange-600'}`}>
+                    €{Math.abs(result.savingsVsNoNetMetering).toFixed(0)}
+                  </div>
+                  <div className={`text-sm mt-2 ${result.savingsVsNoNetMetering > 0 ? 'text-green-600' : 'text-orange-600'}`}>
+                    {result.savingsVsNoNetMetering > 0 ? 'besparing' : 'duurder'}
+                  </div>
                 </div>
-                <div className={`text-4xl font-bold ${result.savings > 0 ? 'text-green-600' : 'text-orange-600'}`}>
-                  €{Math.abs(result.savings).toFixed(0)}
+              ) : (
+                <div className={`rounded-2xl p-6 shadow-xl ${result.savings > 0 ? 'bg-green-50 border-2 border-green-200' : 'bg-orange-50 border-2 border-orange-200'}`}>
+                  <div className={`text-sm font-medium mb-1 ${result.savings > 0 ? 'text-green-600' : 'text-orange-600'}`}>
+                    {result.savings > 0 ? 'Besparing t.o.v. vast' : 'Meerkosten t.o.v. vast'}
+                  </div>
+                  <div className={`text-4xl font-bold ${result.savings > 0 ? 'text-green-600' : 'text-orange-600'}`}>
+                    €{Math.abs(result.savings).toFixed(0)}
+                  </div>
+                  <div className={`text-sm mt-2 ${result.savings > 0 ? 'text-green-600' : 'text-orange-600'}`}>
+                    {result.savingsPercentage.toFixed(1)}% {result.savings > 0 ? 'goedkoper' : 'duurder'}
+                  </div>
                 </div>
-                <div className={`text-sm mt-2 ${result.savings > 0 ? 'text-green-600' : 'text-orange-600'}`}>
-                  {result.savingsPercentage.toFixed(1)}% {result.savings > 0 ? 'goedkoper' : 'duurder'}
-                </div>
-              </div>
+              )}
               
               <div className="bg-blue-50 rounded-2xl p-6 shadow-lg border-2 border-blue-200">
                 <div className="flex items-center gap-2 text-blue-600 mb-1">
@@ -697,10 +713,11 @@ export function DynamischInzichtTool() {
                       <th className="text-left py-3 px-4 font-semibold text-gray-700">Contract</th>
                       <th className="text-right py-3 px-4 font-semibold text-gray-700">Jaarkosten</th>
                       <th className="text-right py-3 px-4 font-semibold text-gray-700">Per maand</th>
+                      <th className="text-right py-3 px-4 font-semibold text-gray-700">vs Dynamisch</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr className="border-b border-gray-100">
+                    <tr className="border-b border-gray-100 bg-purple-50">
                       <td className="py-4 px-4">
                         <div className="flex items-center gap-2">
                           <Zap className="w-5 h-5 text-purple-600" />
@@ -713,24 +730,92 @@ export function DynamischInzichtTool() {
                       <td className="text-right py-4 px-4 text-gray-600">
                         €{(result.totalCost / 12).toFixed(0)}
                       </td>
+                      <td className="text-right py-4 px-4 text-gray-400">—</td>
                     </tr>
-                    <tr>
-                      <td className="py-4 px-4">
-                        <div className="flex items-center gap-2">
-                          <Calculator className="w-5 h-5 text-gray-400" />
-                          <span className="font-medium">Vast contract (€0,28/kWh)</span>
-                        </div>
-                      </td>
-                      <td className="text-right py-4 px-4 font-bold text-gray-600">
-                        €{result.fixedContractCost.toFixed(0)}
-                      </td>
-                      <td className="text-right py-4 px-4 text-gray-600">
-                        €{(result.fixedContractCost / 12).toFixed(0)}
-                      </td>
-                    </tr>
+                    {hasSolar && result.fixedContractCostNoNetMetering !== undefined && (
+                      <>
+                        <tr className="border-b border-gray-100">
+                          <td className="py-4 px-4">
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <Calculator className="w-5 h-5 text-green-600" />
+                                <span className="font-medium">Vast + Saldering</span>
+                              </div>
+                              <div className="text-xs text-gray-500 mt-1">Tot 2027, netto verrekening</div>
+                            </div>
+                          </td>
+                          <td className="text-right py-4 px-4 font-bold text-green-600">
+                            €{result.fixedContractCost.toFixed(0)}
+                          </td>
+                          <td className="text-right py-4 px-4 text-gray-600">
+                            €{(result.fixedContractCost / 12).toFixed(0)}
+                          </td>
+                          <td className="text-right py-4 px-4">
+                            <span className={result.savings < 0 ? 'text-red-600 font-medium' : 'text-green-600 font-medium'}>
+                              {result.savings > 0 ? '+' : ''}€{result.savings.toFixed(0)}
+                            </span>
+                          </td>
+                        </tr>
+                        <tr className="border-b border-gray-100">
+                          <td className="py-4 px-4">
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <Calculator className="w-5 h-5 text-orange-600" />
+                                <span className="font-medium">Vast zonder Saldering</span>
+                              </div>
+                              <div className="text-xs text-gray-500 mt-1">Na 2027, ~€0,07/kWh terugleververgoeding</div>
+                            </div>
+                          </td>
+                          <td className="text-right py-4 px-4 font-bold text-orange-600">
+                            €{result.fixedContractCostNoNetMetering.toFixed(0)}
+                          </td>
+                          <td className="text-right py-4 px-4 text-gray-600">
+                            €{(result.fixedContractCostNoNetMetering / 12).toFixed(0)}
+                          </td>
+                          <td className="text-right py-4 px-4">
+                            <span className={result.savingsVsNoNetMetering && result.savingsVsNoNetMetering < 0 ? 'text-red-600 font-medium' : 'text-green-600 font-medium'}>
+                              {result.savingsVsNoNetMetering && result.savingsVsNoNetMetering > 0 ? '+' : ''}€{result.savingsVsNoNetMetering?.toFixed(0) ?? 0}
+                            </span>
+                          </td>
+                        </tr>
+                      </>
+                    )}
+                    {!hasSolar && (
+                      <tr>
+                        <td className="py-4 px-4">
+                          <div className="flex items-center gap-2">
+                            <Calculator className="w-5 h-5 text-gray-400" />
+                            <span className="font-medium">Vast contract (€0,28/kWh)</span>
+                          </div>
+                        </td>
+                        <td className="text-right py-4 px-4 font-bold text-gray-600">
+                          €{result.fixedContractCost.toFixed(0)}
+                        </td>
+                        <td className="text-right py-4 px-4 text-gray-600">
+                          €{(result.fixedContractCost / 12).toFixed(0)}
+                        </td>
+                        <td className="text-right py-4 px-4">
+                          <span className={result.savings < 0 ? 'text-red-600 font-medium' : 'text-green-600 font-medium'}>
+                            {result.savings > 0 ? '+' : ''}€{result.savings.toFixed(0)}
+                          </span>
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>
+              
+              {hasSolar && result.savingsVsNoNetMetering !== undefined && (
+                <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                  <p className="text-sm text-amber-800">
+                    <strong>⚠️ Let op:</strong> Na 2027 vervalt saldering. Met een vast contract krijg je dan typisch maar €0,05-0,09/kWh terug voor teruggeleverde stroom. 
+                    {result.savingsVsNoNetMetering > 0 
+                      ? ` Met dynamisch bespaar je dan €${result.savingsVsNoNetMetering.toFixed(0)} per jaar.`
+                      : ` Dynamisch is dan ongeveer gelijk of €${Math.abs(result.savingsVsNoNetMetering).toFixed(0)} duurder.`
+                    }
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Info Box */}

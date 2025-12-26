@@ -51,8 +51,10 @@ export interface DynamicInsightResponse {
   averagePrice: number;
   
   // Fixed contract comparison
-  fixedContractCost: number;
-  savings: number;
+  fixedContractCost: number;           // Vast met saldering (tot 2027)
+  fixedContractCostNoNetMetering: number; // Vast zonder saldering (na 2027)
+  savings: number;                     // vs vast met saldering
+  savingsVsNoNetMetering: number;      // vs vast zonder saldering
   savingsPercentage: number;
   
   // Profile info
@@ -103,7 +105,16 @@ interface EnergyZeroResponse {
 const ENERGY_TAX = 0.1316; // €/kWh including VAT
 const SUPPLIER_MARKUP = 0.025; // €/kWh typical dynamic contract markup
 const FIXED_PRICE = 0.28; // €/kWh typical fixed contract all-in price
-const FEED_IN_MARKUP = 0.02; // €/kWh supplier margin on feed-in
+
+// Teruglevering marges
+// Dynamisch: je krijgt spotprijs - kleine marge (vaak €0.01-0.02)
+const DYNAMIC_FEED_IN_MARGIN = 0.015; // €/kWh afgetrokken van spotprijs
+
+// Vast contract: lage vaste terugleververgoeding 
+// Veel leveranciers geven €0.00-0.07/kWh, sommige rekenen zelfs terugleverkosten!
+// Gemiddeld is €0.03-0.05/kWh een realistische schatting
+// Bron: vergelijking energieleveranciers 2024/2025
+const FIXED_FEED_IN_RATE = 0.04; // €/kWh - gemiddelde terugleververgoeding vast contract
 
 // Solar production profile by month (relative, sums to ~1.0)
 const SOLAR_MONTHLY_PROFILE = [
@@ -306,7 +317,10 @@ export async function POST(request: Request) {
     const expensiveMonth = sortedByPrice[sortedByPrice.length - 1];
     
     // Compare with fixed contract
+    // Scenario 1: Met saldering (tot 2027) - je betaalt alleen netto afname
     let fixedContractCost = totalConsumption * FIXED_PRICE;
+    // Scenario 2: Zonder saldering (na 2027) - je betaalt alles, krijgt lage vergoeding terug
+    let fixedContractCostNoNetMetering = totalConsumption * FIXED_PRICE;
     
     // ===== ZONNEPANELEN BEREKENING =====
     let solarSavings = 0;
@@ -353,10 +367,11 @@ export async function POST(request: Request) {
           const allInPrice = spotPrice + SUPPLIER_MARKUP + ENERGY_TAX;
           monthSelfConsumptionSavings += hourSelfConsumption * allInPrice;
           
-          // Teruglevering: je krijgt spotprijs minus leveranciersmarge vergoed
-          // Bij negatieve spotprijs moet je betalen, maar meeste leveranciers geven €0
-          const feedInPrice = Math.max(0, spotPrice - FEED_IN_MARKUP);
-          monthFeedInRevenue += hourFeedIn * feedInPrice;
+          // Teruglevering bij DYNAMISCH: je krijgt spotprijs minus kleine marge
+          // Dit is vaak HOGER dan de vaste terugleververgoeding, vooral overdag!
+          // Bij negatieve spotprijs moet je soms betalen, maar meeste leveranciers kappen af op €0
+          const dynamicFeedInPrice = Math.max(0, spotPrice - DYNAMIC_FEED_IN_MARGIN);
+          monthFeedInRevenue += hourFeedIn * dynamicFeedInPrice;
         }
         
         // Update maandelijkse kosten met zonnepanelen impact
@@ -380,11 +395,19 @@ export async function POST(request: Request) {
       totalCost -= solarSavings;
       totalCost -= feedInRevenue;
       
-      // Fixed contract vergelijking: saldering (geldt nog tot 2027)
-      // Met saldering krijg je dezelfde prijs terug als je betaalt
-      // Effectief betaal je alleen voor netto afname
+      // ===== VAST CONTRACT SCENARIO'S =====
+      
+      // Scenario 1: Met saldering (tot 2027)
+      // Je betaalt alleen voor netto afname (afname minus teruglevering)
       const nettoAfname = Math.max(0, adjustedKwh - solarProduction);
       fixedContractCost = nettoAfname * FIXED_PRICE;
+      
+      // Scenario 2: Zonder saldering (na 2027)
+      // Je betaalt voor ALLE afname, krijgt lage terugleververgoeding terug
+      // Eigenverbruik bespaart wel de volle prijs
+      const fixedSelfConsumptionSavings = solarSelfConsumption * FIXED_PRICE;
+      const fixedFeedInRevenue = solarFeedIn * FIXED_FEED_IN_RATE; // Typisch €0,05-0,09/kWh
+      fixedContractCostNoNetMetering = (adjustedKwh * FIXED_PRICE) - fixedSelfConsumptionSavings - fixedFeedInRevenue;
     }
     
     // Herbereken seizoenskosten NA zonnepanelen correctie
@@ -450,8 +473,10 @@ export async function POST(request: Request) {
       fixedContractCost += evKwhPerYear * FIXED_PRICE;
     }
     
+    // Bereken besparingen voor beide scenario's
     const savings = fixedContractCost - totalCost;
     const savingsPercentage = fixedContractCost > 0 ? (savings / fixedContractCost) * 100 : 0;
+    const savingsVsNoNetMetering = fixedContractCostNoNetMetering - totalCost;
     
     const response: DynamicInsightResponse = {
       totalCost,
@@ -459,7 +484,9 @@ export async function POST(request: Request) {
       averagePrice: totalCost / totalConsumption - ENERGY_TAX - SUPPLIER_MARKUP,
       
       fixedContractCost,
+      fixedContractCostNoNetMetering,
       savings,
+      savingsVsNoNetMetering,
       savingsPercentage,
       
       profileMix,
