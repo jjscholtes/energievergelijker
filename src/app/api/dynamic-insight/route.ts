@@ -219,17 +219,19 @@ export async function POST(request: Request) {
     
     const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
     
-    // Calculate total fractions for normalization
-    let totalBaseFraction = 0;
-    let totalHeatingFraction = 0;
+    // Monthly heating factors (relative, sums to ~5.63)
+    const monthlyHeatingFactors = [1.00, 0.90, 0.70, 0.45, 0.20, 0.08, 0.05, 0.05, 0.15, 0.40, 0.70, 0.95];
+    const heatingFactorSum = monthlyHeatingFactors.reduce((a, b) => a + b, 0);
     
-    for (let month = 0; month < 12; month++) {
-      for (let hour = 0; hour < 24; hour++) {
-        const fractions = getHourlyFraction(hour, month, profileMix, adjustedKwh);
-        totalBaseFraction += fractions.baseFraction * daysInMonth[month];
-        totalHeatingFraction += fractions.heatingFraction * daysInMonth[month];
-      }
-    }
+    // Base load is relatively stable (normalized to ~11.37)
+    const monthlyBaseFactors = [0.95, 0.92, 0.90, 0.88, 0.90, 0.95, 1.00, 1.00, 0.95, 0.92, 0.95, 1.05];
+    const baseFactorSum = monthlyBaseFactors.reduce((a, b) => a + b, 0);
+    
+    // Hourly profiles (E1A for base, G1A for heating) - normalized to sum to 1.0
+    const hourlyE1A = [0.020, 0.018, 0.016, 0.015, 0.015, 0.018, 0.030, 0.050, 0.055, 0.048, 0.042, 0.040, 0.045, 0.042, 0.040, 0.042, 0.048, 0.065, 0.075, 0.072, 0.065, 0.055, 0.042, 0.032];
+    const hourlyG1A = [0.015, 0.012, 0.010, 0.010, 0.012, 0.025, 0.065, 0.075, 0.068, 0.055, 0.048, 0.045, 0.042, 0.040, 0.042, 0.048, 0.058, 0.068, 0.072, 0.065, 0.055, 0.045, 0.035, 0.025];
+    const e1aSum = hourlyE1A.reduce((a, b) => a + b, 0);
+    const g1aSum = hourlyG1A.reduce((a, b) => a + b, 0);
     
     for (let month = 0; month < 12; month++) {
       let monthConsumption = 0;
@@ -237,23 +239,27 @@ export async function POST(request: Request) {
       let monthHeatingCost = 0;
       let monthBaseCost = 0;
       let monthPriceSum = 0;
-      let monthHours = 0;
+      
+      // Monthly share of yearly consumption
+      const baseMonthShare = (monthlyBaseFactors[month] / baseFactorSum);
+      const heatingMonthShare = (monthlyHeatingFactors[month] / heatingFactorSum);
+      
+      // kWh for this month
+      const baseKwhThisMonth = profileMix.baseKwh * baseMonthShare;
+      const heatingKwhThisMonth = profileMix.heatingKwh * heatingMonthShare;
       
       for (let hour = 0; hour < 24; hour++) {
         const key = `${month}-${hour}`;
         const spotPrice = avgPriceByMonthHour.get(key) ?? 0.10;
         const allInPrice = spotPrice + SUPPLIER_MARKUP + ENERGY_TAX;
         
-        // Get consumption for this hour
-        const fractions = getHourlyFraction(hour, month, profileMix, adjustedKwh);
+        // Hourly share within this month
+        const baseHourShare = hourlyE1A[hour] / e1aSum;
+        const heatingHourShare = hourlyG1A[hour] / g1aSum;
         
-        // Calculate actual kWh for this hour (normalized)
-        const baseConsumption = totalBaseFraction > 0 
-          ? (fractions.baseFraction / totalBaseFraction) * profileMix.baseKwh * daysInMonth[month]
-          : 0;
-        const heatingConsumption = totalHeatingFraction > 0
-          ? (fractions.heatingFraction / totalHeatingFraction) * profileMix.heatingKwh * daysInMonth[month]
-          : 0;
+        // kWh for this hour (spread over all days in month)
+        const baseConsumption = baseKwhThisMonth * baseHourShare;
+        const heatingConsumption = heatingKwhThisMonth * heatingHourShare;
         
         const hourConsumption = baseConsumption + heatingConsumption;
         const hourCost = hourConsumption * allInPrice;
@@ -263,14 +269,13 @@ export async function POST(request: Request) {
         monthHeatingCost += heatingConsumption * allInPrice;
         monthBaseCost += baseConsumption * allInPrice;
         monthPriceSum += spotPrice;
-        monthHours++;
       }
       
       monthlySummary.push({
         month,
         monthName: monthNames[month],
         totalConsumption: monthConsumption,
-        averagePrice: monthPriceSum / monthHours,
+        averagePrice: monthPriceSum / 24,
         totalCost: monthCost,
         heatingCost: monthHeatingCost,
         baseCost: monthBaseCost,
@@ -278,6 +283,11 @@ export async function POST(request: Request) {
       
       totalCost += monthCost;
       totalConsumption += monthConsumption;
+    }
+    
+    // Debug: log if consumption doesn't match
+    if (Math.abs(totalConsumption - adjustedKwh) > 1) {
+      console.warn(`Consumption mismatch: expected ${adjustedKwh}, got ${totalConsumption}`);
     }
     
     // Calculate seasonal costs
