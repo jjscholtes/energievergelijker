@@ -2,6 +2,206 @@ import { Article } from '@/types/articles';
 
 export const articles: Article[] = [
   {
+    id: 'dynamische-energie-inzicht-tool-lancering',
+    title: 'Nieuwe Tool: Bereken je Werkelijke Kosten met een Dynamisch Contract',
+    summary: 'Ontdek onze nieuwe Dynamische Energie Inzicht Tool die met historische uurprijzen en realistische verbruiksprofielen berekent wat een dynamisch contract jou écht kost – inclusief zonnepanelen en elektrische auto.',
+    imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=400&fit=crop&crop=center',
+    content: `# Nieuwe Tool: Bereken je Werkelijke Kosten met een Dynamisch Contract
+
+Steeds meer Nederlanders overwegen een dynamisch energiecontract. Maar hoe weet je of het écht voordeliger is voor jouw situatie? Gemiddelde prijzen vertellen niet het hele verhaal. Daarom lanceren we vandaag de **Dynamische Energie Inzicht Tool** – een unieke calculator die jouw werkelijke kosten berekent op basis van realistische verbruiksprofielen en historische uurprijzen.
+
+---
+
+## Het Probleem met Gemiddelden
+
+Wanneer je dynamische contracten vergelijkt, zie je vaak: "gemiddelde prijs €0,08 per kWh". Maar wat zegt dat eigenlijk? Niets, als je bedenkt dat:
+
+- **Je 's avonds kookt** wanneer de prijzen het hoogst zijn
+- **Je warmtepomp draait** tijdens koude winterochtenden
+- **Je zonnepanelen produceren** wanneer de prijzen juist laag zijn
+
+> **De realiteit**: Jouw werkelijke kosten hangen af van *wanneer* je stroom verbruikt, niet alleen *hoeveel*.
+
+---
+
+## Hoe Werkt de Dynamische Energie Inzicht Tool?
+
+Onze tool combineert drie cruciale databronnen om een realistische berekening te maken:
+
+### 1. Historische Uurprijzen (EPEX-spotmarkt)
+
+We gebruiken de werkelijke uurprijzen van het afgelopen jaar via de EnergyZero API. Geen schattingen, maar échte marktdata van elk uur van het jaar.
+
+### 2. NEDU-Standaardprofielen
+
+Het Nationaal Energie Data Uitwisselingsbedrijf (NEDU) publiceert gedetailleerde verbruiksprofielen die laten zien hoe Nederlandse huishoudens gedurende de dag stroom gebruiken:
+
+- **E1A-profiel**: Standaard huishoudelijk verbruik (verlichting, witgoed, elektronica)
+- **G1A-profiel**: Gasverbruikspatroon (proxy voor warmtevraag)
+
+### 3. De "Frankenstein" Profiel Methode
+
+Hier wordt het interessant. Een all-electric woning met warmtepomp verbruikt fundamenteel anders dan een traditioneel huis. We splitsen je verbruik daarom op in:
+
+| Component | Profiel | Beschrijving |
+|-----------|---------|--------------|
+| **Basislast** | E1A | Verlichting, koelkast, apparaten |
+| **Verwarmingslast** | G1A | Warmtepompverbruik, volgt buitentemperatuur |
+
+De verdeling wordt bepaald door je bouwjaar (isolatiegraad) of gezinsgrootte (NIBUD-standaarden).
+
+---
+
+## Wat Maakt Deze Tool Uniek?
+
+### Accurate All-Electric Simulatie
+
+De meeste calculators gebruiken een simpel gemiddeld verbruiksprofiel. Dat werkt niet voor warmtepompwoningen, waar:
+
+- **70% van het verbruik** in de winter plaatsvindt
+- **Piekverbruik** in de vroege ochtend valt (wanneer prijzen hoger zijn)
+- **Zomerverbruik** minimaal is (wanneer prijzen lager zijn)
+
+Onze tool simuleert dit correct door het G1A-profiel te gebruiken voor de warmtevraag, gecombineerd met seizoensgebonden correctiefactoren.
+
+### Zonnepanelen Integratie
+
+Heb je zonnepanelen? De tool berekent:
+
+- **Eigenverbruik**: Direct verbruikte zonnestroom bespaart de volle prijs
+- **Teruglevering**: Bij dynamisch krijg je de spotprijs (minus kleine marge)
+- **Maandelijkse verdeling**: Productie wordt correct over het jaar verdeeld
+
+> **Belangrijk**: Bij een dynamisch contract krijg je vaak méér terug voor teruggeleverde stroom dan bij een vast contract, omdat je direct de marktprijs ontvangt.
+
+### Elektrische Auto Simulatie
+
+Voor EV-bezitters berekenen we:
+
+- **Slim laden**: Wat bespaar je door te laden in de 6 goedkoopste uren?
+- **Flexibiliteit**: Hoeveel van je verbruik is verschuifbaar?
+
+---
+
+## Voorbeeld: Wat Toont de Tool?
+
+### Invoer
+- Jaarverbruik: 8.000 kWh
+- Type: All-electric warmtepomp
+- Bouwjaar: 2006-2016
+- Zonnepanelen: 4.000 kWh productie
+- Eigenverbruik: 30%
+
+### Resultaat
+
+| Scenario | Jaarkosten |
+|----------|------------|
+| **Dynamisch contract** | €1.450 |
+| **Vast contract (met saldering)** | €1.380 |
+| **Vast contract (zonder saldering, na 2027)** | €1.890 |
+
+De tool toont ook:
+
+- **Maandelijkse verdeling** van kosten
+- **Goedkoopste en duurste maanden**
+- **Besparing door eigenverbruik zonnepanelen**
+- **Teruglevering opbrengst**
+
+---
+
+## Waarom Dynamisch Vaak Voordeliger Is
+
+### Voor Zonnepaneelbezitters
+
+Bij een vast contract zonder saldering (vanaf 2027):
+- Je krijgt vaak maar **€0,04/kWh** terugleververgoeding
+- Je betaalt soms **€0,09/kWh** terugleverkosten
+- **Netto verlies** bij terugleveren!
+
+Bij een dynamisch contract:
+- Je krijgt de **actuele spotprijs** (vaak €0,05-€0,15/kWh)
+- Alleen een kleine leveranciersmarge (€0,01-€0,02/kWh)
+- **Eerlijke vergoeding** voor je opgewekte stroom
+
+### Voor EV-Bezitters
+
+Met slim laden in de goedkoopste uren bespaar je typisch:
+- **€0,05/kWh** verschil tussen goedkoopste en gemiddelde uren
+- **€150-200/jaar** besparing bij 3.000 kWh EV-verbruik
+
+### Voor Warmtepompbezitters
+
+Hoewel warmtepompen vooral draaien wanneer prijzen iets hoger zijn, biedt dynamisch nog steeds voordelen:
+- **Flexibiliteit** om warmte op te slaan tijdens goedkope uren
+- **Lagere gemiddelde prijzen** dan vaste contracten
+- **Geen risicopremie** van de leverancier
+
+---
+
+## Probeer de Tool
+
+De Dynamische Energie Inzicht Tool is nu beschikbaar. In enkele stappen krijg je een gepersonaliseerde berekening:
+
+1. **Stap 1**: Voer je jaarverbruik en verwarmingstype in
+2. **Stap 2**: Selecteer je woningkenmerken
+3. **Stap 3**: Bekijk je resultaten en vergelijking
+
+### Direct aan de slag
+
+[**Start de Dynamische Energie Inzicht Tool →**](/tool/dynamisch-inzicht)
+
+---
+
+## De Techniek Achter de Tool
+
+Voor de geïnteresseerde lezers: de tool werkt als volgt:
+
+### Prijsopbouw
+\`\`\`
+Consumentenprijs = Spotprijs + Leveranciersopslag + Energiebelasting
+\`\`\`
+
+Met:
+- **Spotprijs**: Werkelijke EPEX-uurprijs
+- **Leveranciersopslag**: ±€0,025/kWh
+- **Energiebelasting**: €0,1316/kWh (2025)
+
+### Profielverdeling
+
+Op basis van bouwjaar:
+
+| Bouwjaar | Verwarming (G1A) | Basis (E1A) |
+|----------|------------------|-------------|
+| < 1992 | 70% | 30% |
+| 1992 - 2005 | 60% | 40% |
+| 2006 - 2016 | 50% | 50% |
+| > 2017 | 40% | 60% |
+
+Of op basis van gezinsgrootte via NIBUD-standaarden.
+
+---
+
+## Conclusie
+
+De Dynamische Energie Inzicht Tool biedt voor het eerst een écht realistische simulatie van wat een dynamisch contract jou kost. Geen gemiddelden, maar berekeningen gebaseerd op:
+
+- **Jouw verbruikspatroon** (all-electric, gas, hybride)
+- **Jouw woningkenmerken** (bouwjaar, isolatie)
+- **Jouw opwek** (zonnepanelen, eigenverbruik)
+- **Jouw flexibiliteit** (EV slim laden)
+
+Probeer de tool en ontdek of dynamisch voor jou de slimste keuze is.
+
+[**Bereken nu jouw dynamische kosten →**](/tool/dynamisch-inzicht)
+    `,
+    author: 'Energievergelijker Redactie',
+    publishDate: '2025-12-26',
+    category: 'nieuws',
+    readTime: 8,
+    featured: true,
+    tags: ['dynamische contracten', 'tool', 'calculator', 'warmtepomp', 'zonnepanelen', 'EV', 'all-electric', 'NEDU', 'spotprijs', 'besparen']
+  },
+  {
     id: 'piekuren-betalen-loont-niet-meer-stroomprijzen-analyse',
     title: 'Piekuren zijn duurder dan ooit: waarom timing van je stroomverbruik nu cruciaal is',
     summary: 'Een grondige analyse van stroomprijzen tussen 2022 en 2025 toont dat timing van je stroomverbruik een steeds grotere impact heeft op je portemonnee. Het verschil is groter dan je denkt.',
