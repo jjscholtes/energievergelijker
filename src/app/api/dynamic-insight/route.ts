@@ -6,7 +6,6 @@ import {
   HeatingType,
 } from '@/lib/data/neduProfiles';
 import { ENERGY_CONSTANTS } from '@/lib/constants';
-import { berekenTerugleverkosten } from '@/lib/calculations/terugleverkosten';
 
 // ============================================================================
 // INTERFACES
@@ -148,10 +147,14 @@ const GRID_COSTS_BY_NETBEHEERDER: Record<NetbeheerderType, number> = {
 // MAAR ook de energiebelasting terug (bij saldering in 2025/2026)!
 const DYNAMIC_FEED_IN_MARGIN = ENERGY_CONSTANTS.DEFAULT_DYNAMISCH_CONTRACT.OPSLAG_INVOEDING; // €0.023/kWh
 
-// Vast contract tarieven (typisch marktconform)
+// Vast contract tarieven (typisch 2025/2026)
 const FIXED_PRICE_KWH = 0.23;           // All-in afnameprijs vast contract
-const FIXED_FEED_IN_RATE = 0.16;        // Terugleververgoeding per kWh
-// Terugleverkosten: staffel op basis van kWh (via berekenTerugleverkosten)
+
+// Teruglevering vast contract (ZONDER saldering):
+// Typisch: vergoeding €0.05/kWh, kosten €0.045/kWh → netto €0.005-0.01/kWh
+const FIXED_FEED_IN_RATE = 0.05;        // Terugleververgoeding per kWh
+const FIXED_FEED_IN_COST_PER_KWH = 0.04; // Terugleverkosten per kWh
+const NET_FIXED_FEED_IN_RATE = FIXED_FEED_IN_RATE - FIXED_FEED_IN_COST_PER_KWH; // ~€0.01/kWh netto
 
 // ============================================================================
 // PROFIELEN (voor seizoensverdeling)
@@ -356,15 +359,15 @@ export async function POST(request: Request) {
     const fixedVariableWithSaldering = netConsumptionWithSaldering * FIXED_PRICE_KWH;
     const totalCostFixedWithSaldering = fixedVariableWithSaldering + netFixed;
     
-    // Vast ZONDER saldering (na 2027): afname betalen, teruglevering krijg je €0.16 - staffelkosten
+    // Vast ZONDER saldering (na 2027): afname betalen, teruglevering krijg je ~€0.01/kWh netto
     // Afname = totaal - eigenverbruik (wat je van net haalt)
     const fixedGridConsumptionKwh = totalKwh - selfConsumptionKwh;
     const fixedGridConsumptionCost = fixedGridConsumptionKwh * FIXED_PRICE_KWH;
     
-    // Teruglevering: vergoeding €0.16/kWh maar ook staffelkosten!
+    // Teruglevering: vergoeding €0.05/kWh - kosten €0.04/kWh = netto €0.01/kWh
     const fixedFeedInRevenue = feedInKwh * FIXED_FEED_IN_RATE;
-    const fixedFeedInCosts = berekenTerugleverkosten(feedInKwh); // Staffel!
-    const netFixedFeedInValue = fixedFeedInRevenue - fixedFeedInCosts;
+    const fixedFeedInCosts = feedInKwh * FIXED_FEED_IN_COST_PER_KWH;
+    const netFixedFeedInValue = feedInKwh * NET_FIXED_FEED_IN_RATE; // ~€0.01/kWh
     
     const fixedVariableNoSaldering = fixedGridConsumptionCost - netFixedFeedInValue;
     const totalCostFixedNoSaldering = fixedVariableNoSaldering + netFixed;
