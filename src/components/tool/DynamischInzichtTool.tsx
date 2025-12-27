@@ -735,10 +735,10 @@ export function DynamischInzichtTool() {
                         Afname: {result.input.gridConsumptionKwh.toFixed(0)} kWh × €0,23 = €{(result.input.gridConsumptionKwh * 0.23).toFixed(0)}
                       </p>
                       <p className="text-gray-600">
-                        Saldering: {result.input.feedInKwh.toFixed(0)} kWh × €0,23 = <span className="text-green-600">-€{result.solarAnalysis.fixedSalderingRevenue.toFixed(0)}</span>
+                        Saldering: {result.input.feedInKwh.toFixed(0)} kWh × €0,12 = <span className="text-green-600">-€{result.solarAnalysis.fixedSalderingRevenue.toFixed(0)}</span>
                       </p>
                       <p className="text-xs text-gray-500 mt-1">
-                        (saldering = verrekenen met afname, je bespaart de hele kWh prijs)
+                        (je krijgt alleen de energiebelasting ~€0,12/kWh terug, niet de hele prijs)
                       </p>
                     </div>
                     
