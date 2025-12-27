@@ -38,6 +38,19 @@ import {
   Legend,
 } from 'recharts';
 import { HeatingType, BuildYearRange, buildYearRanges } from '@/lib/data/neduProfiles';
+import { ENERGY_CONSTANTS } from '@/lib/constants';
+
+// ============================================================================
+// TYPES & INTERFACES
+// ============================================================================
+
+type NetbeheerderType = 'Liander' | 'Stedin' | 'Enexis';
+
+const NETBEHEERDER_OPTIONS: { value: NetbeheerderType; label: string; kosten: number }[] = [
+  { value: 'Liander', label: 'Liander', kosten: ENERGY_CONSTANTS.NETBEHEERDER_COSTS.LIANDER.stroom },
+  { value: 'Stedin', label: 'Stedin', kosten: ENERGY_CONSTANTS.NETBEHEERDER_COSTS.STEDIN.stroom },
+  { value: 'Enexis', label: 'Enexis', kosten: ENERGY_CONSTANTS.NETBEHEERDER_COSTS.ENEXIS.stroom },
+];
 
 // ============================================================================
 // INTERFACES - Matching API Response
@@ -77,6 +90,7 @@ interface CalculationResult {
   gridCosts: number;
   supplierFixedCosts: number;
   energyTaxReduction: number;
+  netbeheerder: string;
   
   totalCostDynamic: number;
   totalCostFixed: number;
@@ -122,6 +136,7 @@ export function DynamischInzichtTool() {
   const [heatingType, setHeatingType] = useState<HeatingType>('all-electric');
   const [buildYear, setBuildYear] = useState<BuildYearRange>('2006-2016');
   const [persons, setPersons] = useState<number | undefined>(undefined);
+  const [netbeheerder, setNetbeheerder] = useState<NetbeheerderType>('Liander');
   
   // Zonnepanelen
   const [hasSolar, setHasSolar] = useState<boolean>(false);
@@ -146,6 +161,7 @@ export function DynamischInzichtTool() {
           heatingType,
           buildYear,
           persons: persons || undefined,
+          netbeheerder,
           hasSolar,
           solarProduction: hasSolar ? solarProduction : 0,
           selfConsumptionPercentage: hasSolar ? selfConsumptionPercentage : 0,
@@ -466,6 +482,36 @@ export function DynamischInzichtTool() {
                 </p>
               </div>
 
+              {/* Netbeheerder Selector */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  <div className="flex items-center gap-2">
+                    <Plug className="w-4 h-4 text-gray-500" />
+                    Netbeheerder (voor correcte netbeheerkosten)
+                  </div>
+                </label>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  {NETBEHEERDER_OPTIONS.map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => setNetbeheerder(option.value)}
+                      className={`p-4 rounded-xl border-2 transition-all text-left ${
+                        netbeheerder === option.value
+                          ? 'border-purple-500 bg-purple-50 ring-2 ring-purple-200'
+                          : 'border-gray-200 hover:border-purple-300'
+                      }`}
+                    >
+                      <div className="font-semibold text-gray-900">{option.label}</div>
+                      <div className="text-sm text-purple-600 font-medium">€{option.kosten}/jaar</div>
+                    </button>
+                  ))}
+                </div>
+                <p className="text-sm text-gray-500 mt-2">
+                  Check je energierekening voor je netbeheerder, of kijk op de kaart van je postcode.
+                </p>
+              </div>
+
               <div className="flex gap-4">
                 <button
                   onClick={() => setStep(1)}
@@ -573,9 +619,11 @@ export function DynamischInzichtTool() {
                       </tr>
                     )}
                     <tr className="bg-gray-50">
-                      <td className="py-3 px-4 text-gray-700 flex items-center gap-2">
-                        <Plug className="w-4 h-4 text-gray-400" />
-                        Netbeheerkosten
+                      <td className="py-3 px-4 text-gray-700">
+                        <div className="flex items-center gap-2">
+                          <Plug className="w-4 h-4 text-gray-400" />
+                          Netbeheerkosten ({result.netbeheerder})
+                        </div>
                       </td>
                       <td className="text-right py-3 px-4 text-gray-600">€{result.gridCosts.toFixed(0)}</td>
                       <td className="text-right py-3 px-4 text-gray-600">€{result.gridCosts.toFixed(0)}</td>
@@ -800,8 +848,8 @@ export function DynamischInzichtTool() {
                   <h3 className="text-xl font-bold text-gray-900 mb-3">Over deze berekening</h3>
                   <div className="space-y-2 text-gray-600 text-sm">
                     <p>
-                      <strong>Compleet:</strong> Deze berekening bevat netbeheerkosten (€{result.gridCosts}), 
-                      vastrecht (€{result.supplierFixedCosts}), en de vermindering energiebelasting (-€{result.energyTaxReduction}).
+                      <strong>Compleet:</strong> Netbeheerkosten {result.netbeheerder} (€{result.gridCosts}), 
+                      vastrecht (€{result.supplierFixedCosts}), en vermindering energiebelasting (-€{result.energyTaxReduction}).
                     </p>
                     <p>
                       <strong>Eigenverbruik:</strong> Nu berekend per uur op basis van gelijktijdigheid. 

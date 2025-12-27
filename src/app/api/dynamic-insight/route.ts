@@ -5,10 +5,13 @@ import {
   BuildYearRange,
   HeatingType,
 } from '@/lib/data/neduProfiles';
+import { ENERGY_CONSTANTS } from '@/lib/constants';
 
 // ============================================================================
 // INTERFACES
 // ============================================================================
+
+export type NetbeheerderType = 'Liander' | 'Stedin' | 'Enexis';
 
 export interface DynamicInsightRequest {
   totalKwh: number;
@@ -17,6 +20,8 @@ export interface DynamicInsightRequest {
   persons?: number;
   fromDate?: string;
   tillDate?: string;
+  // Netbeheerder
+  netbeheerder?: NetbeheerderType;
   // Zonnepanelen
   hasSolar?: boolean;
   solarProduction?: number;
@@ -64,6 +69,9 @@ export interface DynamicInsightResponse {
   gridCosts: number;
   supplierFixedCosts: number;
   energyTaxReduction: number;
+  
+  // Netbeheerder info
+  netbeheerder: string;
   
   // Totalen (met vaste kosten)
   totalCostDynamic: number;
@@ -113,26 +121,32 @@ interface EnergyZeroResponse {
 }
 
 // ============================================================================
-// CONSTANTEN - Tarieven 2025
+// CONSTANTEN - Tarieven 2025 (consistent met energyCalculator)
 // ============================================================================
 
 // Variabele kosten per kWh
-const ENERGY_TAX = 0.1316;              // Energiebelasting incl. BTW
-const SUPPLIER_MARKUP = 0.025;          // Leveranciersopslag dynamisch
-const FIXED_PRICE_KWH = 0.28;           // Typische vaste all-in kWh prijs
+const ENERGY_TAX = ENERGY_CONSTANTS.ENERGY_TAX_STROOM_PER_KWH; // €0.1316/kWh incl. BTW
+const SUPPLIER_MARKUP = ENERGY_CONSTANTS.DEFAULT_DYNAMISCH_CONTRACT.OPSLAG_PER_KWH; // €0.025/kWh
+const FIXED_PRICE_KWH = 0.28; // Typische vaste all-in kWh prijs
 
 // Vaste jaarkosten
-const ENERGY_TAX_REDUCTION = 635.19;    // Vermindering energiebelasting 2025
-const GRID_COSTS = 300;                 // Netbeheerkosten (gemiddeld)
-const SUPPLIER_FIXED_COSTS = 80;        // Vastrecht leverancier (gemiddeld)
+const ENERGY_TAX_REDUCTION = ENERGY_CONSTANTS.ENERGY_TAX_REDUCTION; // €631.35/jaar
+const SUPPLIER_FIXED_COSTS = ENERGY_CONSTANTS.DEFAULT_DYNAMISCH_CONTRACT.VASTE_LEVERINGSKOSTEN * 12; // €7 * 12 = €84/jaar
+
+// Netbeheerkosten per netbeheerder (actuele tarieven 2025)
+const GRID_COSTS_BY_NETBEHEERDER: Record<NetbeheerderType, number> = {
+  Liander: ENERGY_CONSTANTS.NETBEHEERDER_COSTS.LIANDER.stroom, // €471/jaar
+  Stedin: ENERGY_CONSTANTS.NETBEHEERDER_COSTS.STEDIN.stroom,   // €490/jaar
+  Enexis: ENERGY_CONSTANTS.NETBEHEERDER_COSTS.ENEXIS.stroom,   // €492/jaar
+};
 
 // Teruglevering - Dynamisch contract
-const DYNAMIC_FEED_IN_MARGIN = 0.015;   // Marge afgetrokken van spotprijs
+const DYNAMIC_FEED_IN_MARGIN = ENERGY_CONSTANTS.DEFAULT_DYNAMISCH_CONTRACT.OPSLAG_INVOEDING; // €0.023/kWh
 
-// Teruglevering - Vast contract (zonder saldering)
-const FIXED_FEED_IN_RATE = 0.04;        // Terugleververgoeding
-const FIXED_FEED_IN_COSTS = 0.09;       // Terugleverkosten (veel leveranciers)
-// Netto: €0.04 - €0.09 = -€0.05/kWh (je BETAALT!)
+// Teruglevering - Vast contract
+const FIXED_FEED_IN_RATE = ENERGY_CONSTANTS.DEFAULT_VAST_CONTRACT.TERUGLEVERVERGOEDING; // €0.01/kWh
+const FIXED_FEED_IN_COSTS = 0.09; // Terugleverkosten bij vast contract (veel leveranciers)
+// Netto: €0.01 - €0.09 = -€0.08/kWh (je BETAALT!)
 
 // ============================================================================
 // PROFIELEN
@@ -184,12 +198,16 @@ export async function POST(request: Request) {
       persons,
       fromDate,
       tillDate,
+      netbeheerder = 'Liander',
       hasSolar = false,
       solarProduction = 0,
       hasEV = false,
       evKwhPerYear = 0,
       smartCharging = true,
     } = body;
+    
+    // Bepaal netbeheerkosten op basis van selectie
+    const gridCosts = GRID_COSTS_BY_NETBEHEERDER[netbeheerder] || GRID_COSTS_BY_NETBEHEERDER.Liander;
     
     // ========================================================================
     // VALIDATIE
@@ -459,7 +477,7 @@ export async function POST(request: Request) {
     const feedInRevenue = totalFeedInRevenue;
     
     // Totaal dynamisch = variabel + vast
-    const totalCostDynamic = consumptionCost + GRID_COSTS + SUPPLIER_FIXED_COSTS - ENERGY_TAX_REDUCTION;
+    const totalCostDynamic = consumptionCost + gridCosts + SUPPLIER_FIXED_COSTS - ENERGY_TAX_REDUCTION;
     
     // ========================================================================
     // STAP 5: VERGELIJKING MET VAST CONTRACT
@@ -471,15 +489,15 @@ export async function POST(request: Request) {
       ? Math.max(0, totalKwh - solarProduction) 
       : totalKwh;
     const fixedVariableCost = netConsumption * FIXED_PRICE_KWH;
-    const totalCostFixed = fixedVariableCost + GRID_COSTS + SUPPLIER_FIXED_COSTS - ENERGY_TAX_REDUCTION;
+    const totalCostFixed = fixedVariableCost + gridCosts + SUPPLIER_FIXED_COSTS - ENERGY_TAX_REDUCTION;
     
     // Scenario 2: Vast ZONDER saldering (na 2027)
     // Je betaalt voor alle afname, krijgt lage vergoeding - hoge kosten voor teruglevering
     const fixedSelfConsumptionSavings = totalSelfConsumption * FIXED_PRICE_KWH;
-    const netFixedFeedInRate = FIXED_FEED_IN_RATE - FIXED_FEED_IN_COSTS; // -€0.05/kWh!
-    const fixedFeedInValue = totalFeedIn * netFixedFeedInRate; // Kan negatief zijn!
+    const netFixedFeedInRate = FIXED_FEED_IN_RATE - FIXED_FEED_IN_COSTS; // -€0.08/kWh!
+    const fixedFeedInValue = totalFeedIn * netFixedFeedInRate; // Negatief = je betaalt!
     const fixedVariableCostNoSaldering = (totalKwh * FIXED_PRICE_KWH) - fixedSelfConsumptionSavings - fixedFeedInValue;
-    const totalCostFixedNoSaldering = fixedVariableCostNoSaldering + GRID_COSTS + SUPPLIER_FIXED_COSTS - ENERGY_TAX_REDUCTION;
+    const totalCostFixedNoSaldering = fixedVariableCostNoSaldering + gridCosts + SUPPLIER_FIXED_COSTS - ENERGY_TAX_REDUCTION;
     
     // ========================================================================
     // STAP 6: BESPARINGEN BEREKENEN
@@ -535,9 +553,10 @@ export async function POST(request: Request) {
       consumptionCost,
       feedInRevenue,
       
-      gridCosts: GRID_COSTS,
+      gridCosts,
       supplierFixedCosts: SUPPLIER_FIXED_COSTS,
       energyTaxReduction: ENERGY_TAX_REDUCTION,
+      netbeheerder,
       
       totalCostDynamic,
       totalCostFixed,
