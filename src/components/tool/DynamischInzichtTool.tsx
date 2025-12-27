@@ -23,6 +23,8 @@ import {
   Plug,
   Euro,
   PiggyBank,
+  Check,
+  ArrowRight,
 } from 'lucide-react';
 import {
   BarChart,
@@ -1033,6 +1035,68 @@ export function DynamischInzichtTool() {
               </div>
             </div>
           </div>
+        )}
+
+        {/* Frank Energie Recommendation */}
+        <div className="mt-16 bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 rounded-2xl shadow-lg p-8 border border-emerald-200 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-emerald-200/30 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+          <div className="relative z-10">
+            <div className="flex flex-col md:flex-row items-center gap-8">
+              <div className="flex-1">
+                <div className="inline-flex items-center gap-2 bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-sm font-medium mb-4">
+                  <Zap className="w-4 h-4" />
+                  Aanbevolen voor dynamische energie
+                </div>
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
+                  Klaar om te profiteren van dynamische prijzen?
+                </h2>
+                <p className="text-gray-600 mb-4">
+                  <strong>Frank Energie</strong> is door Independer uitgeroepen tot <em>beste keuze voor dynamische contracten in 2025</em>. 
+                  Met slimme diensten zoals Slim Laden, Slim Terugleveren en Slim Handelen haal je het maximale uit je dynamische contract.
+                </p>
+                <ul className="space-y-2 mb-6">
+                  <li className="flex items-center gap-2 text-gray-700">
+                    <div className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center">
+                      <Check className="w-3 h-3 text-emerald-600" />
+                    </div>
+                    Kies tussen uur- of kwartierprijzen
+                  </li>
+                  <li className="flex items-center gap-2 text-gray-700">
+                    <div className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center">
+                      <Check className="w-3 h-3 text-emerald-600" />
+                    </div>
+                    Gratis slimme diensten (laden, handelen, terugleveren)
+                  </li>
+                  <li className="flex items-center gap-2 text-gray-700">
+                    <div className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center">
+                      <Check className="w-3 h-3 text-emerald-600" />
+                    </div>
+                    100% écht groene stroom
+                  </li>
+                </ul>
+                <a
+                  href="https://jf79.net/c/?si=16978&li=1731992&wi=413683&ws=&dl="
+                  target="_blank"
+                  rel="noopener noreferrer sponsored"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl font-bold hover:from-emerald-700 hover:to-teal-700 transition-all shadow-lg hover:shadow-xl"
+                >
+                  Bereken je besparing bij Frank
+                  <ArrowRight className="w-5 h-5" />
+                </a>
+                <p className="text-xs text-gray-500 mt-3">
+                  * Affiliate link — wij ontvangen een vergoeding bij overstap
+                </p>
+              </div>
+              <div className="hidden md:block w-48 h-48 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-xl">
+                <div className="text-center text-white p-4">
+                  <div className="text-5xl font-black">4.2</div>
+                  <div className="text-sm opacity-90">Trustpilot score</div>
+                  <div className="text-xs opacity-75 mt-1">2.345+ reviews</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         )}
       </main>
 
