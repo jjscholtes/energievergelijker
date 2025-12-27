@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState } from 'react';
 import { Header } from '@/components/home/Header';
 import { Footer } from '@/components/home/Footer';
 import {
@@ -157,61 +157,6 @@ export function DynamischInzichtTool() {
   const [evKwhPerYear, setEvKwhPerYear] = useState<number>(3000);
   const [smartCharging, setSmartCharging] = useState<boolean>(true);
   
-  // Daisycon comparison widget ref and state
-  const comparisonWidgetRef = useRef<HTMLDivElement>(null);
-  const [daisyconKey, setDaisyconKey] = useState(0);
-  
-  // Daisycon widget config with prefilled user data
-  const daisyconConfig = useMemo(() => {
-    // Schat aantal zonnepanelen: gemiddeld 400 kWh per paneel per jaar
-    const estimatedPanels = hasSolar ? Math.round(solarProduction / 400) : 0;
-    
-    return {
-      mediaId: 413683,
-      locale: "nl-NL",
-      filter: {
-        tariffType: {
-          value: ["dynamic"]
-        }
-      },
-      prefill: {
-        meter: "single",
-        electricity_single: totalKwh,
-        gas: heatingType === 'gas' ? 1500 : 0, // Geen gas bij all-electric/hybride
-        solar: hasSolar ? 1 : 0,
-        solar_panels: estimatedPanels,
-      }
-    };
-  }, [totalKwh, heatingType, hasSolar, solarProduction]);
-  
-  // Load Daisycon energy comparison script
-  useEffect(() => {
-    const scriptId = 'daisycon-energy-script';
-    
-    const initWidget = () => {
-      // Trigger re-render of widget by updating key
-      setDaisyconKey(prev => prev + 1);
-    };
-    
-    // Check if script already exists
-    const existingScript = document.getElementById(scriptId);
-    if (existingScript) {
-      // Script already loaded, just reinit widget
-      initWidget();
-      return;
-    }
-    
-    const script = document.createElement('script');
-    script.id = scriptId;
-    script.src = 'https://daisycon.tools/energy-nl/app.js';
-    script.async = true;
-    script.onload = initWidget;
-    document.body.appendChild(script);
-    
-    return () => {
-      // Don't remove script on unmount - it's shared
-    };
-  }, [daisyconConfig]); // Re-run when config changes
   
   const handleCalculate = async () => {
     setLoading(true);
@@ -1134,7 +1079,7 @@ export function DynamischInzichtTool() {
 
         {/* Dynamische Contracten Vergelijker */}
         <div className="mt-16 bg-gradient-to-br from-purple-50 via-indigo-50 to-blue-50 rounded-2xl shadow-lg p-8 border border-purple-200">
-          <div className="text-center mb-8">
+          <div className="text-center mb-6">
             <div className="inline-flex items-center gap-2 bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm font-medium mb-4">
               <Zap className="w-4 h-4" />
               Vergelijk dynamische contracten
@@ -1142,24 +1087,74 @@ export function DynamischInzichtTool() {
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
               Klaar om over te stappen naar dynamisch?
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Vergelijk hieronder alle dynamische energiecontracten en ontdek welke leverancier het beste bij jouw situatie past.
+            <p className="text-gray-600 max-w-2xl mx-auto mb-6">
+              Vergelijk alle dynamische energiecontracten en ontdek welke leverancier het beste bij jouw situatie past.
             </p>
-            <p className="text-sm text-purple-600 mt-2">
-              ✨ Je gegevens zijn al ingevuld: {totalKwh.toLocaleString()} kWh{hasSolar ? ` + ${Math.round(solarProduction / 400)} zonnepanelen` : ''}
+            
+            {/* Direct link to comparison tool with prefilled data */}
+            <a
+              href={`https://www.energieleveranciers.nl/vergelijken/dynamisch/?verbruik=${totalKwh}&zonnepanelen=${hasSolar ? Math.round(solarProduction / 400) : 0}&mi=413683`}
+              target="_blank"
+              rel="noopener noreferrer sponsored"
+              className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-bold text-lg hover:from-purple-700 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl"
+            >
+              <Zap className="w-6 h-6" />
+              Vergelijk Dynamische Contracten
+              <ChevronRight className="w-5 h-5" />
+            </a>
+            
+            <p className="text-sm text-purple-600 mt-4">
+              ✨ Je verbruik van {totalKwh.toLocaleString()} kWh{hasSolar ? ` + ${Math.round(solarProduction / 400)} zonnepanelen` : ''} wordt automatisch ingevuld
             </p>
           </div>
           
-          {/* Daisycon Energy Comparison Widget - Prefilled with user data */}
-          <div 
-            key={`daisycon-${daisyconKey}`}
-            ref={comparisonWidgetRef}
-            className="dc-tool dc-energy-tool min-h-[400px]"
-            data-config={JSON.stringify(daisyconConfig)}
-          />
+          {/* Top 3 Dynamic Providers */}
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <a
+              href="https://jf79.net/c/?si=16978&li=1731992&wi=413683&ws=&dl="
+              target="_blank"
+              rel="noopener noreferrer sponsored"
+              className="p-4 bg-white rounded-xl border-2 border-transparent hover:border-purple-300 transition-all group"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <span className="font-bold text-gray-900">Frank Energie</span>
+                <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">Populair</span>
+              </div>
+              <p className="text-sm text-gray-600 mb-2">Slimme diensten & app</p>
+              <span className="text-purple-600 text-sm font-medium group-hover:underline">Bekijk →</span>
+            </a>
+            
+            <a
+              href="https://tc.tradetracker.net/?c=27887&m=12&a=413683"
+              target="_blank"
+              rel="noopener noreferrer sponsored"
+              className="p-4 bg-white rounded-xl border-2 border-transparent hover:border-purple-300 transition-all group"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <span className="font-bold text-gray-900">Tibber</span>
+                <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">Innovatief</span>
+              </div>
+              <p className="text-sm text-gray-600 mb-2">Scandinavische aanpak</p>
+              <span className="text-purple-600 text-sm font-medium group-hover:underline">Bekijk →</span>
+            </a>
+            
+            <a
+              href="https://www.anwb.nl/huis/energie/energiecontract?utm_source=affiliate&utm_medium=daisycon&utm_campaign=413683"
+              target="_blank"
+              rel="noopener noreferrer sponsored"
+              className="p-4 bg-white rounded-xl border-2 border-transparent hover:border-purple-300 transition-all group"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <span className="font-bold text-gray-900">ANWB Energie</span>
+                <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full">Betrouwbaar</span>
+              </div>
+              <p className="text-sm text-gray-600 mb-2">Dynamisch & vast</p>
+              <span className="text-purple-600 text-sm font-medium group-hover:underline">Bekijk →</span>
+            </a>
+          </div>
           
           <p className="text-xs text-gray-500 mt-6 text-center">
-            * Affiliate links — wij ontvangen een vergoeding bij overstap via bovenstaande vergelijker
+            * Affiliate links — wij ontvangen een vergoeding bij overstap
           </p>
         </div>
       </main>
