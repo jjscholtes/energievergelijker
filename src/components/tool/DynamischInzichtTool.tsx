@@ -105,6 +105,7 @@ interface CalculationResult {
   };
   
   solarAnalysis: {
+    inputSelfConsumptionPct: number;
     calculatedSelfConsumptionPct: number;
     dynamicFeedInRevenue: number;
     fixedSalderingRevenue: number;
@@ -149,6 +150,7 @@ export function DynamischInzichtTool() {
   // Zonnepanelen
   const [hasSolar, setHasSolar] = useState<boolean>(false);
   const [solarProduction, setSolarProduction] = useState<number>(4000);
+  const [selfConsumptionPct, setSelfConsumptionPct] = useState<number>(30);
   
   // Elektrische Auto
   const [hasEV, setHasEV] = useState<boolean>(false);
@@ -171,6 +173,7 @@ export function DynamischInzichtTool() {
           netbeheerder,
           hasSolar,
           solarProduction: hasSolar ? solarProduction : 0,
+          selfConsumptionPercentage: hasSolar ? selfConsumptionPct : 0,
           hasEV,
           evKwhPerYear: hasEV ? evKwhPerYear : 0,
           smartCharging: hasEV ? smartCharging : false,
@@ -320,10 +323,6 @@ export function DynamischInzichtTool() {
 
                 {hasSolar && (
                   <div className="mt-4 p-4 bg-yellow-50 rounded-xl space-y-4 border border-yellow-200">
-                    <div className="p-3 bg-yellow-100 rounded-lg text-sm text-yellow-800">
-                      <strong>💡 Nieuw:</strong> We berekenen eigenverbruik nu per uur op basis van gelijktijdigheid. 
-                      Je productie wordt vergeleken met je verbruik op elk moment.
-                    </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Jaarproductie (kWh)
@@ -338,6 +337,29 @@ export function DynamischInzichtTool() {
                         placeholder="Bijv. 4000"
                       />
                       <p className="text-xs text-gray-500 mt-1">Typisch: 8 panelen ≈ 3.000 kWh/jaar</p>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Geschat eigenverbruik: <span className="text-yellow-700 font-bold">{selfConsumptionPct}%</span>
+                      </label>
+                      <input
+                        type="range"
+                        min={10}
+                        max={80}
+                        value={selfConsumptionPct}
+                        onChange={(e) => setSelfConsumptionPct(Number(e.target.value))}
+                        className="w-full h-2 bg-yellow-200 rounded-lg appearance-none cursor-pointer accent-yellow-500"
+                      />
+                      <div className="flex justify-between text-xs text-gray-500 mt-1">
+                        <span>10% (weinig thuis)</span>
+                        <span>80% (thuiswerker + batterij)</span>
+                      </div>
+                    </div>
+                    
+                    <div className="p-3 bg-yellow-100 rounded-lg text-sm text-yellow-800">
+                      <strong>💡 Tip:</strong> We berekenen ook per uur op basis van gelijktijdigheid. 
+                      In de resultaten zie je zowel jouw schatting als onze berekening.
                     </div>
                   </div>
                 )}
@@ -795,7 +817,12 @@ export function DynamischInzichtTool() {
                   <div className="p-4 bg-white/70 rounded-xl">
                     <div className="text-sm text-gray-500 mb-1">Eigenverbruik</div>
                     <div className="text-2xl font-bold text-green-600">{result.input.selfConsumptionKwh.toFixed(0)} kWh</div>
-                    <div className="text-xs text-gray-500">{result.solarAnalysis.calculatedSelfConsumptionPct.toFixed(0)}%</div>
+                    <div className="text-xs text-gray-500">
+                      Berekend: {result.solarAnalysis.calculatedSelfConsumptionPct.toFixed(0)}% 
+                      {result.solarAnalysis.inputSelfConsumptionPct > 0 && (
+                        <span className="text-yellow-600 ml-1">(jouw schatting: {result.solarAnalysis.inputSelfConsumptionPct}%)</span>
+                      )}
+                    </div>
                   </div>
                   <div className="p-4 bg-white/70 rounded-xl">
                     <div className="text-sm text-gray-500 mb-1">Teruglevering</div>

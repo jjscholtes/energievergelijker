@@ -87,6 +87,7 @@ export interface DynamicInsightResponse {
   
   // Zonnepanelen
   solarAnalysis: {
+    inputSelfConsumptionPct: number;
     calculatedSelfConsumptionPct: number;
     // Dynamisch
     dynamicFeedInRevenue: number;
@@ -490,6 +491,7 @@ export async function POST(request: Request) {
       profileMix,
       
       solarAnalysis: {
+        inputSelfConsumptionPct: selfConsumptionPercentage,
         calculatedSelfConsumptionPct,
         // Dynamisch
         dynamicFeedInRevenue: feedInRevenue,
