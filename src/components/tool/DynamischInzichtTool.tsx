@@ -107,6 +107,7 @@ interface CalculationResult {
   solarAnalysis: {
     calculatedSelfConsumptionPct: number;
     dynamicFeedInRevenue: number;
+    fixedSalderingRevenue: number;
     fixedFeedInRevenue: number;
     fixedFeedInCosts: number;
     netFixedFeedInValue: number;
@@ -692,36 +693,42 @@ export function DynamischInzichtTool() {
               
               {hasSolar && (
                 <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
-                  <h4 className="font-semibold text-blue-800 mb-3">💡 Teruglevering: Hoe werkt het?</h4>
+                  <h4 className="font-semibold text-blue-800 mb-3">💡 Teruglevering: Dezelfde logica, andere prijzen</h4>
                   <div className="text-sm space-y-3">
                     
-                    <div className="p-3 bg-white rounded-lg border border-blue-100">
+                    <div className="p-3 bg-purple-50 rounded-lg border border-purple-200">
                       <p className="font-semibold text-purple-700 mb-1">Dynamisch (2026)</p>
                       <p className="text-gray-600">
-                        Je krijgt spotprijs + energiebelasting - marge ≈ <strong>€0,21/kWh</strong>
+                        Afname: {result.input.gridConsumptionKwh.toFixed(0)} kWh × €0,25 = €{(result.input.gridConsumptionKwh * 0.25).toFixed(0)}
                       </p>
-                      <p className="text-purple-600 font-medium">
-                        {result.input.feedInKwh.toFixed(0)} kWh × €0,21 = <strong>€{result.solarAnalysis.dynamicFeedInRevenue.toFixed(0)}</strong>
+                      <p className="text-gray-600">
+                        Teruglevering: {result.input.feedInKwh.toFixed(0)} kWh × €0,21 = <span className="text-green-600">-€{result.solarAnalysis.dynamicFeedInRevenue.toFixed(0)}</span>
                       </p>
                     </div>
                     
-                    <div className="p-3 bg-white rounded-lg border border-green-100">
-                      <p className="font-semibold text-green-700 mb-1">Vast MET saldering (2026)</p>
+                    <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                      <p className="font-semibold text-blue-700 mb-1">Vast MET saldering (2026)</p>
                       <p className="text-gray-600">
-                        Je saldeert kWh-voor-kWh. Je betaalt alleen voor netto verbruik.
+                        Afname: {result.input.gridConsumptionKwh.toFixed(0)} kWh × €0,23 = €{(result.input.gridConsumptionKwh * 0.23).toFixed(0)}
                       </p>
                       <p className="text-gray-600">
-                        Effectieve waarde: ~<strong>€0,12/kWh</strong> (energiebelasting die je bespaart)
+                        Saldering: {result.input.feedInKwh.toFixed(0)} kWh × €0,12 = <span className="text-green-600">-€{result.solarAnalysis.fixedSalderingRevenue.toFixed(0)}</span>
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        (je krijgt de energiebelasting €0,12/kWh terug bij saldering)
                       </p>
                     </div>
                     
-                    <div className="p-3 bg-white rounded-lg border border-orange-100">
+                    <div className="p-3 bg-orange-50 rounded-lg border border-orange-200">
                       <p className="font-semibold text-orange-700 mb-1">Vast ZONDER saldering (na 2027)</p>
                       <p className="text-gray-600">
-                        Vergoeding €0,05 - kosten €0,04 = <strong>€0,01/kWh</strong> netto
+                        Afname: {result.input.gridConsumptionKwh.toFixed(0)} kWh × €0,23 = €{(result.input.gridConsumptionKwh * 0.23).toFixed(0)}
                       </p>
-                      <p className="text-orange-600 font-medium">
-                        {result.input.feedInKwh.toFixed(0)} kWh × €0,01 = €{result.solarAnalysis.netFixedFeedInValue.toFixed(0)}
+                      <p className="text-gray-600">
+                        Teruglevering: {result.input.feedInKwh.toFixed(0)} kWh × €0,01 = <span className="text-green-600">-€{result.solarAnalysis.netFixedFeedInValue.toFixed(0)}</span>
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        (vergoeding €0,05 - kosten €0,04 = netto €0,01/kWh)
                       </p>
                     </div>
                     

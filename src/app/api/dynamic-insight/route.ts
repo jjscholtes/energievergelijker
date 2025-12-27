@@ -88,10 +88,15 @@ export interface DynamicInsightResponse {
   // Zonnepanelen
   solarAnalysis: {
     calculatedSelfConsumptionPct: number;
+    // Dynamisch
     dynamicFeedInRevenue: number;
+    // Vast met saldering
+    fixedSalderingRevenue: number;
+    // Vast zonder saldering
     fixedFeedInRevenue: number;
     fixedFeedInCosts: number;
     netFixedFeedInValue: number;
+    // Voordeel
     dynamicAdvantage: number;
   };
   
@@ -352,11 +357,15 @@ export async function POST(request: Request) {
     // STAP 5: VERGELIJKING MET VAST
     // ========================================================================
     
-    // Vast MET saldering (tot 2027): netto = verbruik - productie
-    const netConsumptionWithSaldering = hasSolar 
-      ? Math.max(0, totalKwh - solarProduction) 
-      : totalKwh;
-    const fixedVariableWithSaldering = netConsumptionWithSaldering * FIXED_PRICE_KWH;
+    // Vast MET saldering (2026): ZELFDE logica als dynamisch, andere prijzen
+    // - Afname van net × all-in prijs
+    // - Teruglevering × salderingsvergoeding (~€0.12 = energiebelasting)
+    const SALDERING_RATE = 0.12; // Effectieve waarde saldering = energiebelasting component
+    
+    const fixedGridConsumptionWithSaldering = gridConsumptionKwh; // = verbruik - eigenverbruik
+    const fixedAfnameCostWithSaldering = fixedGridConsumptionWithSaldering * FIXED_PRICE_KWH;
+    const fixedSalderingRevenue = feedInKwh * SALDERING_RATE;
+    const fixedVariableWithSaldering = fixedAfnameCostWithSaldering - fixedSalderingRevenue;
     const totalCostFixedWithSaldering = fixedVariableWithSaldering + netFixed;
     
     // Vast ZONDER saldering (na 2027): afname betalen, teruglevering krijg je ~€0.01/kWh netto
@@ -482,10 +491,15 @@ export async function POST(request: Request) {
       
       solarAnalysis: {
         calculatedSelfConsumptionPct,
+        // Dynamisch
         dynamicFeedInRevenue: feedInRevenue,
+        // Vast met saldering
+        fixedSalderingRevenue: fixedSalderingRevenue,
+        // Vast zonder saldering
         fixedFeedInRevenue: fixedFeedInRevenue,
         fixedFeedInCosts: fixedFeedInCosts,
         netFixedFeedInValue: netFixedFeedInValue,
+        // Voordeel dynamisch vs vast zonder saldering
         dynamicAdvantage: feedInRevenue - netFixedFeedInValue,
       },
       
