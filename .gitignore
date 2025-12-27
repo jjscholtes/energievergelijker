@@ -106,3 +106,7 @@ temp/
 # Test files (keep the config but ignore test data)
 test-*.csv
 test-*.js
+
+# Documentation files (keep README.md)
+*.md
+!README.md
