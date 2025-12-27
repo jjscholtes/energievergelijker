@@ -37,6 +37,7 @@ import {
 } from 'recharts';
 import { HeatingType, BuildYearRange, buildYearRanges } from '@/lib/data/neduProfiles';
 import { ENERGY_CONSTANTS } from '@/lib/constants';
+import { DaisyconWidget } from './DaisyconWidget';
 
 // ============================================================================
 // TYPES & INTERFACES
@@ -74,7 +75,7 @@ interface CalculationResult {
     feedInKwh: number;
     gridConsumptionKwh: number;
   };
-  
+
   variableCosts: {
     gridConsumptionCost: number;
     feedInRevenue: number;
@@ -82,28 +83,28 @@ interface CalculationResult {
     avgPricePerKwh: number;
     avgFeedInPricePerKwh: number;
   };
-  
+
   fixedCosts: {
     gridCosts: number;
     supplierFixedCosts: number;
     energyTaxReduction: number;
     netFixed: number;
   };
-  
+
   totalCostDynamic: number;
   totalCostFixedWithSaldering: number;
   totalCostFixedNoSaldering: number;
-  
+
   savingsVsFixedWithSaldering: number;
   savingsVsFixedNoSaldering: number;
-  
+
   profileMix: {
     baseKwh: number;
     heatingKwh: number;
     evKwh: number;
     method: 'nibud' | 'buildYear';
   };
-  
+
   solarAnalysis: {
     inputSelfConsumptionPct: number;
     calculatedSelfConsumptionPct: number;
@@ -114,17 +115,17 @@ interface CalculationResult {
     netFixedFeedInValue: number;
     dynamicAdvantage: number;
   };
-  
+
   evAnalysis: {
     evKwh: number;
     smartChargingSavings: number;
   };
-  
+
   monthlySummary: MonthlySummary[];
-  
+
   winterCost: number;
   summerCost: number;
-  
+
   netbeheerder: string;
   period: { from: string; till: string };
   lastUpdated: string;
@@ -139,29 +140,29 @@ export function DynamischInzichtTool() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<CalculationResult | null>(null);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Form state
   const [totalKwh, setTotalKwh] = useState<number>(8000);
   const [heatingType, setHeatingType] = useState<HeatingType>('all-electric');
   const [buildYear, setBuildYear] = useState<BuildYearRange>('2006-2016');
   const [persons, setPersons] = useState<number | undefined>(undefined);
   const [netbeheerder, setNetbeheerder] = useState<NetbeheerderType>('Liander');
-  
+
   // Zonnepanelen
   const [hasSolar, setHasSolar] = useState<boolean>(false);
   const [solarProduction, setSolarProduction] = useState<number>(4000);
   const [selfConsumptionPct, setSelfConsumptionPct] = useState<number>(30);
-  
+
   // Elektrische Auto
   const [hasEV, setHasEV] = useState<boolean>(false);
   const [evKwhPerYear, setEvKwhPerYear] = useState<number>(3000);
   const [smartCharging, setSmartCharging] = useState<boolean>(true);
-  
-  
+
+
   const handleCalculate = async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const response = await fetch('/api/dynamic-insight', {
         method: 'POST',
@@ -180,12 +181,12 @@ export function DynamischInzichtTool() {
           smartCharging: hasEV ? smartCharging : false,
         }),
       });
-      
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Berekening mislukt');
       }
-      
+
       const data = await response.json();
       setResult(data);
       setStep(3);
@@ -195,7 +196,7 @@ export function DynamischInzichtTool() {
       setLoading(false);
     }
   };
-  
+
   const heatingOptions: { value: HeatingType; label: string; icon: typeof Flame; description: string }[] = [
     { value: 'gas', label: 'Gasverwarming', icon: Flame, description: 'CV-ketel op aardgas' },
     { value: 'hybrid', label: 'Hybride', icon: Thermometer, description: 'Warmtepomp + CV-ketel' },
@@ -205,7 +206,7 @@ export function DynamischInzichtTool() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50">
       <Header />
-      
+
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Hero */}
         <div className="text-center mb-12">
@@ -217,7 +218,7 @@ export function DynamischInzichtTool() {
             Bereken Je Echte Dynamische Kosten
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Complete berekening inclusief netbeheerkosten, belastingvermindering en vaste kosten. 
+            Complete berekening inclusief netbeheerkosten, belastingvermindering en vaste kosten.
             Speciaal ontwikkeld voor warmtepompen en all-electric woningen.
           </p>
         </div>
@@ -227,12 +228,11 @@ export function DynamischInzichtTool() {
           <div className="flex items-center gap-4">
             {[1, 2, 3].map((s) => (
               <div key={s} className="flex items-center">
-                <div 
-                  className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${
-                    step >= s 
-                      ? 'bg-purple-600 text-white' 
+                <div
+                  className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${step >= s
+                      ? 'bg-purple-600 text-white'
                       : 'bg-gray-200 text-gray-500'
-                  }`}
+                    }`}
                 >
                   {step > s ? <CheckCircle className="w-5 h-5" /> : s}
                 </div>
@@ -251,7 +251,7 @@ export function DynamischInzichtTool() {
               <Zap className="w-6 h-6 text-purple-600" />
               Stap 1: Je Stroomverbruik
             </h2>
-            
+
             <div className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -283,11 +283,10 @@ export function DynamischInzichtTool() {
                         key={option.value}
                         type="button"
                         onClick={() => setHeatingType(option.value)}
-                        className={`p-4 rounded-xl border-2 transition-all text-left ${
-                          heatingType === option.value
+                        className={`p-4 rounded-xl border-2 transition-all text-left ${heatingType === option.value
                             ? 'border-purple-500 bg-purple-50 ring-2 ring-purple-200'
                             : 'border-gray-200 hover:border-purple-300'
-                        }`}
+                          }`}
                       >
                         <Icon className={`w-6 h-6 mb-2 ${heatingType === option.value ? 'text-purple-600' : 'text-gray-400'}`} />
                         <div className="font-semibold text-gray-900">{option.label}</div>
@@ -300,13 +299,12 @@ export function DynamischInzichtTool() {
 
               {/* Zonnepanelen Toggle */}
               <div className="border-t border-gray-200 pt-6">
-                <div 
+                <div
                   onClick={() => setHasSolar(!hasSolar)}
-                  className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                    hasSolar 
-                      ? 'border-yellow-500 bg-yellow-50 ring-2 ring-yellow-200' 
+                  className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${hasSolar
+                      ? 'border-yellow-500 bg-yellow-50 ring-2 ring-yellow-200'
                       : 'border-gray-200 hover:border-yellow-300'
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -339,7 +337,7 @@ export function DynamischInzichtTool() {
                       />
                       <p className="text-xs text-gray-500 mt-1">Typisch: 8 panelen ≈ 3.000 kWh/jaar</p>
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Geschat eigenverbruik: <span className="text-yellow-700 font-bold">{selfConsumptionPct}%</span>
@@ -357,9 +355,9 @@ export function DynamischInzichtTool() {
                         <span>80% (thuiswerker + batterij)</span>
                       </div>
                     </div>
-                    
+
                     <div className="p-3 bg-yellow-100 rounded-lg text-sm text-yellow-800">
-                      <strong>💡 Tip:</strong> We berekenen ook per uur op basis van gelijktijdigheid. 
+                      <strong>💡 Tip:</strong> We berekenen ook per uur op basis van gelijktijdigheid.
                       In de resultaten zie je zowel jouw schatting als onze berekening.
                     </div>
                   </div>
@@ -368,13 +366,12 @@ export function DynamischInzichtTool() {
 
               {/* EV Toggle */}
               <div>
-                <div 
+                <div
                   onClick={() => setHasEV(!hasEV)}
-                  className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                    hasEV 
-                      ? 'border-green-500 bg-green-50 ring-2 ring-green-200' 
+                  className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${hasEV
+                      ? 'border-green-500 bg-green-50 ring-2 ring-green-200'
                       : 'border-gray-200 hover:border-green-300'
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -393,7 +390,7 @@ export function DynamischInzichtTool() {
                 {hasEV && (
                   <div className="mt-4 p-4 bg-green-50 rounded-xl space-y-4 border border-green-200">
                     <div className="p-3 bg-green-100 rounded-lg text-sm text-green-800">
-                      <strong>💡 Toelichting:</strong> Je EV-verbruik zit al in je totale jaarverbruik hierboven. 
+                      <strong>💡 Toelichting:</strong> Je EV-verbruik zit al in je totale jaarverbruik hierboven.
                       Geef hieronder aan hoeveel kWh daarvan voor de auto is.
                     </div>
                     <div>
@@ -411,11 +408,10 @@ export function DynamischInzichtTool() {
                       />
                       <p className="text-xs text-gray-500 mt-1">Richtlijn: 15.000 km ≈ 3.000 kWh</p>
                     </div>
-                    <div 
+                    <div
                       onClick={() => setSmartCharging(!smartCharging)}
-                      className={`p-3 rounded-lg cursor-pointer transition-all flex items-center justify-between ${
-                        smartCharging ? 'bg-green-100 border-2 border-green-300' : 'bg-white border-2 border-gray-200'
-                      }`}
+                      className={`p-3 rounded-lg cursor-pointer transition-all flex items-center justify-between ${smartCharging ? 'bg-green-100 border-2 border-green-300' : 'bg-white border-2 border-gray-200'
+                        }`}
                     >
                       <div className="flex items-center gap-3">
                         <BatteryCharging className={`w-5 h-5 ${smartCharging ? 'text-green-600' : 'text-gray-400'}`} />
@@ -450,7 +446,7 @@ export function DynamischInzichtTool() {
               <Home className="w-6 h-6 text-purple-600" />
               Stap 2: Je Woning
             </h2>
-            
+
             <div className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-3">
@@ -462,11 +458,10 @@ export function DynamischInzichtTool() {
                       key={option.value}
                       type="button"
                       onClick={() => setBuildYear(option.value)}
-                      className={`p-4 rounded-xl border-2 transition-all text-left ${
-                        buildYear === option.value
+                      className={`p-4 rounded-xl border-2 transition-all text-left ${buildYear === option.value
                           ? 'border-purple-500 bg-purple-50 ring-2 ring-purple-200'
                           : 'border-gray-200 hover:border-purple-300'
-                      }`}
+                        }`}
                     >
                       <div className="font-semibold text-gray-900">{option.label}</div>
                     </button>
@@ -491,7 +486,7 @@ export function DynamischInzichtTool() {
                   <option value="5">5+ personen</option>
                 </select>
                 <p className="text-sm text-gray-500 mt-2">
-                  Met het aantal personen kunnen we nauwkeuriger inschatten welk deel van je verbruik 
+                  Met het aantal personen kunnen we nauwkeuriger inschatten welk deel van je verbruik
                   naar verwarming gaat (NIBUD-methode).
                 </p>
               </div>
@@ -510,11 +505,10 @@ export function DynamischInzichtTool() {
                       key={option.value}
                       type="button"
                       onClick={() => setNetbeheerder(option.value)}
-                      className={`p-4 rounded-xl border-2 transition-all text-left ${
-                        netbeheerder === option.value
+                      className={`p-4 rounded-xl border-2 transition-all text-left ${netbeheerder === option.value
                           ? 'border-purple-500 bg-purple-50 ring-2 ring-purple-200'
                           : 'border-gray-200 hover:border-purple-300'
-                      }`}
+                        }`}
                     >
                       <div className="font-semibold text-gray-900">{option.label}</div>
                       <div className="text-sm text-purple-600 font-medium">€{option.kosten}/jaar</div>
@@ -551,7 +545,7 @@ export function DynamischInzichtTool() {
                   )}
                 </button>
               </div>
-              
+
               {error && (
                 <div className="p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3">
                   <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
@@ -565,7 +559,7 @@ export function DynamischInzichtTool() {
         {/* Step 3: Results */}
         {step === 3 && result && (
           <div className="space-y-8">
-            
+
             {/* Main Cost Summary */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl p-6 text-white shadow-xl">
@@ -573,7 +567,7 @@ export function DynamischInzichtTool() {
                 <div className="text-4xl font-bold">€{result.totalCostDynamic.toFixed(0)}</div>
                 <div className="text-sm opacity-80 mt-2">Inclusief alle vaste kosten</div>
               </div>
-              
+
               <div className={`rounded-2xl p-6 shadow-xl ${result.savingsVsFixedWithSaldering > 0 ? 'bg-green-50 border-2 border-green-200' : 'bg-orange-50 border-2 border-orange-200'}`}>
                 <div className={`text-sm font-medium mb-1 ${result.savingsVsFixedWithSaldering > 0 ? 'text-green-600' : 'text-orange-600'}`}>
                   vs Vast (met saldering)
@@ -585,7 +579,7 @@ export function DynamischInzichtTool() {
                   {result.savingsVsFixedWithSaldering > 0 ? 'besparing/jaar' : 'meerkosten/jaar'}
                 </div>
               </div>
-              
+
               {hasSolar && (
                 <div className={`rounded-2xl p-6 shadow-xl ${result.savingsVsFixedNoSaldering > 0 ? 'bg-emerald-50 border-2 border-emerald-200' : 'bg-red-50 border-2 border-red-200'}`}>
                   <div className={`text-sm font-medium mb-1 ${result.savingsVsFixedNoSaldering > 0 ? 'text-emerald-600' : 'text-red-600'}`}>
@@ -607,7 +601,7 @@ export function DynamischInzichtTool() {
                 <Calculator className="w-5 h-5 text-purple-600" />
                 Jouw Berekening (Transparant)
               </h3>
-              
+
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Links: Verbruik & Productie */}
                 <div className="space-y-4">
@@ -639,7 +633,7 @@ export function DynamischInzichtTool() {
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Rechts: Kosten */}
                 <div className="space-y-4">
                   <h4 className="font-semibold text-gray-700">Kostenberekening</h4>
@@ -713,12 +707,12 @@ export function DynamischInzichtTool() {
                   </tbody>
                 </table>
               </div>
-              
+
               {hasSolar && (
                 <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
                   <h4 className="font-semibold text-blue-800 mb-3">💡 Teruglevering: Dezelfde logica, andere prijzen</h4>
                   <div className="text-sm space-y-3">
-                    
+
                     <div className="p-3 bg-purple-50 rounded-lg border border-purple-200">
                       <p className="font-semibold text-purple-700 mb-1">Dynamisch (2026)</p>
                       <p className="text-gray-600">
@@ -728,7 +722,7 @@ export function DynamischInzichtTool() {
                         Teruglevering: {result.input.feedInKwh.toFixed(0)} kWh × €0,21 = <span className="text-green-600">-€{result.solarAnalysis.dynamicFeedInRevenue.toFixed(0)}</span>
                       </p>
                     </div>
-                    
+
                     <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
                       <p className="font-semibold text-blue-700 mb-1">Vast MET saldering (2026)</p>
                       <p className="text-gray-600">
@@ -741,7 +735,7 @@ export function DynamischInzichtTool() {
                         (je krijgt alleen de energiebelasting ~€0,12/kWh terug, niet de hele prijs)
                       </p>
                     </div>
-                    
+
                     <div className="p-3 bg-orange-50 rounded-lg border border-orange-200">
                       <p className="font-semibold text-orange-700 mb-1">Vast ZONDER saldering (na 2027)</p>
                       <p className="text-gray-600">
@@ -754,7 +748,7 @@ export function DynamischInzichtTool() {
                         (vergoeding €0,05 - kosten €0,04 = netto €0,01/kWh)
                       </p>
                     </div>
-                    
+
                     <div className="p-3 bg-green-100 rounded-lg">
                       <p className="font-bold text-green-800">
                         Dynamisch voordeel vs vast zonder saldering: €{result.solarAnalysis.dynamicAdvantage.toFixed(0)}/jaar
@@ -796,9 +790,9 @@ export function DynamischInzichtTool() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="mt-4 p-3 bg-gray-100 rounded-lg text-sm text-gray-700">
-                <strong>Check:</strong> {result.profileMix.baseKwh.toFixed(0)} + {result.profileMix.heatingKwh.toFixed(0)} + {result.profileMix.evKwh.toFixed(0)} = {(result.profileMix.baseKwh + result.profileMix.heatingKwh + result.profileMix.evKwh).toFixed(0)} kWh 
+                <strong>Check:</strong> {result.profileMix.baseKwh.toFixed(0)} + {result.profileMix.heatingKwh.toFixed(0)} + {result.profileMix.evKwh.toFixed(0)} = {(result.profileMix.baseKwh + result.profileMix.heatingKwh + result.profileMix.evKwh).toFixed(0)} kWh
                 <span className="text-green-600 ml-2">✓ Klopt met invoer ({totalKwh} kWh)</span>
               </div>
             </div>
@@ -850,7 +844,7 @@ export function DynamischInzichtTool() {
                       Met een thuisbatterij naar 70-80% eigenverbruik
                     </h3>
                     <p className="text-gray-600 text-sm mb-4">
-                      Je eigenverbruik is nu {result.solarAnalysis.inputSelfConsumptionPct}%. 
+                      Je eigenverbruik is nu {result.solarAnalysis.inputSelfConsumptionPct}%.
                       Met een thuisbatterij kun je dit verhogen naar 70-80% en nog meer besparen op je energierekening.
                     </p>
                     <div className="flex flex-wrap gap-3">
@@ -915,7 +909,7 @@ export function DynamischInzichtTool() {
                 <div className="text-4xl font-bold text-blue-700">€{result.winterCost.toFixed(0)}</div>
                 <div className="text-sm text-blue-600 mt-1">Dec, Jan, Feb</div>
               </div>
-              
+
               <div className="bg-amber-50 rounded-2xl p-6 shadow-lg border-2 border-amber-200">
                 <div className="flex items-center gap-2 text-amber-600 mb-2">
                   <Sun className="w-5 h-5" />
@@ -935,7 +929,7 @@ export function DynamischInzichtTool() {
                     <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
                     <XAxis dataKey="monthName" tick={{ fontSize: 12 }} />
                     <YAxis tickFormatter={(v) => `€${v}`} tick={{ fontSize: 12 }} />
-                    <Tooltip 
+                    <Tooltip
                       formatter={(value) => [`€${Number(value).toFixed(2)}`, '']}
                       contentStyle={{ borderRadius: '8px', border: '1px solid #E5E7EB' }}
                     />
@@ -953,8 +947,8 @@ export function DynamischInzichtTool() {
                   <AreaChart data={result.monthlySummary}>
                     <defs>
                       <linearGradient id="priceGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0} />
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
@@ -995,7 +989,7 @@ export function DynamischInzichtTool() {
                   <h3 className="text-xl font-bold text-gray-900 mb-3">Over deze berekening</h3>
                   <div className="space-y-2 text-gray-600 text-sm">
                     <p>
-                      <strong>Transparant:</strong> Afname ({result.input.gridConsumptionKwh.toFixed(0)} kWh) × €{result.variableCosts.avgPricePerKwh.toFixed(2)} 
+                      <strong>Transparant:</strong> Afname ({result.input.gridConsumptionKwh.toFixed(0)} kWh) × €{result.variableCosts.avgPricePerKwh.toFixed(2)}
                       - teruglevering ({result.input.feedInKwh.toFixed(0)} kWh) × €{result.variableCosts.avgFeedInPricePerKwh.toFixed(2)}
                     </p>
                     <p>
@@ -1078,83 +1072,29 @@ export function DynamischInzichtTool() {
         )}
 
         {/* Dynamische Contracten Vergelijker */}
-        <div className="mt-16 bg-gradient-to-br from-purple-50 via-indigo-50 to-blue-50 rounded-2xl shadow-lg p-8 border border-purple-200">
-          <div className="text-center mb-6">
+        <div className="mt-16">
+          <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm font-medium mb-4">
               <Zap className="w-4 h-4" />
-              Vergelijk dynamische contracten
+              Vergelijk alle dynamische contracten
             </div>
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
-              Klaar om over te stappen naar dynamisch?
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Vind de Beste Dynamische Leverancier
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto mb-6">
-              Vergelijk alle dynamische energiecontracten en ontdek welke leverancier het beste bij jouw situatie past.
-            </p>
-            
-            {/* Direct link to comparison tool with prefilled data */}
-            <a
-              href={`https://www.energieleveranciers.nl/vergelijken/dynamisch/?verbruik=${totalKwh}&zonnepanelen=${hasSolar ? Math.round(solarProduction / 400) : 0}&mi=413683`}
-              target="_blank"
-              rel="noopener noreferrer sponsored"
-              className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-bold text-lg hover:from-purple-700 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl"
-            >
-              <Zap className="w-6 h-6" />
-              Vergelijk Dynamische Contracten
-              <ChevronRight className="w-5 h-5" />
-            </a>
-            
-            <p className="text-sm text-purple-600 mt-4">
-              ✨ Je verbruik van {totalKwh.toLocaleString()} kWh{hasSolar ? ` + ${Math.round(solarProduction / 400)} zonnepanelen` : ''} wordt automatisch ingevuld
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Gebruik de Daisycon vergelijker om direct alle actuele tarieven en voorwaarden naast elkaar te zetten.
             </p>
           </div>
-          
-          {/* Top 3 Dynamic Providers */}
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-            <a
-              href="https://jf79.net/c/?si=16978&li=1731992&wi=413683&ws=&dl="
-              target="_blank"
-              rel="noopener noreferrer sponsored"
-              className="p-4 bg-white rounded-xl border-2 border-transparent hover:border-purple-300 transition-all group"
-            >
-              <div className="flex items-center justify-between mb-2">
-                <span className="font-bold text-gray-900">Frank Energie</span>
-                <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">Populair</span>
-              </div>
-              <p className="text-sm text-gray-600 mb-2">Slimme diensten & app</p>
-              <span className="text-purple-600 text-sm font-medium group-hover:underline">Bekijk →</span>
-            </a>
-            
-            <a
-              href="https://tc.tradetracker.net/?c=27887&m=12&a=413683"
-              target="_blank"
-              rel="noopener noreferrer sponsored"
-              className="p-4 bg-white rounded-xl border-2 border-transparent hover:border-purple-300 transition-all group"
-            >
-              <div className="flex items-center justify-between mb-2">
-                <span className="font-bold text-gray-900">Tibber</span>
-                <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">Innovatief</span>
-              </div>
-              <p className="text-sm text-gray-600 mb-2">Scandinavische aanpak</p>
-              <span className="text-purple-600 text-sm font-medium group-hover:underline">Bekijk →</span>
-            </a>
-            
-            <a
-              href="https://www.anwb.nl/huis/energie/energiecontract?utm_source=affiliate&utm_medium=daisycon&utm_campaign=413683"
-              target="_blank"
-              rel="noopener noreferrer sponsored"
-              className="p-4 bg-white rounded-xl border-2 border-transparent hover:border-purple-300 transition-all group"
-            >
-              <div className="flex items-center justify-between mb-2">
-                <span className="font-bold text-gray-900">ANWB Energie</span>
-                <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full">Betrouwbaar</span>
-              </div>
-              <p className="text-sm text-gray-600 mb-2">Dynamisch & vast</p>
-              <span className="text-purple-600 text-sm font-medium group-hover:underline">Bekijk →</span>
-            </a>
-          </div>
-          
-          <p className="text-xs text-gray-500 mt-6 text-center">
-            * Affiliate links — wij ontvangen een vergoeding bij overstap
+
+          <DaisyconWidget
+            consumption={totalKwh}
+            hasSolar={hasSolar}
+            solarProduction={solarProduction}
+            persons={persons}
+          />
+
+          <p className="text-xs text-gray-400 mt-6 text-center">
+            * Wij tonen onafhankelijke resultaten via Daisycon. Bij een overstap kunnen wij een kleine commissie ontvangen.
           </p>
         </div>
       </main>
