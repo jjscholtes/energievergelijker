@@ -1,11 +1,14 @@
 import { NextResponse } from 'next/server';
 import {
   calculateProfileMix,
-  getHourlyFraction,
   getBuildYearFromRange,
   BuildYearRange,
   HeatingType,
 } from '@/lib/data/neduProfiles';
+
+// ============================================================================
+// INTERFACES
+// ============================================================================
 
 export interface DynamicInsightRequest {
   totalKwh: number;
@@ -17,73 +20,82 @@ export interface DynamicInsightRequest {
   // Zonnepanelen
   hasSolar?: boolean;
   solarProduction?: number;
-  selfConsumptionPercentage?: number;
+  selfConsumptionPercentage?: number; // Alleen voor weergave, we berekenen het per uur
   // Elektrische Auto
   hasEV?: boolean;
   evKwhPerYear?: number;
   smartCharging?: boolean;
 }
 
-export interface HourlyCost {
-  timestamp: string;
-  hour: number;
-  month: number;
-  consumption: number;
-  spotPrice: number;
-  allInPrice: number;
-  cost: number;
+export interface CostBreakdown {
+  base: { kwh: number; cost: number };
+  heating: { kwh: number; cost: number };
+  ev: { kwh: number; cost: number; smartSavings: number };
+  solar: { 
+    production: number; 
+    selfConsumption: number; 
+    selfConsumptionSavings: number;
+    feedIn: number; 
+    feedInRevenue: number;
+  };
 }
 
 export interface MonthlySummary {
   month: number;
   monthName: string;
-  totalConsumption: number;
-  averagePrice: number;
-  totalCost: number;
-  heatingCost: number;
-  baseCost: number;
+  consumption: number;
+  production: number;
+  selfConsumption: number;
+  feedIn: number;
+  gridConsumption: number;
+  averageSpotPrice: number;
+  cost: number;
 }
 
 export interface DynamicInsightResponse {
-  // Summary
-  totalCost: number;
-  totalConsumption: number;
-  averagePrice: number;
+  // Breakdown per component
+  breakdown: CostBreakdown;
   
-  // Fixed contract comparison
-  fixedContractCost: number;           // Vast met saldering (tot 2027)
-  fixedContractCostNoNetMetering: number; // Vast zonder saldering (na 2027)
-  savings: number;                     // vs vast met saldering
-  savingsVsNoNetMetering: number;      // vs vast zonder saldering
+  // Variabele kosten
+  consumptionCost: number;
+  feedInRevenue: number;
+  
+  // Vaste kosten
+  gridCosts: number;
+  supplierFixedCosts: number;
+  energyTaxReduction: number;
+  
+  // Totalen (met vaste kosten)
+  totalCostDynamic: number;
+  totalCostFixed: number;
+  totalCostFixedNoSaldering: number;
+  
+  // Besparing
+  savingsVsFixed: number;
+  savingsVsFixedNoSaldering: number;
   savingsPercentage: number;
   
-  // Profile info
-  profileMix: {
-    baseKwh: number;
-    heatingKwh: number;
-    method: 'nibud' | 'buildYear';
-  };
-  
-  // Monthly breakdown
+  // Maandelijkse breakdown
   monthlySummary: MonthlySummary[];
   
-  // Seasonal analysis
-  winterCost: number;  // Dec, Jan, Feb
-  summerCost: number;  // Jun, Jul, Aug
+  // Seizoensanalyse
+  winterCost: number;
+  summerCost: number;
   
-  // Price analysis
+  // Prijsanalyse
   cheapestMonth: { month: number; name: string; avgPrice: number };
   expensiveMonth: { month: number; name: string; avgPrice: number };
   
-  // Zonnepanelen
-  solarSavings?: number;
-  solarSelfConsumption?: number;
-  solarFeedIn?: number;
-  feedInRevenue?: number;
-  solarMonthlyBreakdown?: { month: number; production: number; selfConsumption: number; feedIn: number; savings: number; feedInRevenue: number }[];
+  // Profiel info
+  profileMix: {
+    baseKwh: number;
+    heatingKwh: number;
+    evKwh: number;
+    method: 'nibud' | 'buildYear';
+  };
   
-  // EV (verbruik zit al in totaal, dit is de besparing door slim laden)
-  evSmartChargingSavings?: number;
+  // Berekend eigenverbruik percentage
+  calculatedSelfConsumptionPercentage: number;
   
   // Meta
   period: { from: string; till: string };
@@ -100,52 +112,66 @@ interface EnergyZeroResponse {
   average: number;
 }
 
-// Current energy tax rates (2024/2025)
-const ENERGY_TAX = 0.1316; // €/kWh including VAT
-const SUPPLIER_MARKUP = 0.025; // €/kWh typical dynamic contract markup
-const FIXED_PRICE = 0.28; // €/kWh typical fixed contract all-in price
+// ============================================================================
+// CONSTANTEN - Tarieven 2025
+// ============================================================================
 
-// Teruglevering marges
-// Dynamisch: je krijgt spotprijs - kleine marge (vaak €0.01-0.02)
-const DYNAMIC_FEED_IN_MARGIN = 0.015; // €/kWh afgetrokken van spotprijs
+// Variabele kosten per kWh
+const ENERGY_TAX = 0.1316;              // Energiebelasting incl. BTW
+const SUPPLIER_MARKUP = 0.025;          // Leveranciersopslag dynamisch
+const FIXED_PRICE_KWH = 0.28;           // Typische vaste all-in kWh prijs
 
-// Vast contract teruglevering:
-// Veel leveranciers rekenen TERUGLEVERKOSTEN (€0.05-0.15/kWh) ipv een vergoeding!
-// Sommigen geven een kleine vergoeding (€0.00-0.07/kWh)
-// Netto effect: vaak NEGATIEF (je betaalt om terug te leveren)
-// Bron: AD.nl, Keuze.nl vergelijking 2024/2025
-const FIXED_FEED_IN_RATE = 0.04; // €/kWh - vergoeding (sommige leveranciers)
-const FIXED_FEED_IN_COSTS = 0.09; // €/kWh - terugleverkosten (veel leveranciers)
-// Netto: €0.04 - €0.09 = -€0.05/kWh (je BETAALT per teruggeleverde kWh!)
+// Vaste jaarkosten
+const ENERGY_TAX_REDUCTION = 635.19;    // Vermindering energiebelasting 2025
+const GRID_COSTS = 300;                 // Netbeheerkosten (gemiddeld)
+const SUPPLIER_FIXED_COSTS = 80;        // Vastrecht leverancier (gemiddeld)
 
-// Solar production profile by month (relative, sums to ~1.0)
-const SOLAR_MONTHLY_PROFILE = [
-  0.03, // Jan
-  0.05, // Feb
-  0.08, // Mar
-  0.11, // Apr
-  0.13, // May
-  0.14, // Jun
-  0.14, // Jul
-  0.12, // Aug
-  0.09, // Sep
-  0.06, // Oct
-  0.03, // Nov
-  0.02, // Dec
-];
+// Teruglevering - Dynamisch contract
+const DYNAMIC_FEED_IN_MARGIN = 0.015;   // Marge afgetrokken van spotprijs
 
-// Solar hourly production profile (relative to daily production)
-const SOLAR_HOURLY_PROFILE = [
-  0, 0, 0, 0, 0, 0.01, // 0-5
-  0.03, 0.06, 0.09, 0.11, 0.13, 0.14, // 6-11
-  0.14, 0.13, 0.11, 0.09, 0.06, 0.03, // 12-17
-  0.01, 0, 0, 0, 0, 0 // 18-23
-];
+// Teruglevering - Vast contract (zonder saldering)
+const FIXED_FEED_IN_RATE = 0.04;        // Terugleververgoeding
+const FIXED_FEED_IN_COSTS = 0.09;       // Terugleverkosten (veel leveranciers)
+// Netto: €0.04 - €0.09 = -€0.05/kWh (je BETAALT!)
 
-const monthNames = [
-  'Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni',
-  'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'
-];
+// ============================================================================
+// PROFIELEN
+// ============================================================================
+
+// Maandelijkse verwarmingsfactoren (relatief, hoogste in winter)
+const MONTHLY_HEATING_FACTORS = [1.00, 0.90, 0.70, 0.45, 0.20, 0.08, 0.05, 0.05, 0.15, 0.40, 0.70, 0.95];
+const HEATING_FACTOR_SUM = MONTHLY_HEATING_FACTORS.reduce((a, b) => a + b, 0);
+
+// Maandelijkse basisfactoren (relatief stabiel)
+const MONTHLY_BASE_FACTORS = [0.95, 0.92, 0.90, 0.88, 0.90, 0.95, 1.00, 1.00, 0.95, 0.92, 0.95, 1.05];
+const BASE_FACTOR_SUM = MONTHLY_BASE_FACTORS.reduce((a, b) => a + b, 0);
+
+// Uurprofiel E1A (basis - verlichting, apparaten)
+const HOURLY_E1A = [0.020, 0.018, 0.016, 0.015, 0.015, 0.018, 0.030, 0.050, 0.055, 0.048, 0.042, 0.040, 0.045, 0.042, 0.040, 0.042, 0.048, 0.065, 0.075, 0.072, 0.065, 0.055, 0.042, 0.032];
+const E1A_SUM = HOURLY_E1A.reduce((a, b) => a + b, 0);
+
+// Uurprofiel G1A (verwarming - volgt buitentemperatuur)
+const HOURLY_G1A = [0.015, 0.012, 0.010, 0.010, 0.012, 0.025, 0.065, 0.075, 0.068, 0.055, 0.048, 0.045, 0.042, 0.040, 0.042, 0.048, 0.058, 0.068, 0.072, 0.065, 0.055, 0.045, 0.035, 0.025];
+const G1A_SUM = HOURLY_G1A.reduce((a, b) => a + b, 0);
+
+// EV laadprofiel - Slim laden (nachturen 0-6)
+const HOURLY_EV_SMART = [0.18, 0.18, 0.18, 0.18, 0.16, 0.12, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00];
+// EV laadprofiel - Normaal laden (avonduren 18-23)
+const HOURLY_EV_NORMAL = [0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.05, 0.20, 0.25, 0.25, 0.15, 0.10, 0.00];
+
+// Zonnepanelen maandprofiel (relatief, som = 1.0)
+const SOLAR_MONTHLY_PROFILE = [0.03, 0.05, 0.08, 0.11, 0.13, 0.14, 0.14, 0.12, 0.09, 0.06, 0.03, 0.02];
+
+// Zonnepanelen uurprofiel (relatief t.o.v. dagproductie)
+const SOLAR_HOURLY_PROFILE = [0, 0, 0, 0, 0, 0.01, 0.03, 0.06, 0.09, 0.11, 0.13, 0.14, 0.14, 0.13, 0.11, 0.09, 0.06, 0.03, 0.01, 0, 0, 0, 0, 0];
+const SOLAR_HOURLY_SUM = SOLAR_HOURLY_PROFILE.reduce((a, b) => a + b, 0);
+
+const DAYS_IN_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+const MONTH_NAMES = ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'];
+
+// ============================================================================
+// MAIN API HANDLER
+// ============================================================================
 
 export async function POST(request: Request) {
   try {
@@ -158,17 +184,17 @@ export async function POST(request: Request) {
       persons,
       fromDate,
       tillDate,
-      // Zonnepanelen
-      hasSolar,
+      hasSolar = false,
       solarProduction = 0,
-      selfConsumptionPercentage = 30,
-      // EV
-      hasEV,
+      hasEV = false,
       evKwhPerYear = 0,
       smartCharging = true,
     } = body;
     
-    // Validate inputs
+    // ========================================================================
+    // VALIDATIE
+    // ========================================================================
+    
     if (!totalKwh || totalKwh < 500 || totalKwh > 50000) {
       return NextResponse.json(
         { error: 'Invalid totalKwh: must be between 500 and 50000' },
@@ -176,28 +202,50 @@ export async function POST(request: Request) {
       );
     }
     
-    // Calculate profile mix
+    // ========================================================================
+    // STAP 1: PROFIEL BEREKENING - EV EERST AFTREKKEN!
+    // ========================================================================
+    
+    // EV-verbruik is ONDERDEEL van totaal, maar heeft eigen profiel
+    // Dus eerst aftrekken voor huishoudelijke profiel-mix
+    const evKwh = hasEV ? Math.min(evKwhPerYear, totalKwh * 0.5) : 0; // Max 50% van totaal
+    const householdKwh = totalKwh - evKwh;
+    
+    // Bereken profiel alleen voor huishoudelijk verbruik (basis + verwarming)
     const buildYearNum = getBuildYearFromRange(buildYear);
     
-    // Adjust for heating type
-    let adjustedKwh = totalKwh;
+    // Bij gas verwarming: geen warmtepomp verbruik
+    let adjustedHouseholdKwh = householdKwh;
     if (heatingType === 'gas') {
-      // Gas heating: only base electricity load
-      adjustedKwh = Math.min(totalKwh, 4000); // Cap at typical base load
+      adjustedHouseholdKwh = Math.min(householdKwh, 4000);
     }
     
-    const profileMix = calculateProfileMix(adjustedKwh, buildYearNum, persons);
+    const profileMixRaw = calculateProfileMix(adjustedHouseholdKwh, buildYearNum, persons);
     
-    // Determine date range (default: last 12 months)
+    // Zorg dat basis + verwarming = huishoudelijk
+    const profileMix = {
+      baseKwh: profileMixRaw.baseKwh,
+      heatingKwh: heatingType === 'gas' ? 0 : profileMixRaw.heatingKwh,
+      evKwh: evKwh,
+      method: profileMixRaw.method,
+    };
+    
+    // Herbereken voor gas: alles is basis
+    if (heatingType === 'gas') {
+      profileMix.baseKwh = adjustedHouseholdKwh;
+      profileMix.heatingKwh = 0;
+    }
+    
+    // ========================================================================
+    // STAP 2: HISTORISCHE PRIJZEN OPHALEN
+    // ========================================================================
+    
     const till = tillDate ? new Date(tillDate) : new Date();
     const from = fromDate ? new Date(fromDate) : new Date(till.getTime() - 365 * 24 * 60 * 60 * 1000);
     
-    // Fetch historical prices
     const apiUrl = `https://api.energyzero.nl/v1/energyprices?fromDate=${from.toISOString()}&tillDate=${till.toISOString()}&interval=4&usageType=1&inclBtw=true`;
     
-    const priceResponse = await fetch(apiUrl, {
-      next: { revalidate: 3600 }
-    });
+    const priceResponse = await fetch(apiUrl, { next: { revalidate: 3600 } });
     
     if (!priceResponse.ok) {
       throw new Error(`Failed to fetch prices: ${priceResponse.status}`);
@@ -205,7 +253,7 @@ export async function POST(request: Request) {
     
     const priceData: EnergyZeroResponse = await priceResponse.json();
     
-    // Group prices by month and hour
+    // Groepeer prijzen per maand-uur
     const pricesByMonthHour = new Map<string, number[]>();
     
     for (const price of priceData.Prices) {
@@ -220,296 +268,303 @@ export async function POST(request: Request) {
       pricesByMonthHour.get(key)!.push(price.price);
     }
     
-    // Calculate average price for each month-hour combination
+    // Bereken gemiddelde prijs per maand-uur
     const avgPriceByMonthHour = new Map<string, number>();
     for (const [key, prices] of pricesByMonthHour) {
       avgPriceByMonthHour.set(key, prices.reduce((a, b) => a + b, 0) / prices.length);
     }
     
-    // Calculate costs using profile mix
+    // ========================================================================
+    // STAP 3: VERBRUIK EN KOSTEN BEREKENEN PER UUR
+    // ========================================================================
+    
     const monthlySummary: MonthlySummary[] = [];
-    let totalCost = 0;
-    let totalConsumption = 0;
     
-    const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-    
-    // Monthly heating factors (relative, sums to ~5.63)
-    const monthlyHeatingFactors = [1.00, 0.90, 0.70, 0.45, 0.20, 0.08, 0.05, 0.05, 0.15, 0.40, 0.70, 0.95];
-    const heatingFactorSum = monthlyHeatingFactors.reduce((a, b) => a + b, 0);
-    
-    // Base load is relatively stable (normalized to ~11.37)
-    const monthlyBaseFactors = [0.95, 0.92, 0.90, 0.88, 0.90, 0.95, 1.00, 1.00, 0.95, 0.92, 0.95, 1.05];
-    const baseFactorSum = monthlyBaseFactors.reduce((a, b) => a + b, 0);
-    
-    // Hourly profiles (E1A for base, G1A for heating) - normalized to sum to 1.0
-    const hourlyE1A = [0.020, 0.018, 0.016, 0.015, 0.015, 0.018, 0.030, 0.050, 0.055, 0.048, 0.042, 0.040, 0.045, 0.042, 0.040, 0.042, 0.048, 0.065, 0.075, 0.072, 0.065, 0.055, 0.042, 0.032];
-    const hourlyG1A = [0.015, 0.012, 0.010, 0.010, 0.012, 0.025, 0.065, 0.075, 0.068, 0.055, 0.048, 0.045, 0.042, 0.040, 0.042, 0.048, 0.058, 0.068, 0.072, 0.065, 0.055, 0.045, 0.035, 0.025];
-    const e1aSum = hourlyE1A.reduce((a, b) => a + b, 0);
-    const g1aSum = hourlyG1A.reduce((a, b) => a + b, 0);
+    // Totalen voor breakdown
+    let totalBaseCost = 0;
+    let totalBaseKwh = 0;
+    let totalHeatingCost = 0;
+    let totalHeatingKwh = 0;
+    let totalEvCost = 0;
+    let totalEvKwh = 0;
+    let totalEvSmartSavings = 0;
+    let totalSolarProduction = 0;
+    let totalSelfConsumption = 0;
+    let totalSelfConsumptionSavings = 0;
+    let totalFeedIn = 0;
+    let totalFeedInRevenue = 0;
+    let totalConsumptionCost = 0;
     
     for (let month = 0; month < 12; month++) {
+      const days = DAYS_IN_MONTH[month];
+      
+      // Maandelijkse fracties
+      const baseMonthFraction = MONTHLY_BASE_FACTORS[month] / BASE_FACTOR_SUM;
+      const heatingMonthFraction = MONTHLY_HEATING_FACTORS[month] / HEATING_FACTOR_SUM;
+      
+      // kWh voor deze maand
+      const baseKwhMonth = profileMix.baseKwh * baseMonthFraction;
+      const heatingKwhMonth = profileMix.heatingKwh * heatingMonthFraction;
+      const evKwhMonth = profileMix.evKwh / 12; // EV is gelijkmatig verdeeld
+      const solarKwhMonth = hasSolar ? solarProduction * SOLAR_MONTHLY_PROFILE[month] : 0;
+      
       let monthConsumption = 0;
+      let monthProduction = 0;
+      let monthSelfConsumption = 0;
+      let monthFeedIn = 0;
+      let monthGridConsumption = 0;
       let monthCost = 0;
-      let monthHeatingCost = 0;
-      let monthBaseCost = 0;
       let monthPriceSum = 0;
-      
-      // Monthly share of yearly consumption
-      const baseMonthShare = (monthlyBaseFactors[month] / baseFactorSum);
-      const heatingMonthShare = (monthlyHeatingFactors[month] / heatingFactorSum);
-      
-      // kWh for this month
-      const baseKwhThisMonth = profileMix.baseKwh * baseMonthShare;
-      const heatingKwhThisMonth = profileMix.heatingKwh * heatingMonthShare;
+      let monthEvNormalCost = 0; // Kosten zonder slim laden (voor besparing berekening)
       
       for (let hour = 0; hour < 24; hour++) {
         const key = `${month}-${hour}`;
         const spotPrice = avgPriceByMonthHour.get(key) ?? 0.10;
         const allInPrice = spotPrice + SUPPLIER_MARKUP + ENERGY_TAX;
         
-        // Hourly share within this month
-        const baseHourShare = hourlyE1A[hour] / e1aSum;
-        const heatingHourShare = hourlyG1A[hour] / g1aSum;
+        // ====== VERBRUIK PER COMPONENT ======
         
-        // kWh for this hour (spread over all days in month)
-        const baseConsumption = baseKwhThisMonth * baseHourShare;
-        const heatingConsumption = heatingKwhThisMonth * heatingHourShare;
+        // Basis verbruik dit uur
+        const baseHourFraction = HOURLY_E1A[hour] / E1A_SUM;
+        const baseKwhHour = baseKwhMonth * baseHourFraction;
         
-        const hourConsumption = baseConsumption + heatingConsumption;
-        const hourCost = hourConsumption * allInPrice;
+        // Verwarming dit uur
+        const heatingHourFraction = HOURLY_G1A[hour] / G1A_SUM;
+        const heatingKwhHour = heatingKwhMonth * heatingHourFraction;
         
-        monthConsumption += hourConsumption;
-        monthCost += hourCost;
-        monthHeatingCost += heatingConsumption * allInPrice;
-        monthBaseCost += baseConsumption * allInPrice;
+        // EV dit uur (afhankelijk van slim laden)
+        const evProfile = smartCharging ? HOURLY_EV_SMART : HOURLY_EV_NORMAL;
+        const evKwhHour = evKwhMonth * evProfile[hour];
+        
+        // Totaal verbruik dit uur
+        const totalKwhHour = baseKwhHour + heatingKwhHour + evKwhHour;
+        
+        // ====== ZONNEPANELEN - GELIJKTIJDIGHEID ======
+        
+        let solarKwhHour = 0;
+        let selfConsumptionHour = 0;
+        let feedInHour = 0;
+        let gridConsumptionHour = totalKwhHour;
+        let selfConsumptionSavingsHour = 0;
+        let feedInRevenueHour = 0;
+        
+        if (hasSolar && solarProduction > 0) {
+          // Productie dit uur
+          solarKwhHour = solarKwhMonth * (SOLAR_HOURLY_PROFILE[hour] / SOLAR_HOURLY_SUM);
+          
+          // Gelijktijdigheidsberekening: eigenverbruik = min(productie, verbruik)
+          selfConsumptionHour = Math.min(solarKwhHour, totalKwhHour);
+          feedInHour = solarKwhHour - selfConsumptionHour;
+          gridConsumptionHour = totalKwhHour - selfConsumptionHour;
+          
+          // Besparing eigenverbruik: bespaart de hele all-in prijs
+          selfConsumptionSavingsHour = selfConsumptionHour * allInPrice;
+          
+          // Teruglevering opbrengst: spotprijs minus marge
+          const feedInPrice = Math.max(0, spotPrice - DYNAMIC_FEED_IN_MARGIN);
+          feedInRevenueHour = feedInHour * feedInPrice;
+          
+          monthProduction += solarKwhHour;
+          monthSelfConsumption += selfConsumptionHour;
+          monthFeedIn += feedInHour;
+          totalSolarProduction += solarKwhHour;
+          totalSelfConsumption += selfConsumptionHour;
+          totalSelfConsumptionSavings += selfConsumptionSavingsHour;
+          totalFeedIn += feedInHour;
+          totalFeedInRevenue += feedInRevenueHour;
+        }
+        
+        // ====== KOSTEN BEREKENEN ======
+        
+        // Kosten voor wat we van het net afnemen
+        const gridCostHour = gridConsumptionHour * allInPrice;
+        
+        // Netto kosten dit uur = grid kosten - teruglevering opbrengst
+        const netCostHour = gridCostHour - feedInRevenueHour;
+        
+        monthConsumption += totalKwhHour;
+        monthGridConsumption += gridConsumptionHour;
+        monthCost += netCostHour;
         monthPriceSum += spotPrice;
+        
+        // Breakdown per component (voor totalen)
+        totalBaseKwh += baseKwhHour;
+        totalBaseCost += baseKwhHour * allInPrice;
+        totalHeatingKwh += heatingKwhHour;
+        totalHeatingCost += heatingKwhHour * allInPrice;
+        totalEvKwh += evKwhHour;
+        totalEvCost += evKwhHour * allInPrice;
+        
+        // EV: bereken ook kosten zonder slim laden voor besparing
+        if (hasEV && evKwh > 0) {
+          const evNormalKwhHour = evKwhMonth * HOURLY_EV_NORMAL[hour];
+          monthEvNormalCost += evNormalKwhHour * allInPrice;
+        }
+      }
+      
+      // EV slim laden besparing deze maand
+      if (hasEV && evKwh > 0 && smartCharging) {
+        const evSmartCostMonth = evKwhMonth * (monthCost / monthConsumption); // Approx
+        // Bereken werkelijke besparing door prijsverschil
+        const avgSmartPrice = (() => {
+          let totalPrice = 0;
+          let totalWeight = 0;
+          for (let hour = 0; hour < 24; hour++) {
+            const key = `${month}-${hour}`;
+            const spotPrice = avgPriceByMonthHour.get(key) ?? 0.10;
+            const weight = HOURLY_EV_SMART[hour];
+            totalPrice += spotPrice * weight;
+            totalWeight += weight;
+          }
+          return totalWeight > 0 ? totalPrice / totalWeight : 0.10;
+        })();
+        const avgNormalPrice = (() => {
+          let totalPrice = 0;
+          let totalWeight = 0;
+          for (let hour = 0; hour < 24; hour++) {
+            const key = `${month}-${hour}`;
+            const spotPrice = avgPriceByMonthHour.get(key) ?? 0.10;
+            const weight = HOURLY_EV_NORMAL[hour];
+            totalPrice += spotPrice * weight;
+            totalWeight += weight;
+          }
+          return totalWeight > 0 ? totalPrice / totalWeight : 0.10;
+        })();
+        
+        const evSavingsMonth = evKwhMonth * (avgNormalPrice - avgSmartPrice);
+        totalEvSmartSavings += evSavingsMonth;
       }
       
       monthlySummary.push({
         month,
-        monthName: monthNames[month],
-        totalConsumption: monthConsumption,
-        averagePrice: monthPriceSum / 24,
-        totalCost: monthCost,
-        heatingCost: monthHeatingCost,
-        baseCost: monthBaseCost,
+        monthName: MONTH_NAMES[month],
+        consumption: monthConsumption,
+        production: monthProduction,
+        selfConsumption: monthSelfConsumption,
+        feedIn: monthFeedIn,
+        gridConsumption: monthGridConsumption,
+        averageSpotPrice: monthPriceSum / 24,
+        cost: monthCost,
       });
       
-      totalCost += monthCost;
-      totalConsumption += monthConsumption;
+      totalConsumptionCost += monthCost;
     }
     
-    // Debug: log if consumption doesn't match
-    if (Math.abs(totalConsumption - adjustedKwh) > 1) {
-      console.warn(`Consumption mismatch: expected ${adjustedKwh}, got ${totalConsumption}`);
-    }
+    // ========================================================================
+    // STAP 4: TOTALEN EN VASTE KOSTEN
+    // ========================================================================
     
-    // Calculate seasonal costs
+    // Variabele kosten dynamisch (al berekend per uur)
+    const consumptionCost = totalConsumptionCost;
+    const feedInRevenue = totalFeedInRevenue;
+    
+    // Totaal dynamisch = variabel + vast
+    const totalCostDynamic = consumptionCost + GRID_COSTS + SUPPLIER_FIXED_COSTS - ENERGY_TAX_REDUCTION;
+    
+    // ========================================================================
+    // STAP 5: VERGELIJKING MET VAST CONTRACT
+    // ========================================================================
+    
+    // Scenario 1: Vast MET saldering (tot 2027)
+    // Netto afname = verbruik - productie (bij volledig salderen)
+    const netConsumption = hasSolar 
+      ? Math.max(0, totalKwh - solarProduction) 
+      : totalKwh;
+    const fixedVariableCost = netConsumption * FIXED_PRICE_KWH;
+    const totalCostFixed = fixedVariableCost + GRID_COSTS + SUPPLIER_FIXED_COSTS - ENERGY_TAX_REDUCTION;
+    
+    // Scenario 2: Vast ZONDER saldering (na 2027)
+    // Je betaalt voor alle afname, krijgt lage vergoeding - hoge kosten voor teruglevering
+    const fixedSelfConsumptionSavings = totalSelfConsumption * FIXED_PRICE_KWH;
+    const netFixedFeedInRate = FIXED_FEED_IN_RATE - FIXED_FEED_IN_COSTS; // -€0.05/kWh!
+    const fixedFeedInValue = totalFeedIn * netFixedFeedInRate; // Kan negatief zijn!
+    const fixedVariableCostNoSaldering = (totalKwh * FIXED_PRICE_KWH) - fixedSelfConsumptionSavings - fixedFeedInValue;
+    const totalCostFixedNoSaldering = fixedVariableCostNoSaldering + GRID_COSTS + SUPPLIER_FIXED_COSTS - ENERGY_TAX_REDUCTION;
+    
+    // ========================================================================
+    // STAP 6: BESPARINGEN BEREKENEN
+    // ========================================================================
+    
+    const savingsVsFixed = totalCostFixed - totalCostDynamic;
+    const savingsVsFixedNoSaldering = totalCostFixedNoSaldering - totalCostDynamic;
+    const savingsPercentage = totalCostFixed > 0 ? (savingsVsFixed / totalCostFixed) * 100 : 0;
+    
+    // ========================================================================
+    // STAP 7: SEIZOENSANALYSE
+    // ========================================================================
+    
     const winterCost = monthlySummary
-      .filter(m => [0, 1, 11].includes(m.month)) // Jan, Feb, Dec
-      .reduce((sum, m) => sum + m.totalCost, 0);
+      .filter(m => [0, 1, 11].includes(m.month))
+      .reduce((sum, m) => sum + m.cost, 0);
     
     const summerCost = monthlySummary
-      .filter(m => [5, 6, 7].includes(m.month)) // Jun, Jul, Aug
-      .reduce((sum, m) => sum + m.totalCost, 0);
+      .filter(m => [5, 6, 7].includes(m.month))
+      .reduce((sum, m) => sum + m.cost, 0);
     
-    // Find cheapest and most expensive months
-    const sortedByPrice = [...monthlySummary].sort((a, b) => a.averagePrice - b.averagePrice);
+    // Goedkoopste en duurste maand
+    const sortedByPrice = [...monthlySummary].sort((a, b) => a.averageSpotPrice - b.averageSpotPrice);
     const cheapestMonth = sortedByPrice[0];
     const expensiveMonth = sortedByPrice[sortedByPrice.length - 1];
     
-    // Compare with fixed contract
-    // Scenario 1: Met saldering (tot 2027) - je betaalt alleen netto afname
-    let fixedContractCost = totalConsumption * FIXED_PRICE;
-    // Scenario 2: Zonder saldering (na 2027) - je betaalt alles, krijgt lage vergoeding terug
-    let fixedContractCostNoNetMetering = totalConsumption * FIXED_PRICE;
+    // ========================================================================
+    // STAP 8: BEREKEND EIGENVERBRUIK %
+    // ========================================================================
     
-    // ===== ZONNEPANELEN BEREKENING =====
-    let solarSavings = 0;
-    let solarSelfConsumption = 0;
-    let solarFeedIn = 0;
-    let feedInRevenue = 0;
+    const calculatedSelfConsumptionPercentage = totalSolarProduction > 0 
+      ? (totalSelfConsumption / totalSolarProduction) * 100 
+      : 0;
     
-    // Maandelijkse solar breakdown voor resultaten
-    const solarMonthlyBreakdown: { month: number; production: number; selfConsumption: number; feedIn: number; savings: number; feedInRevenue: number }[] = [];
-    
-    if (hasSolar && solarProduction > 0) {
-      // Totale eigenverbruik en teruglevering (voor samenvatting)
-      solarSelfConsumption = solarProduction * (selfConsumptionPercentage / 100);
-      solarFeedIn = solarProduction - solarSelfConsumption;
-      
-      // Bereken per maand en per uur
-      for (let month = 0; month < 12; month++) {
-        const monthlyProduction = solarProduction * SOLAR_MONTHLY_PROFILE[month];
-        const monthlyDays = daysInMonth[month];
-        
-        let monthSelfConsumptionSavings = 0;
-        let monthFeedInRevenue = 0;
-        let monthSelfConsumptionKwh = 0;
-        let monthFeedInKwh = 0;
-        
-        for (let hour = 0; hour < 24; hour++) {
-          // Productie dit uur (kWh voor de hele maand)
-          const hourlyProductionPerDay = (monthlyProduction / monthlyDays) * SOLAR_HOURLY_PROFILE[hour];
-          const hourlyProductionMonth = hourlyProductionPerDay * monthlyDays;
-          
-          // Eigenverbruik dit uur
-          const hourSelfConsumption = hourlyProductionMonth * (selfConsumptionPercentage / 100);
-          monthSelfConsumptionKwh += hourSelfConsumption;
-          
-          // Teruglevering dit uur
-          const hourFeedIn = hourlyProductionMonth * ((100 - selfConsumptionPercentage) / 100);
-          monthFeedInKwh += hourFeedIn;
-          
-          // Prijs voor dit uur in deze maand
-          const key = `${month}-${hour}`;
-          const spotPrice = avgPriceByMonthHour.get(key) ?? 0.10;
-          
-          // Eigenverbruik bespaart: spotprijs + opslag + energiebelasting (hele all-in prijs)
-          const allInPrice = spotPrice + SUPPLIER_MARKUP + ENERGY_TAX;
-          monthSelfConsumptionSavings += hourSelfConsumption * allInPrice;
-          
-          // Teruglevering bij DYNAMISCH: je krijgt spotprijs minus kleine marge
-          // Dit is vaak HOGER dan de vaste terugleververgoeding, vooral overdag!
-          // Bij negatieve spotprijs moet je soms betalen, maar meeste leveranciers kappen af op €0
-          const dynamicFeedInPrice = Math.max(0, spotPrice - DYNAMIC_FEED_IN_MARGIN);
-          monthFeedInRevenue += hourFeedIn * dynamicFeedInPrice;
-        }
-        
-        // Update maandelijkse kosten met zonnepanelen impact
-        monthlySummary[month].totalCost -= monthSelfConsumptionSavings;
-        monthlySummary[month].totalCost -= monthFeedInRevenue;
-        
-        solarSavings += monthSelfConsumptionSavings;
-        feedInRevenue += monthFeedInRevenue;
-        
-        solarMonthlyBreakdown.push({
-          month,
-          production: monthlyProduction,
-          selfConsumption: monthSelfConsumptionKwh,
-          feedIn: monthFeedInKwh,
-          savings: monthSelfConsumptionSavings,
-          feedInRevenue: monthFeedInRevenue,
-        });
-      }
-      
-      // Pas totale kosten aan
-      totalCost -= solarSavings;
-      totalCost -= feedInRevenue;
-      
-      // ===== VAST CONTRACT SCENARIO'S =====
-      
-      // Scenario 1: Met saldering (tot 2027)
-      // Je betaalt alleen voor netto afname (afname minus teruglevering)
-      const nettoAfname = Math.max(0, adjustedKwh - solarProduction);
-      fixedContractCost = nettoAfname * FIXED_PRICE;
-      
-      // Scenario 2: Zonder saldering (na 2027 / of nu bij leverancier zonder saldering)
-      // Je betaalt voor ALLE afname, en vaak TERUGLEVERKOSTEN voor wat je teruglevert!
-      // Eigenverbruik bespaart wel de volle prijs
-      const fixedSelfConsumptionSavings = solarSelfConsumption * FIXED_PRICE;
-      
-      // Netto terugleveropbrengst: vergoeding MINUS terugleverkosten
-      // Veel leveranciers: €0.04 vergoeding - €0.09 kosten = -€0.05/kWh (je BETAALT!)
-      const netFixedFeedInRate = FIXED_FEED_IN_RATE - FIXED_FEED_IN_COSTS; // Kan negatief zijn!
-      const fixedFeedInRevenue = solarFeedIn * netFixedFeedInRate;
-      
-      fixedContractCostNoNetMetering = (adjustedKwh * FIXED_PRICE) - fixedSelfConsumptionSavings - fixedFeedInRevenue;
-    }
-    
-    // Herbereken seizoenskosten NA zonnepanelen correctie
-    const winterCostAfterSolar = monthlySummary
-      .filter(m => [0, 1, 11].includes(m.month))
-      .reduce((sum, m) => sum + m.totalCost, 0);
-    
-    const summerCostAfterSolar = monthlySummary
-      .filter(m => [5, 6, 7].includes(m.month))
-      .reduce((sum, m) => sum + m.totalCost, 0);
-    
-    // ===== EV BEREKENING =====
-    // Het EV-verbruik zit AL in het totale verbruik (adjustedKwh)
-    // De evKwhPerYear is een UITSPLITSING die aangeeft welk deel flexibel geladen kan worden
-    // We berekenen de BESPARING door slim laden vs normaal laden
-    let evSmartChargingSavings = 0;
-    
-    if (hasEV && evKwhPerYear > 0 && smartCharging) {
-      const evKwhPerMonth = evKwhPerYear / 12;
-      
-      for (let month = 0; month < 12; month++) {
-        // Vind alle uurprijzen voor deze maand
-        const hourPrices: { hour: number; price: number }[] = [];
-        for (let hour = 0; hour < 24; hour++) {
-          const key = `${month}-${hour}`;
-          const spotPrice = avgPriceByMonthHour.get(key) ?? 0.10;
-          hourPrices.push({ hour, price: spotPrice });
-        }
-        
-        // Gemiddelde prijs (zonder slim laden)
-        const avgMonthPrice = hourPrices.reduce((sum, h) => sum + h.price, 0) / 24;
-        
-        // Goedkoopste 6 uren (met slim laden)
-        hourPrices.sort((a, b) => a.price - b.price);
-        const cheapestHours = hourPrices.slice(0, 6);
-        const avgCheapPrice = cheapestHours.reduce((sum, h) => sum + h.price, 0) / 6;
-        
-        // Besparing door slim laden (verschil in spotprijs, opslag en belasting zijn gelijk)
-        const priceDifference = avgMonthPrice - avgCheapPrice;
-        evSmartChargingSavings += evKwhPerMonth * priceDifference;
-      }
-      
-      // Trek de slim laden besparing af van de totale kosten
-      // (het EV-verbruik zat al in de normale berekening tegen gemiddelde prijs)
-      totalCost -= evSmartChargingSavings;
-    }
-    
-    // Geen aanpassing aan fixedContractCost - EV zit al in het totaal
-    
-    // Bereken besparingen voor beide scenario's
-    const savings = fixedContractCost - totalCost;
-    const savingsPercentage = fixedContractCost > 0 ? (savings / fixedContractCost) * 100 : 0;
-    const savingsVsNoNetMetering = fixedContractCostNoNetMetering - totalCost;
+    // ========================================================================
+    // RESPONSE
+    // ========================================================================
     
     const response: DynamicInsightResponse = {
-      totalCost,
-      totalConsumption,
-      averagePrice: totalCost / totalConsumption - ENERGY_TAX - SUPPLIER_MARKUP,
+      breakdown: {
+        base: { kwh: totalBaseKwh, cost: totalBaseCost },
+        heating: { kwh: totalHeatingKwh, cost: totalHeatingCost },
+        ev: { kwh: totalEvKwh, cost: totalEvCost, smartSavings: totalEvSmartSavings },
+        solar: {
+          production: totalSolarProduction,
+          selfConsumption: totalSelfConsumption,
+          selfConsumptionSavings: totalSelfConsumptionSavings,
+          feedIn: totalFeedIn,
+          feedInRevenue: totalFeedInRevenue,
+        },
+      },
       
-      fixedContractCost,
-      fixedContractCostNoNetMetering,
-      savings,
-      savingsVsNoNetMetering,
+      consumptionCost,
+      feedInRevenue,
+      
+      gridCosts: GRID_COSTS,
+      supplierFixedCosts: SUPPLIER_FIXED_COSTS,
+      energyTaxReduction: ENERGY_TAX_REDUCTION,
+      
+      totalCostDynamic,
+      totalCostFixed,
+      totalCostFixedNoSaldering,
+      
+      savingsVsFixed,
+      savingsVsFixedNoSaldering,
       savingsPercentage,
       
-      profileMix,
       monthlySummary,
       
-      winterCost: hasSolar ? winterCostAfterSolar : winterCost,
-      summerCost: hasSolar ? summerCostAfterSolar : summerCost,
+      winterCost,
+      summerCost,
       
       cheapestMonth: {
         month: cheapestMonth.month,
         name: cheapestMonth.monthName,
-        avgPrice: cheapestMonth.averagePrice,
+        avgPrice: cheapestMonth.averageSpotPrice,
       },
       expensiveMonth: {
         month: expensiveMonth.month,
         name: expensiveMonth.monthName,
-        avgPrice: expensiveMonth.averagePrice,
+        avgPrice: expensiveMonth.averageSpotPrice,
       },
       
-      // Zonnepanelen
-      ...(hasSolar && solarProduction > 0 ? {
-        solarSavings,
-        solarSelfConsumption,
-        solarFeedIn,
-        feedInRevenue,
-        solarMonthlyBreakdown,
-      } : {}),
-      
-      // EV (verbruik zit al in totaal, alleen besparing door slim laden tonen)
-      ...(hasEV && evKwhPerYear > 0 && smartCharging ? {
-        evSmartChargingSavings,
-      } : {}),
+      profileMix,
+      calculatedSelfConsumptionPercentage,
       
       period: {
         from: from.toISOString().split('T')[0],
@@ -528,4 +583,3 @@ export async function POST(request: Request) {
     );
   }
 }
-
