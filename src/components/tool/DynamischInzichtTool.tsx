@@ -1115,7 +1115,6 @@ export function DynamischInzichtTool() {
             * Affiliate links — wij ontvangen een vergoeding bij overstap via bovenstaande vergelijker
           </p>
         </div>
-        )}
       </main>
 
       <Footer />
