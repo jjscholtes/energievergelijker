@@ -253,13 +253,16 @@ export async function POST(request: Request) {
     };
     
     // ========================================================================
-    // STAP 2: ZONNEPANELEN - GELIJKTIJDIGHEIDSBEREKENING
+    // STAP 2: ZONNEPANELEN - EIGENVERBRUIK BEREKENEN
     // ========================================================================
     
-    // Bereken eigenverbruik per maand en uur gebaseerd op gelijktijdigheid
-    let totalSelfConsumption = 0;
+    // Gebruik het ingevoerde percentage voor de berekening
+    // We berekenen ook per uur voor vergelijking, maar de input is leidend
+    
+    let calculatedSelfConsumption = 0;
     
     if (hasSolar && solarProduction > 0) {
+      // Bereken ook gelijktijdigheid voor vergelijking
       for (let month = 0; month < 12; month++) {
         const solarMonth = solarProduction * SOLAR_MONTHLY_PROFILE[month];
         const baseMonth = profileMix.baseKwh * (MONTHLY_BASE_FACTORS[month] / BASE_FACTOR_SUM);
@@ -267,29 +270,28 @@ export async function POST(request: Request) {
         const evMonth = evKwh / 12;
         
         for (let hour = 0; hour < 24; hour++) {
-          // Productie dit uur
           const solarHour = solarMonth * (SOLAR_HOURLY_PROFILE[hour] / SOLAR_HOURLY_SUM);
-          
-          // Verbruik dit uur
           const baseHour = baseMonth * (HOURLY_E1A[hour] / E1A_SUM);
           const heatingHour = heatingMonth * (HOURLY_G1A[hour] / G1A_SUM);
           const evProfile = smartCharging ? HOURLY_EV_SMART : HOURLY_EV_NORMAL;
           const evHour = evMonth * evProfile[hour];
           const consumptionHour = baseHour + heatingHour + evHour;
           
-          // Eigenverbruik = min(productie, verbruik)
-          totalSelfConsumption += Math.min(solarHour, consumptionHour);
+          calculatedSelfConsumption += Math.min(solarHour, consumptionHour);
         }
       }
     }
     
-    // Bereken de kWh stromen
-    const selfConsumptionKwh = hasSolar ? totalSelfConsumption : 0;
+    // Gebruik het INGEVOERDE percentage voor de berekening
+    const selfConsumptionKwh = hasSolar 
+      ? solarProduction * (selfConsumptionPercentage / 100) 
+      : 0;
     const feedInKwh = hasSolar ? solarProduction - selfConsumptionKwh : 0;
     const gridConsumptionKwh = totalKwh - selfConsumptionKwh;
     
+    // Berekend percentage (voor vergelijking)
     const calculatedSelfConsumptionPct = solarProduction > 0 
-      ? (selfConsumptionKwh / solarProduction) * 100 
+      ? (calculatedSelfConsumption / solarProduction) * 100 
       : 0;
     
     // ========================================================================
