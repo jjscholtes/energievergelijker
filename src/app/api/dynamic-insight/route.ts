@@ -360,14 +360,22 @@ export async function POST(request: Request) {
     // STAP 5: VERGELIJKING MET VAST
     // ========================================================================
     
-    // Vast MET saldering (2026): ZELFDE logica als dynamisch, andere prijzen
-    // - Afname van net × all-in prijs
-    // - Teruglevering × salderingsvergoeding (~€0.12 = energiebelasting)
-    const SALDERING_RATE = 0.12; // Effectieve waarde saldering = energiebelasting component
+    // Vast MET saldering (2026):
+    // Bij saldering mag je teruggeleverde kWh verrekenen met afname
+    // Je betaalt effectief alleen voor (afname - teruglevering) × prijs
+    // Als je meer terugleverd dan afneemt, krijg je voor overschot ~€0.09/kWh
     
-    const fixedGridConsumptionWithSaldering = gridConsumptionKwh; // = verbruik - eigenverbruik
-    const fixedAfnameCostWithSaldering = fixedGridConsumptionWithSaldering * FIXED_PRICE_KWH;
-    const fixedSalderingRevenue = feedInKwh * SALDERING_RATE;
+    const gesaldeerdeKwh = Math.min(feedInKwh, gridConsumptionKwh); // Maximaal salderen tot afname
+    const overschotKwh = Math.max(feedInKwh - gridConsumptionKwh, 0); // Eventueel overschot
+    const effectieveAfnameKwh = gridConsumptionKwh - gesaldeerdeKwh; // Wat je echt betaalt
+    
+    // Saldering waarde = je bespaart de hele kWh prijs (€0.23) voor gesaldeerde kWh
+    const salderingWaarde = gesaldeerdeKwh * FIXED_PRICE_KWH;
+    // Overschot krijg je ~€0.09/kWh voor (terugleververgoeding vast contract)
+    const overschotVergoeding = overschotKwh * 0.09;
+    
+    const fixedAfnameCostWithSaldering = gridConsumptionKwh * FIXED_PRICE_KWH;
+    const fixedSalderingRevenue = salderingWaarde + overschotVergoeding;
     const fixedVariableWithSaldering = fixedAfnameCostWithSaldering - fixedSalderingRevenue;
     const totalCostFixedWithSaldering = fixedVariableWithSaldering + netFixed;
     

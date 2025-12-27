@@ -157,8 +157,9 @@ export function DynamischInzichtTool() {
   const [evKwhPerYear, setEvKwhPerYear] = useState<number>(3000);
   const [smartCharging, setSmartCharging] = useState<boolean>(true);
   
-  // Daisycon comparison widget ref
+  // Daisycon comparison widget ref and state
   const comparisonWidgetRef = useRef<HTMLDivElement>(null);
+  const [daisyconKey, setDaisyconKey] = useState(0);
   
   // Daisycon widget config with prefilled user data
   const daisyconConfig = useMemo(() => {
@@ -187,8 +188,16 @@ export function DynamischInzichtTool() {
   useEffect(() => {
     const scriptId = 'daisycon-energy-script';
     
+    const initWidget = () => {
+      // Trigger re-render of widget by updating key
+      setDaisyconKey(prev => prev + 1);
+    };
+    
     // Check if script already exists
-    if (document.getElementById(scriptId)) {
+    const existingScript = document.getElementById(scriptId);
+    if (existingScript) {
+      // Script already loaded, just reinit widget
+      initWidget();
       return;
     }
     
@@ -196,16 +205,13 @@ export function DynamischInzichtTool() {
     script.id = scriptId;
     script.src = 'https://daisycon.tools/energy-nl/app.js';
     script.async = true;
+    script.onload = initWidget;
     document.body.appendChild(script);
     
     return () => {
-      // Cleanup: remove script on unmount
-      const existingScript = document.getElementById(scriptId);
-      if (existingScript) {
-        existingScript.remove();
-      }
+      // Don't remove script on unmount - it's shared
     };
-  }, []);
+  }, [daisyconConfig]); // Re-run when config changes
   
   const handleCalculate = async () => {
     setLoading(true);
@@ -673,7 +679,7 @@ export function DynamischInzichtTool() {
                           <span className="font-bold text-yellow-700">{result.input.solarProduction.toFixed(0)} kWh</span>
                         </div>
                         <div className="flex justify-between p-3 bg-green-50 rounded-lg">
-                          <span>Eigenverbruik ({result.solarAnalysis.calculatedSelfConsumptionPct.toFixed(0)}%)</span>
+                          <span>Eigenverbruik ({result.solarAnalysis.inputSelfConsumptionPct}%)</span>
                           <span className="font-bold text-green-700">{result.input.selfConsumptionKwh.toFixed(0)} kWh</span>
                         </div>
                         <div className="flex justify-between p-3 bg-amber-50 rounded-lg">
@@ -865,12 +871,12 @@ export function DynamischInzichtTool() {
                     <div className="text-2xl font-bold text-yellow-700">{result.input.solarProduction.toFixed(0)} kWh</div>
                   </div>
                   <div className="p-4 bg-white/70 rounded-xl">
-                    <div className="text-sm text-gray-500 mb-1">Eigenverbruik</div>
+                    <div className="text-sm text-gray-500 mb-1">Eigenverbruik ({result.solarAnalysis.inputSelfConsumptionPct}%)</div>
                     <div className="text-2xl font-bold text-green-600">{result.input.selfConsumptionKwh.toFixed(0)} kWh</div>
                     <div className="text-xs text-gray-500">
-                      Berekend: {result.solarAnalysis.calculatedSelfConsumptionPct.toFixed(0)}% 
-                      {result.solarAnalysis.inputSelfConsumptionPct > 0 && (
-                        <span className="text-yellow-600 ml-1">(jouw schatting: {result.solarAnalysis.inputSelfConsumptionPct}%)</span>
+                      Op basis van jouw schatting
+                      {Math.abs(result.solarAnalysis.calculatedSelfConsumptionPct - result.solarAnalysis.inputSelfConsumptionPct) > 5 && (
+                        <span className="text-yellow-600 ml-1">(berekend: ~{result.solarAnalysis.calculatedSelfConsumptionPct.toFixed(0)}%)</span>
                       )}
                     </div>
                   </div>
@@ -881,6 +887,47 @@ export function DynamischInzichtTool() {
                   <div className="p-4 bg-white/70 rounded-xl">
                     <div className="text-sm text-green-600 mb-1">Teruglevering €</div>
                     <div className="text-2xl font-bold text-green-600">€{result.solarAnalysis.dynamicFeedInRevenue.toFixed(0)}</div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Battery Promotion - only show for solar users */}
+            {hasSolar && result.input.solarProduction > 0 && (
+              <div className="bg-gradient-to-br from-indigo-50 via-purple-50 to-blue-50 rounded-2xl shadow-lg p-6 border border-indigo-200">
+                <div className="flex flex-col md:flex-row items-center gap-6">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <BatteryCharging className="w-5 h-5 text-indigo-600" />
+                      <span className="text-sm font-medium text-indigo-600">Verhoog je eigenverbruik</span>
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">
+                      Met een thuisbatterij naar 70-80% eigenverbruik
+                    </h3>
+                    <p className="text-gray-600 text-sm mb-4">
+                      Je eigenverbruik is nu {result.solarAnalysis.inputSelfConsumptionPct}%. 
+                      Met een thuisbatterij kun je dit verhogen naar 70-80% en nog meer besparen op je energierekening.
+                    </p>
+                    <div className="flex flex-wrap gap-3">
+                      <a
+                        href="https://partner.homewizard.com/c/?si=18407&li=1796617&wi=413683&pid=077737e0c2bdb1b4a9a089aa6c853bf2&dl=nl%2Fshop%2Fplug-in-battery%2F&ws="
+                        target="_blank"
+                        rel="noopener noreferrer sponsored"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-medium hover:from-indigo-700 hover:to-purple-700 transition-all text-sm"
+                      >
+                        HomeWizard Battery →
+                      </a>
+                      <a
+                        href="/tool/batterij"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-white text-indigo-600 rounded-lg font-medium hover:bg-indigo-50 transition-all text-sm border border-indigo-200"
+                      >
+                        Bereken besparing
+                      </a>
+                    </div>
+                  </div>
+                  <div className="hidden md:flex flex-col items-center p-4 bg-white/70 rounded-xl">
+                    <div className="text-3xl font-bold text-indigo-600">+{Math.round((75 - result.solarAnalysis.inputSelfConsumptionPct) / 100 * result.input.solarProduction)} kWh</div>
+                    <div className="text-sm text-gray-500">extra eigenverbruik</div>
                   </div>
                 </div>
               </div>
@@ -1105,7 +1152,7 @@ export function DynamischInzichtTool() {
           
           {/* Daisycon Energy Comparison Widget - Prefilled with user data */}
           <div 
-            key={JSON.stringify(daisyconConfig.prefill)} // Re-render when prefill changes
+            key={`daisycon-${daisyconKey}`}
             ref={comparisonWidgetRef}
             className="dc-tool dc-energy-tool min-h-[400px]"
             data-config={JSON.stringify(daisyconConfig)}
