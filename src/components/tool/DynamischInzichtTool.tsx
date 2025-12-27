@@ -108,6 +108,8 @@ interface CalculationResult {
     calculatedSelfConsumptionPct: number;
     dynamicFeedInRevenue: number;
     fixedFeedInRevenue: number;
+    fixedFeedInCosts: number;
+    netFixedFeedInValue: number;
     dynamicAdvantage: number;
   };
   
@@ -690,13 +692,19 @@ export function DynamischInzichtTool() {
               
               {hasSolar && (
                 <div className="mt-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
-                  <h4 className="font-semibold text-green-800 mb-2">💡 Dynamisch voordeel bij teruglevering</h4>
-                  <p className="text-sm text-green-700">
-                    Bij dynamisch krijg je <strong>€{result.solarAnalysis.dynamicFeedInRevenue.toFixed(0)}</strong> voor teruglevering 
-                    (spotprijs + energiebelasting - marge). Bij vast zonder saldering zou je 
-                    <strong className="text-red-600"> €{Math.abs(result.solarAnalysis.fixedFeedInRevenue).toFixed(0)} moeten betalen</strong> (terugleverkosten &gt; vergoeding).
-                    <br /><strong>Dynamisch voordeel: €{result.solarAnalysis.dynamicAdvantage.toFixed(0)}</strong>
-                  </p>
+                  <h4 className="font-semibold text-green-800 mb-2">💡 Teruglevering vergelijking</h4>
+                  <div className="text-sm text-green-700 space-y-1">
+                    <p><strong>Dynamisch:</strong> €{result.solarAnalysis.dynamicFeedInRevenue.toFixed(0)} opbrengst (spotprijs + EB - marge)</p>
+                    <p><strong>Vast zonder saldering:</strong></p>
+                    <ul className="ml-4 text-gray-700">
+                      <li>• Vergoeding: €{result.solarAnalysis.fixedFeedInRevenue.toFixed(0)} ({result.input.feedInKwh.toFixed(0)} kWh × €0,16)</li>
+                      <li>• Terugleverkosten: -€{result.solarAnalysis.fixedFeedInCosts.toFixed(0)} (staffel)</li>
+                      <li>• Netto: €{result.solarAnalysis.netFixedFeedInValue.toFixed(0)}</li>
+                    </ul>
+                    <p className="font-bold text-green-800 mt-2">
+                      Dynamisch voordeel: €{result.solarAnalysis.dynamicAdvantage.toFixed(0)}/jaar
+                    </p>
+                  </div>
                 </div>
               )}
             </div>

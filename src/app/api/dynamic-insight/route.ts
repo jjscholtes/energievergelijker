@@ -6,6 +6,7 @@ import {
   HeatingType,
 } from '@/lib/data/neduProfiles';
 import { ENERGY_CONSTANTS } from '@/lib/constants';
+import { berekenTerugleverkosten } from '@/lib/calculations/terugleverkosten';
 
 // ============================================================================
 // INTERFACES
@@ -89,7 +90,9 @@ export interface DynamicInsightResponse {
   solarAnalysis: {
     calculatedSelfConsumptionPct: number;
     dynamicFeedInRevenue: number;
-    fixedFeedInRevenue: number;  // Vaak negatief!
+    fixedFeedInRevenue: number;
+    fixedFeedInCosts: number;
+    netFixedFeedInValue: number;
     dynamicAdvantage: number;
   };
   
@@ -145,13 +148,10 @@ const GRID_COSTS_BY_NETBEHEERDER: Record<NetbeheerderType, number> = {
 // MAAR ook de energiebelasting terug (bij saldering in 2025/2026)!
 const DYNAMIC_FEED_IN_MARGIN = ENERGY_CONSTANTS.DEFAULT_DYNAMISCH_CONTRACT.OPSLAG_INVOEDING; // €0.023/kWh
 
-// Teruglevering vast contract (zonder saldering, na 2027)
-const FIXED_FEED_IN_RATE = 0.01;   // Terugleververgoeding
-const FIXED_FEED_IN_COSTS = 0.09;  // Terugleverkosten
-// Netto vast zonder saldering: €0.01 - €0.09 = -€0.08/kWh (je BETAALT!)
-
-// Vaste prijs referentie
-const FIXED_PRICE_KWH = 0.28;
+// Vast contract tarieven (typisch marktconform)
+const FIXED_PRICE_KWH = 0.23;           // All-in afnameprijs vast contract
+const FIXED_FEED_IN_RATE = 0.16;        // Terugleververgoeding per kWh
+// Terugleverkosten: staffel op basis van kWh (via berekenTerugleverkosten)
 
 // ============================================================================
 // PROFIELEN (voor seizoensverdeling)
@@ -356,11 +356,17 @@ export async function POST(request: Request) {
     const fixedVariableWithSaldering = netConsumptionWithSaldering * FIXED_PRICE_KWH;
     const totalCostFixedWithSaldering = fixedVariableWithSaldering + netFixed;
     
-    // Vast ZONDER saldering (na 2027): je betaalt voor alles, krijgt weinig terug
-    const fixedSelfConsumptionSavings = selfConsumptionKwh * FIXED_PRICE_KWH;
-    const netFixedFeedInRate = FIXED_FEED_IN_RATE - FIXED_FEED_IN_COSTS; // -€0.08/kWh
-    const fixedFeedInValue = feedInKwh * netFixedFeedInRate; // Negatief = je betaalt!
-    const fixedVariableNoSaldering = (totalKwh * FIXED_PRICE_KWH) - fixedSelfConsumptionSavings - fixedFeedInValue;
+    // Vast ZONDER saldering (na 2027): afname betalen, teruglevering krijg je €0.16 - staffelkosten
+    // Afname = totaal - eigenverbruik (wat je van net haalt)
+    const fixedGridConsumptionKwh = totalKwh - selfConsumptionKwh;
+    const fixedGridConsumptionCost = fixedGridConsumptionKwh * FIXED_PRICE_KWH;
+    
+    // Teruglevering: vergoeding €0.16/kWh maar ook staffelkosten!
+    const fixedFeedInRevenue = feedInKwh * FIXED_FEED_IN_RATE;
+    const fixedFeedInCosts = berekenTerugleverkosten(feedInKwh); // Staffel!
+    const netFixedFeedInValue = fixedFeedInRevenue - fixedFeedInCosts;
+    
+    const fixedVariableNoSaldering = fixedGridConsumptionCost - netFixedFeedInValue;
     const totalCostFixedNoSaldering = fixedVariableNoSaldering + netFixed;
     
     // Besparingen
@@ -474,8 +480,10 @@ export async function POST(request: Request) {
       solarAnalysis: {
         calculatedSelfConsumptionPct,
         dynamicFeedInRevenue: feedInRevenue,
-        fixedFeedInRevenue: feedInKwh * netFixedFeedInRate,
-        dynamicAdvantage: feedInRevenue - (feedInKwh * netFixedFeedInRate),
+        fixedFeedInRevenue: fixedFeedInRevenue,
+        fixedFeedInCosts: fixedFeedInCosts,
+        netFixedFeedInValue: netFixedFeedInValue,
+        dynamicAdvantage: feedInRevenue - netFixedFeedInValue,
       },
       
       evAnalysis: {
