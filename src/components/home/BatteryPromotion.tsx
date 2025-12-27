@@ -3,18 +3,17 @@
 import Image from 'next/image';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { useBatteryPrice } from '@/hooks/useBatteryPrices';
 
 interface BatteryPromotionProps {
   className?: string;
 }
 
 export function BatteryPromotion({ className = '' }: BatteryPromotionProps) {
-  const batteryData = {
-    title: "HomeWizard Plug-In Battery",
-    price: "€1.395",
-    capacity: "2,7 kWh",
-    power: "800W",
-    cycles: "6000+",
+  const { product, isLoading } = useBatteryPrice('homewizard-plug-in-battery');
+
+  // Static data that doesn't change
+  const staticData = {
     features: [
       "Eenvoudige installatie - steek de stekker in",
       "Uitbreidbaar tot 10,8 kWh (4 batterijen)",
@@ -22,8 +21,17 @@ export function BatteryPromotion({ className = '' }: BatteryPromotionProps) {
       "0% kobalt en 0% mangaan",
       "Werkt met HomeWizard Energy app"
     ],
-    link: "https://partner.homewizard.com/c/?si=18407&li=1796617&wi=413683&pid=077737e0c2bdb1b4a9a089aa6c853bf2&dl=nl%2Fshop%2Fplug-in-battery%2F&ws=",
-    image: "https://www.homewizard.com/wp-content/uploads/2024/04/homewizard-battery-front-shop.webp"
+  };
+
+  // Use dynamic product data if available, otherwise fallback
+  const batteryData = {
+    title: product?.title ? `${product.brand} ${product.title}` : "HomeWizard Plug-In Battery",
+    price: product?.priceFormatted || "€1.395",
+    capacity: product?.capacity || "2,7 kWh",
+    power: "800W",
+    cycles: "6000+",
+    link: product?.affiliateLink || "https://partner.homewizard.com/c/?si=18407&li=1796617&wi=413683&pid=077737e0c2bdb1b4a9a089aa6c853bf2&dl=nl%2Fshop%2Fplug-in-battery%2F&ws=",
+    image: product?.image || "https://www.homewizard.com/wp-content/uploads/2024/04/homewizard-battery-front-shop.webp",
   };
 
   return (
@@ -69,7 +77,9 @@ export function BatteryPromotion({ className = '' }: BatteryPromotionProps) {
                 <div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">{batteryData.title}</h3>
                   <div className="flex items-center space-x-3">
-                    <span className="text-3xl font-bold text-green-600">{batteryData.price}</span>
+                    <span className={`text-3xl font-bold text-green-600 ${isLoading ? 'animate-pulse' : ''}`}>
+                      {batteryData.price}
+                    </span>
                     <span className="text-sm text-gray-500">Plug &amp; play thuisbatterij</span>
                   </div>
                 </div>
@@ -95,7 +105,7 @@ export function BatteryPromotion({ className = '' }: BatteryPromotionProps) {
               <div className="space-y-3 mb-6">
                 <h4 className="font-semibold text-gray-900">Belangrijkste voordelen:</h4>
                 <ul className="space-y-2">
-                  {batteryData.features.map((feature, index) => (
+                  {staticData.features.map((feature, index) => (
                     <li key={index} className="flex items-start space-x-2">
                       <div className="w-2 h-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mt-2 flex-shrink-0"></div>
                       <span className="text-gray-700">{feature}</span>

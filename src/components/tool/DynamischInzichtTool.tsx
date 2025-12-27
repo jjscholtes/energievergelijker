@@ -6,7 +6,6 @@ import { Footer } from '@/components/home/Footer';
 import {
   Zap,
   Home,
-  Users,
   Thermometer,
   TrendingDown,
   TrendingUp,
@@ -35,7 +34,6 @@ import {
   ResponsiveContainer,
   AreaChart,
   Area,
-  Legend,
 } from 'recharts';
 import { HeatingType, BuildYearRange, buildYearRanges } from '@/lib/data/neduProfiles';
 import { ENERGY_CONSTANTS } from '@/lib/constants';
@@ -53,21 +51,8 @@ const NETBEHEERDER_OPTIONS: { value: NetbeheerderType; label: string; kosten: nu
 ];
 
 // ============================================================================
-// INTERFACES - Matching API Response
+// INTERFACES - Matching NEW API Response
 // ============================================================================
-
-interface CostBreakdown {
-  base: { kwh: number; cost: number };
-  heating: { kwh: number; cost: number };
-  ev: { kwh: number; cost: number; smartSavings: number };
-  solar: { 
-    production: number; 
-    selfConsumption: number; 
-    selfConsumptionSavings: number;
-    feedIn: number; 
-    feedInRevenue: number;
-  };
-}
 
 interface MonthlySummary {
   month: number;
@@ -82,31 +67,35 @@ interface MonthlySummary {
 }
 
 interface CalculationResult {
-  breakdown: CostBreakdown;
+  input: {
+    totalKwh: number;
+    solarProduction: number;
+    selfConsumptionKwh: number;
+    feedInKwh: number;
+    gridConsumptionKwh: number;
+  };
   
-  consumptionCost: number;
-  feedInRevenue: number;
+  variableCosts: {
+    gridConsumptionCost: number;
+    feedInRevenue: number;
+    netVariableCost: number;
+    avgPricePerKwh: number;
+    avgFeedInPricePerKwh: number;
+  };
   
-  gridCosts: number;
-  supplierFixedCosts: number;
-  energyTaxReduction: number;
-  netbeheerder: string;
+  fixedCosts: {
+    gridCosts: number;
+    supplierFixedCosts: number;
+    energyTaxReduction: number;
+    netFixed: number;
+  };
   
   totalCostDynamic: number;
-  totalCostFixed: number;
+  totalCostFixedWithSaldering: number;
   totalCostFixedNoSaldering: number;
   
-  savingsVsFixed: number;
+  savingsVsFixedWithSaldering: number;
   savingsVsFixedNoSaldering: number;
-  savingsPercentage: number;
-  
-  monthlySummary: MonthlySummary[];
-  
-  winterCost: number;
-  summerCost: number;
-  
-  cheapestMonth: { month: number; name: string; avgPrice: number };
-  expensiveMonth: { month: number; name: string; avgPrice: number };
   
   profileMix: {
     baseKwh: number;
@@ -115,8 +104,24 @@ interface CalculationResult {
     method: 'nibud' | 'buildYear';
   };
   
-  calculatedSelfConsumptionPercentage: number;
+  solarAnalysis: {
+    calculatedSelfConsumptionPct: number;
+    dynamicFeedInRevenue: number;
+    fixedFeedInRevenue: number;
+    dynamicAdvantage: number;
+  };
   
+  evAnalysis: {
+    evKwh: number;
+    smartChargingSavings: number;
+  };
+  
+  monthlySummary: MonthlySummary[];
+  
+  winterCost: number;
+  summerCost: number;
+  
+  netbeheerder: string;
   period: { from: string; till: string };
   lastUpdated: string;
 }
@@ -141,7 +146,6 @@ export function DynamischInzichtTool() {
   // Zonnepanelen
   const [hasSolar, setHasSolar] = useState<boolean>(false);
   const [solarProduction, setSolarProduction] = useState<number>(4000);
-  const [selfConsumptionPercentage, setSelfConsumptionPercentage] = useState<number>(30);
   
   // Elektrische Auto
   const [hasEV, setHasEV] = useState<boolean>(false);
@@ -164,7 +168,6 @@ export function DynamischInzichtTool() {
           netbeheerder,
           hasSolar,
           solarProduction: hasSolar ? solarProduction : 0,
-          selfConsumptionPercentage: hasSolar ? selfConsumptionPercentage : 0,
           hasEV,
           evKwhPerYear: hasEV ? evKwhPerYear : 0,
           smartCharging: hasEV ? smartCharging : false,
@@ -191,20 +194,6 @@ export function DynamischInzichtTool() {
     { value: 'hybrid', label: 'Hybride', icon: Thermometer, description: 'Warmtepomp + CV-ketel' },
     { value: 'all-electric', label: 'All-Electric', icon: Zap, description: 'Volledig elektrisch (warmtepomp)' },
   ];
-
-  // Chart data preparation
-  const getChartData = () => {
-    if (!result) return [];
-    return result.monthlySummary.map(m => ({
-      ...m,
-      baseCost: result.breakdown.base.kwh > 0 
-        ? (m.consumption / (result.breakdown.base.kwh + result.breakdown.heating.kwh + result.breakdown.ev.kwh)) * result.breakdown.base.cost / 12
-        : 0,
-      heatingCost: result.breakdown.heating.kwh > 0
-        ? (m.consumption / (result.breakdown.base.kwh + result.breakdown.heating.kwh + result.breakdown.ev.kwh)) * result.breakdown.heating.cost / 12
-        : 0,
-    }));
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50">
@@ -330,7 +319,7 @@ export function DynamischInzichtTool() {
                   <div className="mt-4 p-4 bg-yellow-50 rounded-xl space-y-4 border border-yellow-200">
                     <div className="p-3 bg-yellow-100 rounded-lg text-sm text-yellow-800">
                       <strong>💡 Nieuw:</strong> We berekenen eigenverbruik nu per uur op basis van gelijktijdigheid. 
-                      Je productie wordt vergeleken met je verbruik op elk moment. De slider hieronder is alleen ter indicatie.
+                      Je productie wordt vergeleken met je verbruik op elk moment.
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -379,8 +368,7 @@ export function DynamischInzichtTool() {
                   <div className="mt-4 p-4 bg-green-50 rounded-xl space-y-4 border border-green-200">
                     <div className="p-3 bg-green-100 rounded-lg text-sm text-green-800">
                       <strong>💡 Toelichting:</strong> Je EV-verbruik zit al in je totale jaarverbruik hierboven. 
-                      Geef hieronder aan hoeveel kWh daarvan voor de auto is. We gebruiken een apart laadprofiel 
-                      (nachturen bij slim laden, avonduren anders).
+                      Geef hieronder aan hoeveel kWh daarvan voor de auto is.
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -508,7 +496,7 @@ export function DynamischInzichtTool() {
                   ))}
                 </div>
                 <p className="text-sm text-gray-500 mt-2">
-                  Check je energierekening voor je netbeheerder, of kijk op de kaart van je postcode.
+                  Check je energierekening voor je netbeheerder.
                 </p>
               </div>
 
@@ -560,15 +548,15 @@ export function DynamischInzichtTool() {
                 <div className="text-sm opacity-80 mt-2">Inclusief alle vaste kosten</div>
               </div>
               
-              <div className={`rounded-2xl p-6 shadow-xl ${result.savingsVsFixed > 0 ? 'bg-green-50 border-2 border-green-200' : 'bg-orange-50 border-2 border-orange-200'}`}>
-                <div className={`text-sm font-medium mb-1 ${result.savingsVsFixed > 0 ? 'text-green-600' : 'text-orange-600'}`}>
+              <div className={`rounded-2xl p-6 shadow-xl ${result.savingsVsFixedWithSaldering > 0 ? 'bg-green-50 border-2 border-green-200' : 'bg-orange-50 border-2 border-orange-200'}`}>
+                <div className={`text-sm font-medium mb-1 ${result.savingsVsFixedWithSaldering > 0 ? 'text-green-600' : 'text-orange-600'}`}>
                   vs Vast (met saldering)
                 </div>
-                <div className={`text-4xl font-bold ${result.savingsVsFixed > 0 ? 'text-green-600' : 'text-orange-600'}`}>
-                  {result.savingsVsFixed > 0 ? '+' : ''}€{result.savingsVsFixed.toFixed(0)}
+                <div className={`text-4xl font-bold ${result.savingsVsFixedWithSaldering > 0 ? 'text-green-600' : 'text-orange-600'}`}>
+                  {result.savingsVsFixedWithSaldering > 0 ? '+' : ''}€{result.savingsVsFixedWithSaldering.toFixed(0)}
                 </div>
-                <div className={`text-sm mt-2 ${result.savingsVsFixed > 0 ? 'text-green-600' : 'text-orange-600'}`}>
-                  {result.savingsVsFixed > 0 ? 'besparing/jaar' : 'meerkosten/jaar'}
+                <div className={`text-sm mt-2 ${result.savingsVsFixedWithSaldering > 0 ? 'text-green-600' : 'text-orange-600'}`}>
+                  {result.savingsVsFixedWithSaldering > 0 ? 'besparing/jaar' : 'meerkosten/jaar'}
                 </div>
               </div>
               
@@ -587,94 +575,152 @@ export function DynamischInzichtTool() {
               )}
             </div>
 
-            {/* Complete Cost Breakdown */}
+            {/* Jouw berekening - Transparant */}
+            <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+              <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                <Calculator className="w-5 h-5 text-purple-600" />
+                Jouw Berekening (Transparant)
+              </h3>
+              
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Links: Verbruik & Productie */}
+                <div className="space-y-4">
+                  <h4 className="font-semibold text-gray-700">Energie Stromen</h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between p-3 bg-gray-50 rounded-lg">
+                      <span>Totaal verbruik</span>
+                      <span className="font-bold">{result.input.totalKwh.toFixed(0)} kWh</span>
+                    </div>
+                    {hasSolar && (
+                      <>
+                        <div className="flex justify-between p-3 bg-yellow-50 rounded-lg">
+                          <span>Zonne-opwek</span>
+                          <span className="font-bold text-yellow-700">{result.input.solarProduction.toFixed(0)} kWh</span>
+                        </div>
+                        <div className="flex justify-between p-3 bg-green-50 rounded-lg">
+                          <span>Eigenverbruik ({result.solarAnalysis.calculatedSelfConsumptionPct.toFixed(0)}%)</span>
+                          <span className="font-bold text-green-700">{result.input.selfConsumptionKwh.toFixed(0)} kWh</span>
+                        </div>
+                        <div className="flex justify-between p-3 bg-amber-50 rounded-lg">
+                          <span>Teruglevering</span>
+                          <span className="font-bold text-amber-700">{result.input.feedInKwh.toFixed(0)} kWh</span>
+                        </div>
+                      </>
+                    )}
+                    <div className="flex justify-between p-3 bg-purple-50 rounded-lg border-2 border-purple-200">
+                      <span>Netto afname van net</span>
+                      <span className="font-bold text-purple-700">{result.input.gridConsumptionKwh.toFixed(0)} kWh</span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Rechts: Kosten */}
+                <div className="space-y-4">
+                  <h4 className="font-semibold text-gray-700">Kostenberekening</h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between p-3 bg-gray-50 rounded-lg">
+                      <span>Afname ({result.input.gridConsumptionKwh.toFixed(0)} × €{result.variableCosts.avgPricePerKwh.toFixed(2)})</span>
+                      <span className="font-bold">€{result.variableCosts.gridConsumptionCost.toFixed(0)}</span>
+                    </div>
+                    {hasSolar && result.variableCosts.feedInRevenue > 0 && (
+                      <div className="flex justify-between p-3 bg-green-50 rounded-lg">
+                        <span>Terugleveropbrengst ({result.input.feedInKwh.toFixed(0)} × €{result.variableCosts.avgFeedInPricePerKwh.toFixed(2)})</span>
+                        <span className="font-bold text-green-600">-€{result.variableCosts.feedInRevenue.toFixed(0)}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between p-3 bg-blue-50 rounded-lg">
+                      <span>Netbeheer ({result.netbeheerder})</span>
+                      <span className="font-bold">€{result.fixedCosts.gridCosts.toFixed(0)}</span>
+                    </div>
+                    <div className="flex justify-between p-3 bg-gray-50 rounded-lg">
+                      <span>Vastrecht leverancier</span>
+                      <span className="font-bold">€{result.fixedCosts.supplierFixedCosts.toFixed(0)}</span>
+                    </div>
+                    <div className="flex justify-between p-3 bg-green-50 rounded-lg">
+                      <span>Heffingskorting</span>
+                      <span className="font-bold text-green-600">-€{result.fixedCosts.energyTaxReduction.toFixed(0)}</span>
+                    </div>
+                    <div className="flex justify-between p-3 bg-purple-100 rounded-lg border-2 border-purple-300">
+                      <span className="font-bold">TOTAAL DYNAMISCH</span>
+                      <span className="font-bold text-purple-700 text-lg">€{result.totalCostDynamic.toFixed(0)}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Vergelijking Tabel */}
             <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
               <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
                 <Euro className="w-5 h-5 text-purple-600" />
-                Complete Kostenopbouw
+                Vergelijking Contracttypes
               </h3>
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
                     <tr className="border-b-2 border-gray-200">
                       <th className="text-left py-3 px-4 font-semibold text-gray-700">Component</th>
-                      <th className="text-right py-3 px-4 font-semibold text-gray-700">Dynamisch</th>
-                      <th className="text-right py-3 px-4 font-semibold text-gray-700">Vast + Saldering</th>
-                      {hasSolar && <th className="text-right py-3 px-4 font-semibold text-gray-700">Vast (na 2027)</th>}
+                      <th className="text-right py-3 px-4 font-semibold text-purple-600">Dynamisch</th>
+                      <th className="text-right py-3 px-4 font-semibold text-blue-600">Vast + Saldering</th>
+                      {hasSolar && <th className="text-right py-3 px-4 font-semibold text-gray-600">Vast (na 2027)</th>}
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
-                    <tr className="bg-purple-50">
-                      <td className="py-3 px-4 font-medium text-gray-700">Variabele stroomkosten</td>
-                      <td className="text-right py-3 px-4 font-medium text-purple-600">€{result.consumptionCost.toFixed(0)}</td>
-                      <td className="text-right py-3 px-4 text-gray-600">€{(result.totalCostFixed - result.gridCosts - result.supplierFixedCosts + result.energyTaxReduction).toFixed(0)}</td>
-                      {hasSolar && <td className="text-right py-3 px-4 text-gray-600">€{(result.totalCostFixedNoSaldering - result.gridCosts - result.supplierFixedCosts + result.energyTaxReduction).toFixed(0)}</td>}
-                    </tr>
-                    {hasSolar && result.feedInRevenue > 0 && (
-                      <tr>
-                        <td className="py-3 px-4 text-gray-700">Teruglevering opbrengst</td>
-                        <td className="text-right py-3 px-4 text-green-600">-€{result.feedInRevenue.toFixed(0)}</td>
-                        <td className="text-right py-3 px-4 text-gray-500">Verrekend</td>
-                        <td className="text-right py-3 px-4 text-red-600">~-€{(result.breakdown.solar.feedIn * -0.05).toFixed(0)}</td>
-                      </tr>
-                    )}
-                    <tr className="bg-gray-50">
-                      <td className="py-3 px-4 text-gray-700">
-                        <div className="flex items-center gap-2">
-                          <Plug className="w-4 h-4 text-gray-400" />
-                          Netbeheerkosten ({result.netbeheerder})
-                        </div>
-                      </td>
-                      <td className="text-right py-3 px-4 text-gray-600">€{result.gridCosts.toFixed(0)}</td>
-                      <td className="text-right py-3 px-4 text-gray-600">€{result.gridCosts.toFixed(0)}</td>
-                      {hasSolar && <td className="text-right py-3 px-4 text-gray-600">€{result.gridCosts.toFixed(0)}</td>}
-                    </tr>
                     <tr>
-                      <td className="py-3 px-4 text-gray-700">Vastrecht leverancier</td>
-                      <td className="text-right py-3 px-4 text-gray-600">€{result.supplierFixedCosts.toFixed(0)}</td>
-                      <td className="text-right py-3 px-4 text-gray-600">€{result.supplierFixedCosts.toFixed(0)}</td>
-                      {hasSolar && <td className="text-right py-3 px-4 text-gray-600">€{result.supplierFixedCosts.toFixed(0)}</td>}
+                      <td className="py-3 px-4 text-gray-700">Variabele kosten netto</td>
+                      <td className="text-right py-3 px-4 font-medium text-purple-600">€{result.variableCosts.netVariableCost.toFixed(0)}</td>
+                      <td className="text-right py-3 px-4">€{(result.totalCostFixedWithSaldering - result.fixedCosts.netFixed).toFixed(0)}</td>
+                      {hasSolar && <td className="text-right py-3 px-4">€{(result.totalCostFixedNoSaldering - result.fixedCosts.netFixed).toFixed(0)}</td>}
                     </tr>
-                    <tr className="bg-green-50">
-                      <td className="py-3 px-4 text-green-700 flex items-center gap-2">
-                        <PiggyBank className="w-4 h-4 text-green-500" />
-                        Vermindering energiebelasting
-                      </td>
-                      <td className="text-right py-3 px-4 text-green-600">-€{result.energyTaxReduction.toFixed(0)}</td>
-                      <td className="text-right py-3 px-4 text-green-600">-€{result.energyTaxReduction.toFixed(0)}</td>
-                      {hasSolar && <td className="text-right py-3 px-4 text-green-600">-€{result.energyTaxReduction.toFixed(0)}</td>}
+                    <tr className="bg-gray-50">
+                      <td className="py-3 px-4 text-gray-700">Vaste kosten netto</td>
+                      <td className="text-right py-3 px-4">€{result.fixedCosts.netFixed.toFixed(0)}</td>
+                      <td className="text-right py-3 px-4">€{result.fixedCosts.netFixed.toFixed(0)}</td>
+                      {hasSolar && <td className="text-right py-3 px-4">€{result.fixedCosts.netFixed.toFixed(0)}</td>}
                     </tr>
                     <tr className="bg-gray-800 text-white font-bold">
                       <td className="py-4 px-4">TOTAAL</td>
                       <td className="text-right py-4 px-4">€{result.totalCostDynamic.toFixed(0)}</td>
-                      <td className="text-right py-4 px-4">€{result.totalCostFixed.toFixed(0)}</td>
+                      <td className="text-right py-4 px-4">€{result.totalCostFixedWithSaldering.toFixed(0)}</td>
                       {hasSolar && <td className="text-right py-4 px-4">€{result.totalCostFixedNoSaldering.toFixed(0)}</td>}
                     </tr>
                   </tbody>
                 </table>
               </div>
+              
+              {hasSolar && (
+                <div className="mt-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
+                  <h4 className="font-semibold text-green-800 mb-2">💡 Dynamisch voordeel bij teruglevering</h4>
+                  <p className="text-sm text-green-700">
+                    Bij dynamisch krijg je <strong>€{result.solarAnalysis.dynamicFeedInRevenue.toFixed(0)}</strong> voor teruglevering 
+                    (spotprijs + energiebelasting - marge). Bij vast zonder saldering zou je 
+                    <strong className="text-red-600"> €{Math.abs(result.solarAnalysis.fixedFeedInRevenue).toFixed(0)} moeten betalen</strong> (terugleverkosten &gt; vergoeding).
+                    <br /><strong>Dynamisch voordeel: €{result.solarAnalysis.dynamicAdvantage.toFixed(0)}</strong>
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Profile Breakdown */}
             <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
               <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                 <Info className="w-5 h-5 text-purple-600" />
-                Jouw Verbruiksprofiel (Correcte Verdeling)
+                Jouw Verbruiksprofiel
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="p-4 bg-gray-50 rounded-xl">
-                  <div className="text-sm text-gray-500 mb-1">Basisverbruik (E1A)</div>
+                  <div className="text-sm text-gray-500 mb-1">Basisverbruik</div>
                   <div className="text-2xl font-bold text-gray-800">{result.profileMix.baseKwh.toFixed(0)} kWh</div>
                   <div className="text-sm text-gray-500">Verlichting, apparaten</div>
                 </div>
                 <div className="p-4 bg-orange-50 rounded-xl">
-                  <div className="text-sm text-orange-600 mb-1">Verwarming (G1A)</div>
+                  <div className="text-sm text-orange-600 mb-1">Verwarming</div>
                   <div className="text-2xl font-bold text-orange-700">{result.profileMix.heatingKwh.toFixed(0)} kWh</div>
                   <div className="text-sm text-orange-600">Warmtepomp</div>
                 </div>
                 {result.profileMix.evKwh > 0 && (
                   <div className="p-4 bg-green-50 rounded-xl">
-                    <div className="text-sm text-green-600 mb-1">EV Laden (apart)</div>
+                    <div className="text-sm text-green-600 mb-1">EV Laden</div>
                     <div className="text-2xl font-bold text-green-700">{result.profileMix.evKwh.toFixed(0)} kWh</div>
                     <div className="text-sm text-green-600">{smartCharging ? 'Nachturen' : 'Avonduren'}</div>
                   </div>
@@ -684,56 +730,46 @@ export function DynamischInzichtTool() {
                   <div className="text-lg font-bold text-purple-700">
                     {result.profileMix.method === 'nibud' ? 'NIBUD' : 'Bouwjaar'}
                   </div>
-                  <div className="text-sm text-purple-600">Profielverdeling</div>
                 </div>
               </div>
               
-              {/* Totaal check */}
               <div className="mt-4 p-3 bg-gray-100 rounded-lg text-sm text-gray-700">
-                <strong>Totaal:</strong> {result.profileMix.baseKwh.toFixed(0)} + {result.profileMix.heatingKwh.toFixed(0)} + {result.profileMix.evKwh.toFixed(0)} = {(result.profileMix.baseKwh + result.profileMix.heatingKwh + result.profileMix.evKwh).toFixed(0)} kWh 
+                <strong>Check:</strong> {result.profileMix.baseKwh.toFixed(0)} + {result.profileMix.heatingKwh.toFixed(0)} + {result.profileMix.evKwh.toFixed(0)} = {(result.profileMix.baseKwh + result.profileMix.heatingKwh + result.profileMix.evKwh).toFixed(0)} kWh 
                 <span className="text-green-600 ml-2">✓ Klopt met invoer ({totalKwh} kWh)</span>
               </div>
             </div>
 
             {/* Solar Results */}
-            {hasSolar && result.breakdown.solar.production > 0 && (
+            {hasSolar && result.input.solarProduction > 0 && (
               <div className="bg-gradient-to-br from-yellow-50 to-amber-50 rounded-2xl shadow-lg p-6 border border-yellow-200">
                 <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                   <Sun className="w-5 h-5 text-yellow-600" />
-                  Zonnepanelen Impact (Gelijktijdigheidsberekening)
+                  Zonnepanelen Analyse
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div className="p-4 bg-white/70 rounded-xl">
                     <div className="text-sm text-gray-500 mb-1">Productie</div>
-                    <div className="text-2xl font-bold text-yellow-700">{result.breakdown.solar.production.toFixed(0)} kWh</div>
+                    <div className="text-2xl font-bold text-yellow-700">{result.input.solarProduction.toFixed(0)} kWh</div>
                   </div>
                   <div className="p-4 bg-white/70 rounded-xl">
                     <div className="text-sm text-gray-500 mb-1">Eigenverbruik</div>
-                    <div className="text-2xl font-bold text-green-600">{result.breakdown.solar.selfConsumption.toFixed(0)} kWh</div>
-                    <div className="text-xs text-gray-500">{result.calculatedSelfConsumptionPercentage.toFixed(0)}% van productie</div>
+                    <div className="text-2xl font-bold text-green-600">{result.input.selfConsumptionKwh.toFixed(0)} kWh</div>
+                    <div className="text-xs text-gray-500">{result.solarAnalysis.calculatedSelfConsumptionPct.toFixed(0)}%</div>
                   </div>
                   <div className="p-4 bg-white/70 rounded-xl">
                     <div className="text-sm text-gray-500 mb-1">Teruglevering</div>
-                    <div className="text-2xl font-bold text-amber-600">{result.breakdown.solar.feedIn.toFixed(0)} kWh</div>
+                    <div className="text-2xl font-bold text-amber-600">{result.input.feedInKwh.toFixed(0)} kWh</div>
                   </div>
                   <div className="p-4 bg-white/70 rounded-xl">
-                    <div className="text-sm text-green-600 mb-1">Bespaard (eigen)</div>
-                    <div className="text-2xl font-bold text-green-600">€{result.breakdown.solar.selfConsumptionSavings.toFixed(0)}</div>
+                    <div className="text-sm text-green-600 mb-1">Teruglevering €</div>
+                    <div className="text-2xl font-bold text-green-600">€{result.solarAnalysis.dynamicFeedInRevenue.toFixed(0)}</div>
                   </div>
-                  <div className="p-4 bg-white/70 rounded-xl">
-                    <div className="text-sm text-blue-600 mb-1">Teruglevering €</div>
-                    <div className="text-2xl font-bold text-blue-600">€{result.breakdown.solar.feedInRevenue.toFixed(0)}</div>
-                  </div>
-                </div>
-                <div className="mt-4 p-3 bg-green-100 rounded-lg text-sm text-green-800">
-                  <strong>✅ Berekend eigenverbruik: {result.calculatedSelfConsumptionPercentage.toFixed(0)}%</strong> — 
-                  Dit is gebaseerd op gelijktijdigheid per uur: hoeveel van je productie je daadwerkelijk zelf verbruikt.
                 </div>
               </div>
             )}
 
             {/* EV Results */}
-            {hasEV && result.breakdown.ev.smartSavings > 0 && (
+            {hasEV && result.evAnalysis.smartChargingSavings > 0 && (
               <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl shadow-lg p-6 border border-green-200">
                 <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                   <Car className="w-5 h-5 text-green-600" />
@@ -742,18 +778,18 @@ export function DynamischInzichtTool() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="p-4 bg-white/70 rounded-xl">
                     <div className="text-sm text-gray-500 mb-1">EV Verbruik</div>
-                    <div className="text-2xl font-bold text-gray-800">{result.breakdown.ev.kwh.toFixed(0)} kWh</div>
+                    <div className="text-2xl font-bold text-gray-800">{result.evAnalysis.evKwh.toFixed(0)} kWh</div>
                   </div>
                   <div className="p-4 bg-green-100 rounded-xl">
                     <div className="flex items-center gap-2 text-green-600 mb-1">
                       <BatteryCharging className="w-4 h-4" />
                       <span className="text-sm font-medium">Jaarlijkse Besparing</span>
                     </div>
-                    <div className="text-3xl font-bold text-green-600">€{result.breakdown.ev.smartSavings.toFixed(0)}</div>
+                    <div className="text-3xl font-bold text-green-600">€{result.evAnalysis.smartChargingSavings.toFixed(0)}</div>
                   </div>
                   <div className="p-4 bg-white/70 rounded-xl">
-                    <div className="text-sm text-gray-500 mb-1">Besparing per kWh</div>
-                    <div className="text-2xl font-bold text-gray-800">€{(result.breakdown.ev.smartSavings / result.breakdown.ev.kwh).toFixed(3)}</div>
+                    <div className="text-sm text-gray-500 mb-1">Per kWh</div>
+                    <div className="text-2xl font-bold text-gray-800">€{(result.evAnalysis.smartChargingSavings / result.evAnalysis.evKwh).toFixed(3)}</div>
                   </div>
                 </div>
               </div>
@@ -767,7 +803,7 @@ export function DynamischInzichtTool() {
                   <span className="text-lg font-bold">Winterkosten</span>
                 </div>
                 <div className="text-4xl font-bold text-blue-700">€{result.winterCost.toFixed(0)}</div>
-                <div className="text-sm text-blue-600 mt-1">December, Januari, Februari</div>
+                <div className="text-sm text-blue-600 mt-1">Dec, Jan, Feb</div>
               </div>
               
               <div className="bg-amber-50 rounded-2xl p-6 shadow-lg border-2 border-amber-200">
@@ -776,7 +812,7 @@ export function DynamischInzichtTool() {
                   <span className="text-lg font-bold">Zomerkosten</span>
                 </div>
                 <div className="text-4xl font-bold text-amber-700">€{result.summerCost.toFixed(0)}</div>
-                <div className="text-sm text-amber-600 mt-1">Juni, Juli, Augustus</div>
+                <div className="text-sm text-amber-600 mt-1">Jun, Jul, Aug</div>
               </div>
             </div>
 
@@ -793,14 +829,13 @@ export function DynamischInzichtTool() {
                       formatter={(value) => [`€${Number(value).toFixed(2)}`, '']}
                       contentStyle={{ borderRadius: '8px', border: '1px solid #E5E7EB' }}
                     />
-                    <Legend />
                     <Bar dataKey="cost" fill="#8B5CF6" name="Netto kosten" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             </div>
 
-            {/* Price Analysis */}
+            {/* Price Chart */}
             <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
               <h3 className="text-xl font-bold text-gray-900 mb-6">Gemiddelde Spotprijs per Maand</h3>
               <div className="h-64">
@@ -815,7 +850,7 @@ export function DynamischInzichtTool() {
                     <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
                     <XAxis dataKey="monthName" tick={{ fontSize: 11 }} />
                     <YAxis tickFormatter={(v) => `€${v.toFixed(2)}`} tick={{ fontSize: 11 }} />
-                    <Tooltip formatter={(value) => [`€${Number(value).toFixed(3)}/kWh`, 'Gem. spotprijs']} />
+                    <Tooltip formatter={(value) => [`€${Number(value).toFixed(3)}/kWh`, 'Spotprijs']} />
                     <Area type="monotone" dataKey="averageSpotPrice" stroke="#8B5CF6" strokeWidth={2} fill="url(#priceGrad)" />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -826,16 +861,18 @@ export function DynamischInzichtTool() {
                     <TrendingDown className="w-4 h-4" />
                     <span className="text-sm font-medium">Goedkoopste Maand</span>
                   </div>
-                  <div className="text-xl font-bold text-green-700">{result.cheapestMonth.name}</div>
-                  <div className="text-sm text-green-600">€{result.cheapestMonth.avgPrice.toFixed(3)}/kWh</div>
+                  <div className="text-xl font-bold text-green-700">
+                    {result.monthlySummary.reduce((min, m) => m.averageSpotPrice < min.averageSpotPrice ? m : min).monthName}
+                  </div>
                 </div>
                 <div className="p-4 bg-orange-50 rounded-xl">
                   <div className="flex items-center gap-2 text-orange-600 mb-1">
                     <TrendingUp className="w-4 h-4" />
                     <span className="text-sm font-medium">Duurste Maand</span>
                   </div>
-                  <div className="text-xl font-bold text-orange-700">{result.expensiveMonth.name}</div>
-                  <div className="text-sm text-orange-600">€{result.expensiveMonth.avgPrice.toFixed(3)}/kWh</div>
+                  <div className="text-xl font-bold text-orange-700">
+                    {result.monthlySummary.reduce((max, m) => m.averageSpotPrice > max.averageSpotPrice ? m : max).monthName}
+                  </div>
                 </div>
               </div>
             </div>
@@ -848,16 +885,14 @@ export function DynamischInzichtTool() {
                   <h3 className="text-xl font-bold text-gray-900 mb-3">Over deze berekening</h3>
                   <div className="space-y-2 text-gray-600 text-sm">
                     <p>
-                      <strong>Compleet:</strong> Netbeheerkosten {result.netbeheerder} (€{result.gridCosts}), 
-                      vastrecht (€{result.supplierFixedCosts}), en vermindering energiebelasting (-€{result.energyTaxReduction}).
+                      <strong>Transparant:</strong> Afname ({result.input.gridConsumptionKwh.toFixed(0)} kWh) × €{result.variableCosts.avgPricePerKwh.toFixed(2)} 
+                      - teruglevering ({result.input.feedInKwh.toFixed(0)} kWh) × €{result.variableCosts.avgFeedInPricePerKwh.toFixed(2)}
                     </p>
                     <p>
-                      <strong>Eigenverbruik:</strong> Nu berekend per uur op basis van gelijktijdigheid. 
-                      Je werkelijke eigenverbruik is {result.calculatedSelfConsumptionPercentage.toFixed(0)}%.
+                      <strong>Vaste kosten:</strong> Netbeheer €{result.fixedCosts.gridCosts} + vastrecht €{result.fixedCosts.supplierFixedCosts} - heffingskorting €{result.fixedCosts.energyTaxReduction} = €{result.fixedCosts.netFixed}/jaar
                     </p>
                     <p>
-                      <strong>EV apart:</strong> Je EV-verbruik ({result.profileMix.evKwh} kWh) heeft een eigen laadprofiel 
-                      en is niet langer onderdeel van de verwarming.
+                      <strong>Teruglevering dynamisch:</strong> Spotprijs + energiebelasting - €0,023 marge = ~€{result.variableCosts.avgFeedInPricePerKwh.toFixed(2)}/kWh
                     </p>
                     <p>
                       <strong>Periode:</strong> {result.period.from} t/m {result.period.till}
@@ -898,7 +933,7 @@ export function DynamischInzichtTool() {
                 </div>
                 <h3 className="font-bold text-gray-900 mb-2">Complete Kosten</h3>
                 <p className="text-gray-600 text-sm">
-                  Inclusief netbeheer, vastrecht en belastingvermindering.
+                  Netbeheer, vastrecht, heffingskorting — alles erin.
                 </p>
               </div>
               <div className="text-center">
@@ -907,7 +942,7 @@ export function DynamischInzichtTool() {
                 </div>
                 <h3 className="font-bold text-gray-900 mb-2">Correcte Profielen</h3>
                 <p className="text-gray-600 text-sm">
-                  EV, verwarming en basis hebben elk hun eigen profiel.
+                  EV, verwarming en basis elk apart.
                 </p>
               </div>
               <div className="text-center">
@@ -916,16 +951,16 @@ export function DynamischInzichtTool() {
                 </div>
                 <h3 className="font-bold text-gray-900 mb-2">Gelijktijdigheid</h3>
                 <p className="text-gray-600 text-sm">
-                  Eigenverbruik per uur, niet een geschat percentage.
+                  Eigenverbruik per uur berekend.
                 </p>
               </div>
               <div className="text-center">
                 <div className="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <Car className="w-7 h-7 text-green-600" />
+                  <PiggyBank className="w-7 h-7 text-green-600" />
                 </div>
-                <h3 className="font-bold text-gray-900 mb-2">Slim Laden</h3>
+                <h3 className="font-bold text-gray-900 mb-2">Transparant</h3>
                 <p className="text-gray-600 text-sm">
-                  EV laadt in nachturen, zie de echte besparing.
+                  Zie precies hoe je totaal is opgebouwd.
                 </p>
               </div>
             </div>
