@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { Header } from '@/components/home/Header';
 import { Footer } from '@/components/home/Footer';
 import {
@@ -159,6 +159,29 @@ export function DynamischInzichtTool() {
   
   // Daisycon comparison widget ref
   const comparisonWidgetRef = useRef<HTMLDivElement>(null);
+  
+  // Daisycon widget config with prefilled user data
+  const daisyconConfig = useMemo(() => {
+    // Schat aantal zonnepanelen: gemiddeld 400 kWh per paneel per jaar
+    const estimatedPanels = hasSolar ? Math.round(solarProduction / 400) : 0;
+    
+    return {
+      mediaId: 413683,
+      locale: "nl-NL",
+      filter: {
+        tariffType: {
+          value: ["dynamic"]
+        }
+      },
+      prefill: {
+        meter: "single",
+        electricity_single: totalKwh,
+        gas: heatingType === 'gas' ? 1500 : 0, // Geen gas bij all-electric/hybride
+        solar: hasSolar ? 1 : 0,
+        solar_panels: estimatedPanels,
+      }
+    };
+  }, [totalKwh, heatingType, hasSolar, solarProduction]);
   
   // Load Daisycon energy comparison script
   useEffect(() => {
@@ -1075,21 +1098,17 @@ export function DynamischInzichtTool() {
             <p className="text-gray-600 max-w-2xl mx-auto">
               Vergelijk hieronder alle dynamische energiecontracten en ontdek welke leverancier het beste bij jouw situatie past.
             </p>
+            <p className="text-sm text-purple-600 mt-2">
+              ✨ Je gegevens zijn al ingevuld: {totalKwh.toLocaleString()} kWh{hasSolar ? ` + ${Math.round(solarProduction / 400)} zonnepanelen` : ''}
+            </p>
           </div>
           
-          {/* Daisycon Energy Comparison Widget */}
+          {/* Daisycon Energy Comparison Widget - Prefilled with user data */}
           <div 
+            key={JSON.stringify(daisyconConfig.prefill)} // Re-render when prefill changes
             ref={comparisonWidgetRef}
             className="dc-tool dc-energy-tool min-h-[400px]"
-            data-config={JSON.stringify({
-              mediaId: 413683,
-              locale: "nl-NL",
-              filter: {
-                tariffType: {
-                  value: ["dynamic"]
-                }
-              }
-            })}
+            data-config={JSON.stringify(daisyconConfig)}
           />
           
           <p className="text-xs text-gray-500 mt-6 text-center">
