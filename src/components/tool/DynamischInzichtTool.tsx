@@ -691,19 +691,45 @@ export function DynamischInzichtTool() {
               </div>
               
               {hasSolar && (
-                <div className="mt-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
-                  <h4 className="font-semibold text-green-800 mb-2">💡 Teruglevering vergelijking</h4>
-                  <div className="text-sm text-green-700 space-y-1">
-                    <p><strong>Dynamisch:</strong> €{result.solarAnalysis.dynamicFeedInRevenue.toFixed(0)} opbrengst (spotprijs + EB - marge ≈ €0,21/kWh)</p>
-                    <p><strong>Vast zonder saldering:</strong></p>
-                    <ul className="ml-4 text-gray-700">
-                      <li>• Vergoeding: €{result.solarAnalysis.fixedFeedInRevenue.toFixed(0)} ({result.input.feedInKwh.toFixed(0)} kWh × €0,05)</li>
-                      <li>• Terugleverkosten: -€{result.solarAnalysis.fixedFeedInCosts.toFixed(0)} ({result.input.feedInKwh.toFixed(0)} kWh × €0,04)</li>
-                      <li>• <strong>Netto: €{result.solarAnalysis.netFixedFeedInValue.toFixed(0)}</strong> (~€0,01/kWh)</li>
-                    </ul>
-                    <p className="font-bold text-green-800 mt-2">
-                      Dynamisch voordeel: €{result.solarAnalysis.dynamicAdvantage.toFixed(0)}/jaar extra opbrengst
-                    </p>
+                <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
+                  <h4 className="font-semibold text-blue-800 mb-3">💡 Teruglevering: Hoe werkt het?</h4>
+                  <div className="text-sm space-y-3">
+                    
+                    <div className="p-3 bg-white rounded-lg border border-blue-100">
+                      <p className="font-semibold text-purple-700 mb-1">Dynamisch (2026)</p>
+                      <p className="text-gray-600">
+                        Je krijgt spotprijs + energiebelasting - marge ≈ <strong>€0,21/kWh</strong>
+                      </p>
+                      <p className="text-purple-600 font-medium">
+                        {result.input.feedInKwh.toFixed(0)} kWh × €0,21 = <strong>€{result.solarAnalysis.dynamicFeedInRevenue.toFixed(0)}</strong>
+                      </p>
+                    </div>
+                    
+                    <div className="p-3 bg-white rounded-lg border border-green-100">
+                      <p className="font-semibold text-green-700 mb-1">Vast MET saldering (2026)</p>
+                      <p className="text-gray-600">
+                        Je saldeert kWh-voor-kWh. Je betaalt alleen voor netto verbruik.
+                      </p>
+                      <p className="text-gray-600">
+                        Effectieve waarde: ~<strong>€0,12/kWh</strong> (energiebelasting die je bespaart)
+                      </p>
+                    </div>
+                    
+                    <div className="p-3 bg-white rounded-lg border border-orange-100">
+                      <p className="font-semibold text-orange-700 mb-1">Vast ZONDER saldering (na 2027)</p>
+                      <p className="text-gray-600">
+                        Vergoeding €0,05 - kosten €0,04 = <strong>€0,01/kWh</strong> netto
+                      </p>
+                      <p className="text-orange-600 font-medium">
+                        {result.input.feedInKwh.toFixed(0)} kWh × €0,01 = €{result.solarAnalysis.netFixedFeedInValue.toFixed(0)}
+                      </p>
+                    </div>
+                    
+                    <div className="p-3 bg-green-100 rounded-lg">
+                      <p className="font-bold text-green-800">
+                        Dynamisch voordeel vs vast zonder saldering: €{result.solarAnalysis.dynamicAdvantage.toFixed(0)}/jaar
+                      </p>
+                    </div>
                   </div>
                 </div>
               )}
